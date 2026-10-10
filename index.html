@@ -53,6 +53,8 @@ main{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
 @media print{#bnav{display:none!important}body>header,main{margin-left:0!important}}
 .mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.mc{min-height:62px;border:1px solid var(--l);border-radius:8px;padding:4px 3px;cursor:pointer;background:#fff;display:flex;flex-direction:column;align-items:center}.mc.other{opacity:.45}.mc.today .mcn{background:var(--b);color:#fff;border-radius:50%}.mc.sel{border:2px solid #111;background:#f6eaeb}
 .mcn{font-weight:700;font-size:15px;width:26px;height:26px;line-height:26px;text-align:center}.mcd{display:flex;gap:2px;margin-top:3px}.mcd i{width:7px;height:7px;border-radius:50%;display:block}.mcc{font-size:10px;color:var(--m);margin-top:2px}.mday{border-top:1px solid var(--l);margin-top:10px;padding-top:10px}
+.lchip{border:2px dashed #d69e00;background:#fff8e1;border-radius:6px;padding:4px 6px;margin-bottom:4px;font-size:12px;cursor:pointer;line-height:1.3;min-width:150px}.lchip b{color:#8a6100}.lchip.od{border-color:#c0392b;background:#fdecea}.lchip.od b{color:#c0392b}
+.mcl{font-size:9px;font-weight:700;color:#8a6100;border:1px dashed #d69e00;border-radius:4px;padding:0 3px;margin-top:2px;background:#fff8e1;white-space:nowrap}.mcl.od{color:#c0392b;border-color:#c0392b;background:#fdecea}.lglead{border:2px dashed #d69e00;background:#fff8e1!important}
 </style></head><body>
 <header><h1 id="cname"><img src="logo-mono-white.png" alt="" class="hlogo">Central Plumbing</h1><span style="font-size:12px;opacity:.8" id="today"></span><span id="syncst"></span><button class="btn s sm noprint" id="signout" style="display:none">Sign out</button></header>
 <div class="auth" id="auth"><div><div style="text-align:center;margin-bottom:12px"><img src="logo.png" alt="Central Plumbing" style="width:190px;max-width:70%"></div><div id="authbody"><p style="color:var(--m)">Loading…</p></div></div></div>
@@ -394,7 +396,7 @@ function stopRec(id){if(!confirm('Stop this series? Future scheduled jobs from i
 let cal={v:'month',d:'',w:''};
 const calJobs=(a,b)=>D.jobs.filter(j=>j.when&&j.when.slice(0,10)>=a&&j.when.slice(0,10)<b&&(!cal.w||(j.workers||[]).includes(cal.w))).sort((x,y)=>x.when.localeCompare(y.when));
 const chip=j=>{const col=wColor((j.workers||[])[0]);return `<div class="chip" ${isOwner()?`draggable="true" ondragstart="event.dataTransfer.setData('text/plain','${j.id}')"`:''} onclick="event.stopPropagation();calTap('${j.id}')" style="border-left-color:${col};background:${col}1a"><b>${new Date(j.when).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}</b> ${jobClient(j)}<br><small>${esc(j.num)} · ${esc((j.desc||'').slice(0,40))}</small></div>`};
-const dropAttr=(day,h)=>isOwner()?`ondragover="event.preventDefault();this.classList.add('dov')" ondragleave="this.classList.remove('dov')" ondrop="event.preventDefault();this.classList.remove('dov');calMove(event.dataTransfer.getData('text/plain'),'${day}',${h==null?'null':h})"`:'';
+const dropAttr=(day,h)=>`data-day="${day}" `+(isOwner()?`ondragover="event.preventDefault();this.classList.add('dov')" ondragleave="this.classList.remove('dov')" ondrop="event.preventDefault();this.classList.remove('dov');calMove(event.dataTransfer.getData('text/plain'),'${day}',${h==null?'null':h})"`:'');
 V.cal=()=>{if(!cal.d)cal.d=tod();const d=cal.d;let a,b,body='',title;
  if(cal.v=='day'){a=d;b=addDays(d,1);title=new Date(d+'T00:00').toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'});const L=calJobs(a,b);
   body=`<div class="cday">${[...Array(15)].map((_,i)=>{const h=i+6;return `<div class="hr" ${dropAttr(d,h)} onclick="calCell('${d}',${h})"><div class="hl">${(h%12)||12}${h<12?'a':'p'}</div><div style="flex:1">${L.filter(j=>+j.when.slice(11,13)==h||(h==6&&+j.when.slice(11,13)<6)||(h==20&&+j.when.slice(11,13)>20)).map(chip).join('')}</div></div>`}).join('')}</div>`}
@@ -618,6 +620,29 @@ function profitReport(){const {rows,drafts,notInv}=profitData();const tI=rows.re
  const tot=Object.values(im).reduce((s,v)=>s+v,0);
  return h.replace('<div class="k">Collected (all time)</div></div>',`<div class="k">Collected (all time)</div></div><div class="card stat"><div class="n">${money(tot)}</div><div class="k">Invoiced (sent + paid, before tax)</div></div>`)
   .replace(/(<h2>Revenue by month[\s\S]*?<\/h2>)/,`$1<div class="tw" style="margin-bottom:8px"><table><tr><th>Month</th><th>Invoiced</th></tr>${Object.keys(im).sort().reverse().map(m=>`<tr><td>${m}</td><td>${money(im[m])}</td></tr>`).join('')||'<tr><td colspan=2>No sent invoices yet.</td></tr>'}</table></div><small style="color:var(--m)">Collected by month:</small>`)}}
+render();
+</script>
+<script>
+/* ===================== Leads on the calendar ===================== */
+const calLeadsOn=()=>localStorage.getItem('cp-calleads')!=='off';
+const calLeads=()=>D.leads.filter(l=>['New','Contacted','Quoted'].includes(l.status));
+const leadChip=l=>{const od=l.follow&&l.follow<tod();return `<div class="lchip ${od?'od':''}" ${isOwner()?`draggable="true" ondragstart="event.stopPropagation();event.dataTransfer.setData('text/plain','lead:${l.id}')"`:''} onclick="event.stopPropagation();openLead('${l.id}')"><b>Lead</b>${od?' · overdue':''} · ${esc(l.clientName||cname(l.client))}<br><small>${esc((l.text||'').slice(0,50))}</small></div>`};
+{const _cm=calMove;calMove=function(id,day,h){if(String(id).startsWith('lead:')){const l=D.leads.find(x=>x.id==id.slice(5));if(l&&isOwner()){l.follow=day;save();render()}return}_cm(id,day,h)}}
+function openLead(id){const l=D.leads.find(x=>x.id==id);if(!l)return;const o=isOwner(),od=l.follow&&l.follow<tod(),j=J(l.job);
+ modal(`<h2>Lead · ${esc(l.clientName||cname(l.client))} <span class="pill ${l.status}">${l.status}</span></h2>${l.clientPhone?`<div>📞 <a href="tel:${esc(l.clientPhone)}">${esc(l.clientPhone)}</a></div>`:''}<div style="font-size:12px;color:var(--m);margin:4px 0">${l.date}${j?' · from '+esc(j.num):''}${l.byName?' · by '+esc(l.byName):''}</div><div style="white-space:pre-wrap;margin:8px 0">${esc(l.text)}</div>
+ ${o?`<div class="row" style="align-items:end"><div><label>Status</label><select id="lst">${opt(LS.map(s=>[s,s]),l.status)}</select></div><div><label>Follow up ${od?'<b style="color:#c0392b">· overdue</b>':''}</label><input id="lfd" type="date" value="${l.follow||''}"></div></div>
+ <div style="margin-top:14px"><button class="btn" onclick="const l=D.leads.find(x=>x.id=='${id}');l.status=$('#lst').value;l.follow=$('#lfd').value;save();modal();render()">Save</button>${l.quote&&Q(l.quote)?`<button class="btn s" onclick="modal();viewQuote('${l.quote}')">Quote ${esc(Q(l.quote).num)}</button>`:`<button class="btn g" onclick="modal();leadQuote('${id}')">Create quote</button>`}<button class="btn s" onclick="modal()">Close</button></div>`
+ :`<div>Follow up: ${l.follow||'—'}</div><p style="font-size:13px;color:var(--m)">The owners will follow up on this lead.</p><div style="margin-top:14px"><button class="btn s" onclick="modal()">Close</button></div>`}`)}
+function calLeadToggle(){localStorage.setItem('cp-calleads',calLeadsOn()?'off':'on');render()}
+{const _r=render;render=function(){_r();if(tab!='cal')return;const lg=document.querySelector('.legend');const L=calLeads();
+ if(lg)lg.insertAdjacentHTML('beforeend',`<span><i class="lglead"></i>Lead follow-up</span><button class="btn sm ${calLeadsOn()?'':'s'}" onclick="calLeadToggle()">${calLeadsOn()?'Hide':'Show'} leads (${L.length})</button>`);
+ if(!calLeadsOn()||cal.v=='crew'||cal.v=='myweek')return;
+ const by={};L.filter(l=>l.follow).forEach(l=>(by[l.follow]=by[l.follow]||[]).push(l));
+ const und=L.filter(l=>!l.follow),calCard=document.querySelector('#app .card[style*="padding:8px"]');
+ if(und.length&&calCard)calCard.insertAdjacentHTML('beforebegin',`<div class="card noprint"><h2 style="font-size:15px">Undated leads (${und.length}) <small style="color:var(--m);font-weight:400">${isOwner()?'drag onto a day to set a follow-up':'no follow-up date yet'}</small></h2><div class="unsch">${und.map(leadChip).join('')}</div></div>`);
+ if(cal.v=='month'){document.querySelectorAll('.mc[data-day]').forEach(c=>{const ls=by[c.dataset.day];if(ls){const od=ls.some(l=>l.follow<tod());c.insertAdjacentHTML('beforeend',`<div class="mcl ${od?'od':''}">◆ ${ls.length} lead${ls.length>1?'s':''}</div>`)}});const md=document.querySelector('.mday > div:last-child');const ls=by[cal.sel];if(md&&ls)md.insertAdjacentHTML('beforeend',ls.map(leadChip).join(''))}
+ else if(cal.v=='week'){document.querySelectorAll('.cd[data-day]').forEach(c=>{const ls=by[c.dataset.day];if(ls)c.insertAdjacentHTML('beforeend',ls.map(leadChip).join(''))})}
+ else if(cal.v=='day'){const ls=by[cal.d];const dv=document.querySelector('.cday');if(dv&&ls)dv.insertAdjacentHTML('beforebegin',`<div style="margin-bottom:8px">${ls.map(leadChip).join('')}</div>`)}}}
 render();
 </script>
 <script type="module">
