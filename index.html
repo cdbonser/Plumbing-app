@@ -51,6 +51,8 @@ main{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
 .morelist{padding:0}.morelist button{display:flex;gap:14px;align-items:center;width:100%;background:none;border:0;border-bottom:1px solid var(--l);padding:18px 16px;font-size:17px;cursor:pointer;color:var(--t)}.morelist button:last-child{border-bottom:0}.mi{font-size:22px;width:28px}
 @media (min-width:900px){#bnav{top:0;bottom:0;right:auto;width:96px;flex-direction:column;justify-content:flex-start;border-top:0;border-right:3px solid var(--b);padding-top:70px}#bnav button{flex:0;min-height:76px}body>header,main{margin-left:96px}main{padding-bottom:24px}}
 @media print{#bnav{display:none!important}body>header,main{margin-left:0!important}}
+.mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.mc{min-height:62px;border:1px solid var(--l);border-radius:8px;padding:4px 3px;cursor:pointer;background:#fff;display:flex;flex-direction:column;align-items:center}.mc.other{opacity:.45}.mc.today .mcn{background:var(--b);color:#fff;border-radius:50%}.mc.sel{border:2px solid #111;background:#f6eaeb}
+.mcn{font-weight:700;font-size:15px;width:26px;height:26px;line-height:26px;text-align:center}.mcd{display:flex;gap:2px;margin-top:3px}.mcd i{width:7px;height:7px;border-radius:50%;display:block}.mcc{font-size:10px;color:var(--m);margin-top:2px}.mday{border-top:1px solid var(--l);margin-top:10px;padding-top:10px}
 </style></head><body>
 <header><h1 id="cname"><img src="logo-mono-white.png" alt="" class="hlogo">Central Plumbing</h1><span style="font-size:12px;opacity:.8" id="today"></span><span id="syncst"></span><button class="btn s sm noprint" id="signout" style="display:none">Sign out</button></header>
 <div class="auth" id="auth"><div><div style="text-align:center;margin-bottom:12px"><img src="logo.png" alt="Central Plumbing" style="width:190px;max-width:70%"></div><div id="authbody"><p style="color:var(--m)">Loading…</p></div></div></div>
@@ -319,7 +321,7 @@ function editInvoice(id,pre){const i=id?IV(id):Object.assign({client:'',job:'',q
  <label>Notes</label><textarea id="qn" rows="2">${esc(i.notes)}</textarea><div style="margin-top:14px"><button class="btn" onclick="saveInvoice('${id||''}')">Save</button>${id?`<button class="btn d" onclick="delInvoice('${id}')">Delete</button>`:''}<button class="btn s" onclick="modal()">Cancel</button></div>`);drawLi()}
 function invDue(){$('#idue').value=addDays($('#id_').value||tod(),+$('#iterm').value)}
 function saveInvoice(id){const cl=pickClient();if(!cl)return;let i=id?IV(id):{id:uid(),num:'INV-'+(D.seq.i=D.seq.i||1001,D.seq.i++),payments:[],job:window._inv.job||'',quote:window._inv.quote||''};
- Object.assign(i,{client:cl,date:$('#id_').value,terms:+$('#iterm').value,due:$('#idue').value,status:$('#ist').value,tax:+$('#qt').value,notes:$('#qn').value,items:qi.map(x=>{const y={...x};delete y.cost;return y})});
+ Object.assign(i,{client:cl,date:$('#id_').value,terms:+$('#iterm').value,due:$('#idue').value,status:$('#ist').value,tax:+$('#qt').value,notes:$('#qn').value,items:qi.map(x=>({...x}))});
  if(!id)D.invoices.push(i);const j=J(i.job);if(j){j.invoice=i.id;if(j.status!='Paid')j.status='Invoiced'}syncPaid(i,true);save();viewInvoice(i.id)}
 function delInvoice(id){if(!confirm('Delete invoice?'))return;D.invoices=D.invoices.filter(x=>x.id!=id);D.jobs.forEach(j=>{if(j.invoice==id){delete j.invoice;if(j.status=='Invoiced'||j.status=='Paid')j.status='Completed'}});save();modal();view=null;render()}
 function syncPaid(i,manual){const t=invT(i),j=J(i.job);if(t.total>0&&t.bal<=0.005){i.status='Paid';i.paidDate=i.paidDate||((i.payments||[]).slice(-1)[0]?.date)||tod()}else if(i.status=='Paid'&&!manual){i.status='Sent';delete i.paidDate}
@@ -389,7 +391,7 @@ function recurringCard(){if(!D.recurring.length)return '';return `<div class="ca
 function stopRec(id){if(!confirm('Stop this series? Future scheduled jobs from it will be removed (past/started jobs stay).'))return;const s=D.recurring.find(x=>x.id==id);s.active=false;const t=tod();D.jobs=D.jobs.filter(j=>!(j.recurring==id&&j.status=='Scheduled'&&(j.when||'').slice(0,10)>t));save();render()}
 
 /* ---------- calendar ---------- */
-let cal={v:'week',d:'',w:''};
+let cal={v:'month',d:'',w:''};
 const calJobs=(a,b)=>D.jobs.filter(j=>j.when&&j.when.slice(0,10)>=a&&j.when.slice(0,10)<b&&(!cal.w||(j.workers||[]).includes(cal.w))).sort((x,y)=>x.when.localeCompare(y.when));
 const chip=j=>{const col=wColor((j.workers||[])[0]);return `<div class="chip" ${isOwner()?`draggable="true" ondragstart="event.dataTransfer.setData('text/plain','${j.id}')"`:''} onclick="event.stopPropagation();calTap('${j.id}')" style="border-left-color:${col};background:${col}1a"><b>${new Date(j.when).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}</b> ${jobClient(j)}<br><small>${esc(j.num)} · ${esc((j.desc||'').slice(0,40))}</small></div>`};
 const dropAttr=(day,h)=>isOwner()?`ondragover="event.preventDefault();this.classList.add('dov')" ondragleave="this.classList.remove('dov')" ondrop="event.preventDefault();this.classList.remove('dov');calMove(event.dataTransfer.getData('text/plain'),'${day}',${h==null?'null':h})"`:'';
@@ -503,7 +505,7 @@ function crewView(a){const days=[...Array(7)].map((_,i)=>addDays(a,i));const ws=
  return `<div class="tw"><table class="crew"><tr><th>Worker</th>${days.map(d=>`<th class="${d==tod()?'today':''}">${new Date(d+'T00:00').toLocaleDateString([],{weekday:'short',day:'numeric'})}</th>`).join('')}</tr>${ws.map(w=>`<tr><td style="border-left:5px solid ${wColor(w.id)}"><b>${esc(w.name)}</b><br><button class="btn sm s" onclick="sendSched('${w.id}','${a}')">📤 Send schedule</button></td>${days.map(d=>`<td class="cd" ${dropAttr(d)} onclick="calCellW('${d}','${w.id}')">${D.jobs.filter(j=>(j.workers||[]).includes(w.id)&&(j.when||'').slice(0,10)==d).sort((x,y)=>x.when.localeCompare(y.when)).map(chip).join('')}</td>`).join('')}</tr>`).join('')}</table></div>`}
 function calCellW(day,wid){quickSched(day);setTimeout(()=>{const c=document.querySelector(`.qsw[value="${wid}"]`);if(c)c.checked=true},0)}
 function myWeek(a){const me=myWorkerId();return `<div style="white-space:pre-wrap;font-size:15px;line-height:1.6">${esc(weekText(me,a)).replace(/^.*\n/,'')}</div>`}
-{const _vc=V.cal;V.cal=()=>{if(!cal.d)cal.d=tod();if(isTech()&&!cal._t){cal.v='myweek';cal._t=1}if(cal.v=='crew'||cal.v=='myweek'){const a=ymd(weekStart(new Date(cal.d+'T00:00')));const sv=cal.v;cal.v='week';let h=_vc();cal.v=sv;const body=sv=='crew'?crewView(a):myWeek(a);
+{const _vc=V.cal;V.cal=()=>{if(!cal.d)cal.d=tod();if(isTech()&&!cal._t){cal.v='month';cal._t=1}if(cal.v=='crew'||cal.v=='myweek'){const a=ymd(weekStart(new Date(cal.d+'T00:00')));const sv=cal.v;cal.v='week';let h=_vc();cal.v=sv;const body=sv=='crew'?crewView(a):myWeek(a);
   h=h.replace(/<div class="card" style="padding:8px">[\s\S]*$/,`<div class="card" style="padding:8px">${body}</div>`);return fixCal(h)+''}return fixCal(_vc())}}
 function fixCal(h){const views=isOwner()?[['day','Day'],['week','Week'],['month','Month'],['crew','Crew week']]:[['myweek','My week'],['day','Day'],['week','Week'],['month','Month']];
  h=h.replace(/<div>(<button class="btn sm[^"]*" onclick="cal.v='day';render\(\)">Day<\/button>[\s\S]*?)<\/div>/,'<div>'+views.map(([v,l])=>`<button class="btn sm ${cal.v==v?'':'s'}" onclick="cal.v='${v}';render()">${l}</button>`).join('')+'</div>');
@@ -578,6 +580,44 @@ document.body.insertAdjacentHTML('beforeend','<nav id="bnav" class="noprint"></n
  if(top)$('#app').insertAdjacentHTML('afterbegin',top)}}
 window.addEventListener('hashchange',()=>{const t=location.hash.slice(1);if(t&&t!=tab&&(V[t]))go(t)});
 {const h=location.hash.slice(1);if(h&&V[h])tab=h}
+render();
+</script>
+<script>
+/* ===================== Oct 10b: month-first calendar, profit report counts invoices ===================== */
+cal.v='month';cal._t=1;cal.sel=cal.sel||'';
+function monthBody(){const f=new Date(cal.d+'T00:00');f.setDate(1);const m=f.getMonth(),a=ymd(weekStart(f)),b=addDays(a,42),L=calJobs(a,b);if(!cal.sel||cal.sel<a||cal.sel>=b)cal.sel=(tod()>=a&&tod()<b&&new Date(tod()+'T00:00').getMonth()==m)?tod():ymd(f);
+ const cells=[...Array(42)].map((_,i)=>{const day=addDays(a,i),jl=L.filter(j=>j.when.slice(0,10)==day);return `<div class="mc ${new Date(day+'T00:00').getMonth()!=m?'other':''} ${day==tod()?'today':''} ${day==cal.sel?'sel':''}" ${dropAttr(day)} onclick="cal.sel='${day}';render()"><div class="mcn">${+day.slice(8)}</div>${jl.length?`<div class="mcd">${jl.slice(0,4).map(j=>`<i style="background:${wColor((j.workers||[])[0])}"></i>`).join('')}</div><div class="mcc">${jl.length} job${jl.length>1?'s':''}</div>`:''}</div>`}).join('');
+ const sj=calJobs(cal.sel,addDays(cal.sel,1));
+ return `<div class="mgrid">${['M','T','W','T','F','S','S'].map(x=>`<div class="cmh">${x}</div>`).join('')}${cells}</div>
+ <div class="mday"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 style="margin:0;font-size:16px">${new Date(cal.sel+'T00:00').toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'})}</h3><div>${isOwner()?`<button class="btn" onclick="quickSched('${cal.sel}')">+ Schedule job</button>`:''}<button class="btn s" onclick="cal.v='day';cal.d='${cal.sel}';render()">Day view</button></div></div>
+ <div style="margin-top:8px">${sj.map(chip).join('')||'<p style="color:var(--m);margin:6px 0">No jobs this day.</p>'}</div></div>`}
+{const _vc=V.cal;V.cal=()=>{let h=_vc();if(cal.v=='month')h=h.replace(/<div class="card" style="padding:8px">[\s\S]*$/,`<div class="card" style="padding:8px">${monthBody()}</div>`);return h}}
+
+/* ---- profit: invoice-based ---- */
+function invCost(i){const j=J(i.job);if(j){const f=jobFin(j);return{cost:f.cost,parts:f.parts,lab:f.lab,known:f.cost>0,src:'job'}}
+ const parts=(i.items||[]).filter(x=>x.type=='part').reduce((s,x)=>s+(+x.qty||0)*(x.cost!=null?+x.cost:(+P(x.partId)?.cost||0)),0),lab=(i.items||[]).filter(x=>x.type=='labor').reduce((s,x)=>s+(+x.qty||0),0)*laborCostRate();
+ return{cost:parts+lab,parts,lab,known:parts+lab>0,src:'invoice'}}
+function profitData(){const live=D.invoices.filter(i=>i.status!='Draft'),drafts=D.invoices.filter(i=>i.status=='Draft');
+ const rows=live.map(i=>{const t=invT(i),c=invCost(i);return{i,inv:t.sub,col:t.paid,c}});
+ const invJobs=new Set(live.map(i=>i.job).filter(Boolean));const notInv=D.jobs.filter(j=>!invJobs.has(j.id)&&(j.quote||(j.actual||[]).length||jobHours(j.id))&&j.status!='Paid').map(j=>({j,f:jobFin(j)}));
+ return{rows,drafts,notInv}}
+function profitReport(){const {rows,drafts,notInv}=profitData();const tI=rows.reduce((s,r)=>s+r.inv,0),tC=rows.reduce((s,r)=>s+r.col,0),tK=rows.reduce((s,r)=>s+r.c.cost,0);
+ const bm={};rows.forEach(r=>{const m=(r.i.date||'').slice(0,7)||'No date';(bm[m]=bm[m]||{i:0,k:0,n:0,c:0}).i+=r.inv;bm[m].k+=r.c.cost;bm[m].n++});
+ D.invoices.forEach(i=>(i.payments||[]).forEach(p=>{const m=(p.date||'').slice(0,7)||'No date';(bm[m]=bm[m]||{i:0,k:0,n:0,c:0}).c+=+p.amount||0}));
+ const noCost=rows.filter(r=>!r.c.known).length;
+ return `<div class="card noprint"><h2>Profit report <small style="color:var(--m);font-weight:400;font-size:12px">owner only</small></h2>
+ <p style="font-size:13px;color:var(--m);margin:0 0 10px">Counts every invoice that's been <b>sent or paid</b>, even ones not linked to a job or quote. <b>Invoiced</b> = invoice amounts before tax. <b>Collected</b> = payments actually received (incl. tax). <b>Cost</b> = parts (actual paid if entered on the job, otherwise the part cost on the quote/invoice) + clocked labor at each worker's cost. Draft invoices are <b>not counted</b> until you mark them sent.</p>
+ <div class="grid"><div class="stat card"><div class="n">${money(tI)}</div><div class="k">Invoiced (${rows.length})</div></div><div class="stat card"><div class="n">${money(tC)}</div><div class="k">Collected</div></div><div class="stat card"><div class="n">${money(tK)}</div><div class="k">Cost</div></div><div class="stat card"><div class="n" style="color:${tI-tK<0?'#c0392b':'#1e8e4e'}">${money(tI-tK)}</div><div class="k">Profit · ${pct(tI,tK)}</div></div></div>
+ ${noCost?`<p style="font-size:12px;color:#8a5a00;background:#fff6e5;border-radius:6px;padding:6px 8px">⚠ ${noCost} invoice${noCost>1?'s have':' has'} no cost info, so it counts as $0 cost (100% profit). Add part costs on the invoice or link it to a job for real numbers.</p>`:''}
+ ${drafts.length?`<p style="font-size:12px;color:var(--m)">📝 ${drafts.length} draft invoice${drafts.length>1?'s':''} (${money(drafts.reduce((s,i)=>s+invT(i).sub,0))}) not counted yet: ${drafts.map(i=>`<a href="#" onclick="viewInvoice('${i.id}');return false">${esc(i.num)}</a>`).join(', ')}</p>`:''}
+ <h3 style="font-size:15px">By month</h3><div class="tw"><table><tr><th>Month</th><th class="right">Invoiced</th><th class="right">Collected</th><th class="right">Cost</th><th class="right">Profit</th><th class="right">Margin</th></tr>${Object.keys(bm).sort().reverse().map(m=>{const x=bm[m];return `<tr><td>${m}</td><td class="right">${money(x.i)}</td><td class="right">${money(x.c)}</td><td class="right">${money(x.k)}</td><td class="right">${money(x.i-x.k)}</td><td class="right">${pct(x.i,x.k)}</td></tr>`}).join('')||'<tr><td colspan=6>No sent invoices yet.</td></tr>'}</table></div>
+ <h3 style="font-size:15px">By invoice</h3><div class="tw"><table><tr><th>Invoice</th><th>Client</th><th class="right">Invoiced</th><th class="right">Collected</th><th class="right">Cost</th><th class="right">Profit</th></tr>${rows.slice().sort((a,b)=>(b.i.date||'').localeCompare(a.i.date||'')).map(r=>`<tr><td><a href="#" onclick="viewInvoice('${r.i.id}');return false">${esc(r.i.num)}</a> <span class="pill ${invStatus(r.i)}">${invStatus(r.i)}</span>${r.i.job&&J(r.i.job)?`<br><small>${esc(J(r.i.job).num)}</small>`:'<br><small style="color:var(--m)">no job</small>'}</td><td>${cname(r.i.client)}</td><td class="right">${money(r.inv)}</td><td class="right">${money(r.col)}</td><td class="right">${money(r.c.cost)}${r.c.known?'':'<br><small style="color:#8a5a00">no cost info</small>'}</td><td class="right">${money(r.inv-r.c.cost)}<br><small>${pct(r.inv,r.c.cost)}</small></td></tr>`).join('')||'<tr><td colspan=6>No sent invoices yet.</td></tr>'}</table></div>
+ ${notInv.length?`<h3 style="font-size:15px">Jobs not invoiced yet <small style="color:var(--m);font-weight:400">(not in totals)</small></h3><div class="tw"><table><tr><th>Job</th><th>Client</th><th class="right">Quoted</th><th class="right">Cost so far</th></tr>${notInv.map(({j,f})=>`<tr><td><a href="#" onclick="editJob('${j.id}');return false">${esc(j.num)}</a>${tag(j)}</td><td>${cname(j.client)}</td><td class="right">${money(f.price)}</td><td class="right">${money(f.cost)}</td></tr>`).join('')}</table></div>`:''}</div>`}
+{const _vd=V.dash;V.dash=()=>{let h=_vd();if(isTech())return h;const k='<div class="card noprint"><h2>Profit report';const i=h.indexOf(k);if(i>=0)h=h.slice(0,i);return h+profitReport()}}
+{const _vr=V.reports;V.reports=()=>{let h=_vr();if(isTech())return h;const im={};D.invoices.filter(i=>i.status!='Draft').forEach(i=>{const m=(i.date||'').slice(0,7);im[m]=(im[m]||0)+invT(i).sub});
+ const tot=Object.values(im).reduce((s,v)=>s+v,0);
+ return h.replace('<div class="k">Collected (all time)</div></div>',`<div class="k">Collected (all time)</div></div><div class="card stat"><div class="n">${money(tot)}</div><div class="k">Invoiced (sent + paid, before tax)</div></div>`)
+  .replace(/(<h2>Revenue by month[\s\S]*?<\/h2>)/,`$1<div class="tw" style="margin-bottom:8px"><table><tr><th>Month</th><th>Invoiced</th></tr>${Object.keys(im).sort().reverse().map(m=>`<tr><td>${m}</td><td>${money(im[m])}</td></tr>`).join('')||'<tr><td colspan=2>No sent invoices yet.</td></tr>'}</table></div><small style="color:var(--m)">Collected by month:</small>`)}}
 render();
 </script>
 <script type="module">
