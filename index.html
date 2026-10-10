@@ -40,6 +40,17 @@ input,select,textarea{width:100%;padding:9px;border:1px solid #c5cfda;border-rad
 .seg{display:flex;border:1px solid #ccc;border-radius:8px;overflow:hidden;margin-bottom:8px}.seg button{flex:1;border:0;background:#fff;padding:12px 4px;font-size:15px;cursor:pointer}.seg button.on{background:#111;color:#fff;font-weight:700}
 .bigcam{display:block;text-align:center;font-size:20px;padding:18px;border-radius:12px;margin:0}.phday{font-size:12px;font-weight:700;color:var(--m);margin:10px 0 4px}.phcap{font-size:11px;padding:3px 5px;color:var(--m);background:#fff}.ph-during{background:#e67e22!important}.ph-after{background:#1e8e4e!important}.ph-before{background:#1f6feb!important}
 .crewm{padding:6px 8px;margin-bottom:12px}.crewd{border-top:1px solid var(--l);padding:6px 0;cursor:pointer}.crewd.today .cdh{color:var(--b)}
+#nav{display:none!important}
+@media (max-width:600px){.grid:has(>.stat){grid-template-columns:1fr 1fr;gap:10px}.grid>.stat{margin-bottom:0}.stat .n{font-size:24px}}
+#bnav{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;background:#111;border-top:3px solid var(--b);padding-bottom:env(safe-area-inset-bottom)}
+#bnav button{flex:1;background:none;border:0;color:#bbb;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;font-size:12px;font-weight:600;cursor:pointer;position:relative;min-height:62px;justify-content:center}
+#bnav button.on{color:#fff}#bnav button.on svg{stroke:var(--b)}#bnav .bdg{position:absolute;top:5px;left:calc(50% + 8px);background:var(--b);color:#fff;font-style:normal;font-size:11px;border-radius:9px;padding:0 6px;line-height:17px}
+main{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
+.subseg{position:sticky;top:0;z-index:5;margin:-4px 0 14px;box-shadow:0 2px 6px #0001}.subseg button{padding:11px 4px;font-size:15px}.bdg2{font-style:normal;background:var(--b);color:#fff;border-radius:9px;padding:0 6px;font-size:11px}.subseg button.on .bdg2{background:#fff;color:var(--b)}
+.subbar{display:flex;gap:10px;margin-bottom:12px}.subbar .back{background:#fff;border:1px solid var(--l);border-radius:8px;padding:9px 14px;font-size:15px;cursor:pointer}
+.morelist{padding:0}.morelist button{display:flex;gap:14px;align-items:center;width:100%;background:none;border:0;border-bottom:1px solid var(--l);padding:18px 16px;font-size:17px;cursor:pointer;color:var(--t)}.morelist button:last-child{border-bottom:0}.mi{font-size:22px;width:28px}
+@media (min-width:900px){#bnav{top:0;bottom:0;right:auto;width:96px;flex-direction:column;justify-content:flex-start;border-top:0;border-right:3px solid var(--b);padding-top:70px}#bnav button{flex:0;min-height:76px}body>header,main{margin-left:96px}main{padding-bottom:24px}}
+@media print{#bnav{display:none!important}body>header,main{margin-left:0!important}}
 </style></head><body>
 <header><h1 id="cname"><img src="logo-mono-white.png" alt="" class="hlogo">Central Plumbing</h1><span style="font-size:12px;opacity:.8" id="today"></span><span id="syncst"></span><button class="btn s sm noprint" id="signout" style="display:none">Sign out</button></header>
 <div class="auth" id="auth"><div><div style="text-align:center;margin-bottom:12px"><img src="logo.png" alt="Central Plumbing" style="width:190px;max-width:70%"></div><div id="authbody"><p style="color:var(--m)">Loading…</p></div></div></div>
@@ -541,6 +552,32 @@ V.messages=()=>{if(isTech())return '';const L=D.messages.slice().sort((a,b)=>(b.
  return `<div class="card"><h2>Messages & call notes</h2><button class="btn" onclick="editMsg()">+ New note</button></div>${L.map(m=>`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;cursor:pointer" onclick="msgOpen=msgOpen=='${m.id}'?'':'${m.id}';render()"><div><b>${esc(m.title)}</b><div style="font-size:12px;color:var(--m)">${m.date||''}</div></div><span>${msgOpen==m.id?'▲':'▼'}</span></div>${msgOpen==m.id?`<div style="margin-top:10px;font-size:14px">${md(m.body)}</div><div style="margin-top:10px"><button class="btn sm s" onclick="editMsg('${m.id}')">Edit</button></div>`:`<div style="font-size:13px;color:var(--m);margin-top:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${esc((m.body||'').replace(/[#*]/g,'').slice(0,140))}</div>`}</div>`).join('')||'<div class="card">No notes yet.</div>'}`};
 function editMsg(id){const m=id?D.messages.find(x=>x.id==id):{title:'',date:tod(),body:''};modal(`<h2>${id?'Edit':'New'} note</h2><label>Title</label><input id="mt" value="${esc(m.title)}"><label>Date</label><input id="mdt" type="date" value="${m.date||tod()}"><label>Text (## heading, - bullet, **bold**)</label><textarea id="mb" rows="14">${esc(m.body)}</textarea><div style="margin-top:14px"><button class="btn" onclick="saveMsg('${id||''}')">Save</button>${id?`<button class="btn d" onclick="if(confirm('Delete note?')){D.messages=D.messages.filter(x=>x.id!='${id}');save();modal();render()}">Delete</button>`:''}<button class="btn s" onclick="modal()">Cancel</button></div>`)}
 function saveMsg(id){const t=$('#mt').value.trim();if(!t)return alert('Title required');let m=id?D.messages.find(x=>x.id==id):{id:uid(),at:new Date().toISOString()};Object.assign(m,{title:t,date:$('#mdt').value,body:$('#mb').value});if(!id)D.messages.push(m);msgOpen=m.id;save();modal();render()}
+render();
+</script>
+<script>
+/* ===================== Bottom tab bar navigation ===================== */
+const ICO={home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',schedule:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',sales:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/>',team:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14.2c2.6.2 4.4 2 5 4.8"/>',more:'<circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/>'};
+const GROUPS={home:{l:'Home',subs:()=>isOwner()?[['dash','Today'],['clock','Clock'],['leads','Leads']]:[['dash','Today'],['clock','Clock'],['sheets','My hours'],['leads','Leads']]},
+ schedule:{l:'Schedule',subs:()=>[['cal','Calendar'],['jobs','Jobs']]},sales:{l:'Sales',subs:()=>[['quotes','Quotes'],['invoices','Invoices'],['clients','Clients']]},
+ team:{l:'Team',subs:()=>[['workers','Workers'],['sheets','Timesheets'],['team','Logins']]},more:{l:'More',subs:()=>[]}};
+const MORE=[['book','Price book & checklists','📘'],['parts','Parts catalog','🔧'],['reports','Reports','📊'],['messages','Messages & call notes','💬'],['settings','Settings & backup','⚙️']];
+const groupsFor=()=>isOwner()?['home','schedule','sales','team','more']:['home','schedule'];
+function groupOf(t){if(t=='more')return 'more';if(isTech()&&t=='sheets')return 'home';for(const g of groupsFor())if(GROUPS[g].subs().some(s=>s[0]==t))return g;return MORE.some(m=>m[0]==t)?'more':'home'}
+let lastSub={};try{lastSub=JSON.parse(localStorage.getItem('cp-lastsub'))||{}}catch(e){}
+function goGroup(g){if(g=='more'){if(groupOf(tab)=='more'&&tab!='more'){go('more');return}go(lastSub.more&&lastSub.more!='more'&&isOwner()?'more':'more');return}const subs=GROUPS[g].subs();const t=subs.some(s=>s[0]==lastSub[g])?lastSub[g]:subs[0][0];if(t==tab&&g==groupOf(tab)){scrollTo(0,0);return}go(t)}
+V.more=()=>`<div class="card morelist">${MORE.map(([k,l,i])=>`<button onclick="go('${k}')"><span class="mi">${i}</span><span style="flex:1;text-align:left">${l}</span><span style="color:var(--m)">›</span></button>`).join('')}</div>`;
+document.body.insertAdjacentHTML('beforeend','<nav id="bnav" class="noprint"></nav>');
+{const _r=render;render=function(){_r();if(isTech()&&!['dash','clock','sheets','leads','cal','jobs'].includes(tab)){tab='dash';_r()}
+ const g=groupOf(tab);if(tab!='more'){lastSub[g]=tab;localStorage.setItem('cp-lastsub',JSON.stringify(lastSub))}
+ if(location.hash.slice(1)!=tab)history.replaceState(null,'','#'+tab);
+ const nl=typeof openLeads=='function'?openLeads().length:0;
+ $('#bnav').innerHTML=groupsFor().map(k=>`<button class="${k==g?'on':''}" onclick="goGroup('${k}')"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICO[k]}</svg><span>${GROUPS[k].l}</span>${k=='home'&&nl?`<i class="bdg">${nl}</i>`:''}</button>`).join('');
+ const subs=GROUPS[g].subs();let top='';
+ if(g=='more'&&tab!='more')top=`<div class="subbar"><button class="back" onclick="go('more')">‹ More</button><b style="align-self:center">${(MORE.find(m=>m[0]==tab)||[])[1]||''}</b></div>`;
+ else if(subs.length>1)top=`<div class="seg subseg noprint">${subs.map(([k,l])=>`<button class="${k==tab?'on':''}" onclick="go('${k}')">${l}${k=='leads'&&nl?` <i class="bdg2">${nl}</i>`:''}</button>`).join('')}</div>`;
+ if(top)$('#app').insertAdjacentHTML('afterbegin',top)}}
+window.addEventListener('hashchange',()=>{const t=location.hash.slice(1);if(t&&t!=tab&&(V[t]))go(t)});
+{const h=location.hash.slice(1);if(h&&V[h])tab=h}
 render();
 </script>
 <script type="module">
