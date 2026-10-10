@@ -55,6 +55,24 @@ main{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
 .mcn{font-weight:700;font-size:15px;width:26px;height:26px;line-height:26px;text-align:center}.mcd{display:flex;gap:2px;margin-top:3px}.mcd i{width:7px;height:7px;border-radius:50%;display:block}.mcc{font-size:10px;color:var(--m);margin-top:2px}.mday{border-top:1px solid var(--l);margin-top:10px;padding-top:10px}
 .lchip{border:2px dashed #d69e00;background:#fff8e1;border-radius:6px;padding:4px 6px;margin-bottom:4px;font-size:12px;cursor:pointer;line-height:1.3;min-width:150px}.lchip b{color:#8a6100}.lchip.od{border-color:#c0392b;background:#fdecea}.lchip.od b{color:#c0392b}
 .mcl{font-size:9px;font-weight:700;color:#8a6100;border:1px dashed #d69e00;border-radius:4px;padding:0 3px;margin-top:2px;background:#fff8e1;white-space:nowrap}.mcl.od{color:#c0392b;border-color:#c0392b;background:#fdecea}.lglead{border:2px dashed #d69e00;background:#fff8e1!important}
+
+.pdoc{background:#fff;max-width:816px;margin:0 auto 20px;padding:40px 44px;border:1px solid var(--l);border-radius:6px;color:#1a1a1a;font-size:13.5px;line-height:1.45}
+.ph-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.ph-co{display:flex;gap:14px;align-items:center;color:#444;font-size:12.5px}.ph-logo{height:78px}.ph-name{font-size:19px;font-weight:800;color:#111;margin-bottom:2px}
+.ph-title{text-align:right}.ph-kind{font-size:30px;font-weight:800;letter-spacing:2px;color:#111;line-height:1}.ph-meta{margin-left:auto;margin-top:8px;font-size:12.5px;border-collapse:collapse;width:auto}.ph-meta td{padding:1px 0 1px 12px;border:0;text-align:right}.ph-meta td:first-child{color:#777}
+.ph-bar{height:4px;background:#D7262E;margin:16px 0 18px;border-radius:2px}
+.ph-boxes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}.ph-box{border:1px solid #ddd;border-radius:6px;padding:10px 12px;font-size:13px}.ph-lbl{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#D7262E;margin-bottom:3px}.muted{color:#777;font-size:12px}
+.ph-scope{margin:4px 0 12px;font-size:13px}.ph-scope .ph-lbl{display:inline;margin-right:6px}
+.ph-items{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}.ph-items th{background:#111;color:#fff;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;padding:7px 10px;text-align:left;border:0}.ph-items td{padding:6px 10px;border:0;border-bottom:1px solid #eee}.ph-items .r{text-align:right;white-space:nowrap}
+.ph-items tbody tr:nth-child(even):not(.ph-grp) td{background:#f7f7f7}.ph-grp td{font-weight:700;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:#555;padding-top:10px;background:#fff;border-bottom:1px solid #ccc}
+.ph-bottom{display:flex;gap:20px;justify-content:space-between;margin-top:12px;align-items:flex-start}.ph-left{flex:1;font-size:inherit}.ph-left div:not(.ph-lbl){font-size:inherit}.ph-tot{width:270px;border-collapse:collapse;font-size:13.5px}.ph-tot td{padding:5px 10px;border:0}.ph-tot .r{text-align:right}
+.ph-grand td{border-top:2px solid #111;font-weight:800;font-size:16px;background:#fbeaeb;color:#111}.ph-grand td:last-child{color:#D7262E}.ph-pay td{color:#555;font-size:12.5px}.ph-due td{font-weight:800;border-top:1px solid #111;font-size:15px}
+.ph-sec{margin-bottom:10px}.ph-terms{margin-top:16px;padding-top:10px;border-top:1px solid #ddd;font-size:11.5px;color:#444;display:grid;grid-template-columns:2fr 1fr;gap:20px}
+.ph-sign{margin-top:18px;page-break-inside:avoid;break-inside:avoid}.ph-auth{font-size:12.5px;font-weight:600;margin-bottom:26px}.ph-lines{display:flex;gap:24px}.ph-lines>div{flex:2;font-size:11px;color:#666}.ph-lines>div.sm{flex:1}.ph-lines span{display:block;border-bottom:1px solid #111;height:22px;margin-bottom:4px}
+.ph-foot{margin-top:22px;text-align:center;font-size:12px;color:#777;border-top:1px solid #eee;padding-top:8px}
+@media (max-width:600px){.pdoc{padding:18px 14px}.ph-top{flex-direction:column}.ph-title{text-align:left}.ph-meta{margin-left:0}.ph-boxes,.ph-terms{grid-template-columns:1fr}.ph-bottom{flex-direction:column}.ph-tot{width:100%}.ph-logo{height:56px}}
+@page{size:letter;margin:0.5in 0.55in 0.6in;@bottom-right{content:"Page " counter(page) " of " counter(pages);font-size:9pt;color:#888}}
+@media print{#bnav,#auth,.subseg,.subbar,header,.noprint{display:none!important}body{background:#fff}main{padding:0!important;margin:0!important;max-width:none}.pdoc{border:0;border-radius:0;padding:0;margin:0;max-width:none;font-size:10pt}.pdoc .ph-items td{padding:4px 10px}.pdoc .ph-grp td{padding-top:6px}.ph-bar{margin:12px 0 14px}.ph-sign{margin-top:12px}.ph-foot{margin-top:10px}.ph-auth{margin-bottom:16px}.ph-terms{margin-top:10px}.ph-boxes{margin-bottom:8px}.ph-tot td{padding:3px 10px}.ph-logo{height:68px}.ph-items tr,.ph-tot,.ph-terms{break-inside:avoid}
+ .ph-items thead{display:table-header-group}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}.ph-boxes,.ph-terms{grid-template-columns:1fr 1fr}.ph-terms{grid-template-columns:2fr 1fr}.ph-top{flex-direction:row}.ph-title{text-align:right}.ph-bottom{flex-direction:row}.ph-tot{width:270px}}
 </style></head><body>
 <header><h1 id="cname"><img src="logo-mono-white.png" alt="" class="hlogo">Central Plumbing</h1><span style="font-size:12px;opacity:.8" id="today"></span><span id="syncst"></span><button class="btn s sm noprint" id="signout" style="display:none">Sign out</button></header>
 <div class="auth" id="auth"><div><div style="text-align:center;margin-bottom:12px"><img src="logo.png" alt="Central Plumbing" style="width:190px;max-width:70%"></div><div id="authbody"><p style="color:var(--m)">Loading…</p></div></div></div>
@@ -643,6 +661,42 @@ function calLeadToggle(){localStorage.setItem('cp-calleads',calLeadsOn()?'off':'
  if(cal.v=='month'){document.querySelectorAll('.mc[data-day]').forEach(c=>{const ls=by[c.dataset.day];if(ls){const od=ls.some(l=>l.follow<tod());c.insertAdjacentHTML('beforeend',`<div class="mcl ${od?'od':''}">◆ ${ls.length} lead${ls.length>1?'s':''}</div>`)}});const md=document.querySelector('.mday > div:last-child');const ls=by[cal.sel];if(md&&ls)md.insertAdjacentHTML('beforeend',ls.map(leadChip).join(''))}
  else if(cal.v=='week'){document.querySelectorAll('.cd[data-day]').forEach(c=>{const ls=by[c.dataset.day];if(ls)c.insertAdjacentHTML('beforeend',ls.map(leadChip).join(''))})}
  else if(cal.v=='day'){const ls=by[cal.d];const dv=document.querySelector('.cday');if(dv&&ls)dv.insertAdjacentHTML('beforebegin',`<div style="margin-bottom:8px">${ls.map(leadChip).join('')}</div>`)}}}
+render();
+</script>
+<script>
+/* ===================== Professional printable quote / invoice ===================== */
+const DEF_TERMS='This quote is valid for 30 days from the date above. Payment is due upon completion unless otherwise agreed in writing. Workmanship is warranted for 1 year from completion; parts carry the manufacturer\'s warranty. Any additional work not described above will be quoted separately before it is performed.';
+const DEF_PAY='Cash, check (payable to Central Plumbing), or card.';
+const noSample=s=>String(s??'').replace(/^Sample - /,'');
+function printDoc(kind,d){const s=D.settings,c=C(d.client)||{},q=kind=='quote';const job=q?D.jobs.find(j=>j.quote==d.id):J(d.job);
+ const t=q?qTotals(d):invT(d);const vd=+s.quoteValidDays||30;const valid=q&&d.date?addDays(d.date,vd):'';
+ const site=job?(job.clientAddress||c.address||''):(c.address||'');const scope=noSample(job?.desc||'');
+ const groups=[['labor','Labor'],['part','Parts & materials'],['fee','Service fees']].map(([k,l])=>[l,(d.items||[]).filter(i=>i.type==k)]).filter(g=>g[1].length);
+ const other=(d.items||[]).filter(i=>!['labor','part','fee'].includes(i.type));if(other.length)groups.push(['Other',other]);
+ const fmtD=x=>x?new Date(x+'T00:00').toLocaleDateString([],{month:'long',day:'numeric',year:'numeric'}):'';
+ const st=q?d.status:invStatus(d);
+ return `<div class="pdoc">
+ <div class="ph-top"><div class="ph-co"><img src="logo.png" alt="Central Plumbing" class="ph-logo"><div><div class="ph-name">${esc(s.company||'Central Plumbing')}</div>${s.address?`<div>${esc(s.address)}</div>`:''}<div>${esc(s.phone||'308-390-8535')}${s.email?' · '+esc(s.email):''}</div>${s.license?`<div>License # ${esc(s.license)}</div>`:''}</div></div>
+ <div class="ph-title"><div class="ph-kind">${q?'QUOTE':'INVOICE'}</div><table class="ph-meta"><tr><td>${q?'Quote':'Invoice'} #</td><td><b>${esc(d.num||'')}</b></td></tr><tr><td>Date</td><td>${fmtD(d.date)}</td></tr>${q?`<tr><td>Valid until</td><td>${fmtD(valid)}</td></tr>`:`<tr><td>Due</td><td>${d.due?fmtD(d.due):'Upon receipt'}</td></tr>`}${!q&&st=='Paid'?'<tr><td></td><td><b style="color:#1e8e4e">PAID</b></td></tr>':''}</table></div></div>
+ <div class="ph-bar"></div>
+ <div class="ph-boxes"><div class="ph-box"><div class="ph-lbl">${q?'Prepared for':'Bill to'}</div><b>${esc(noSample(c.name||job?.clientName||''))}</b>${c.phone?`<div>${esc(c.phone)}</div>`:''}${c.email?`<div>${esc(c.email)}</div>`:''}${c.address?`<div>${esc(c.address)}</div>`:''}</div>
+ <div class="ph-box"><div class="ph-lbl">Job site</div>${site?`<div>${esc(site)}</div>`:'<div class="muted">Same as customer address</div>'}${job?`<div class="muted">Job ${esc(job.num)}${job.when?' · '+fmtD(job.when.slice(0,10)):''}</div>`:''}</div></div>
+ ${scope?`<div class="ph-scope"><span class="ph-lbl">Scope of work</span> ${esc(scope)}</div>`:''}
+ <table class="ph-items"><thead><tr><th>Description</th><th class="r">Qty / Hrs</th><th class="r">Rate</th><th class="r">Amount</th></tr></thead>${groups.map(([l,items])=>`<tbody><tr class="ph-grp"><td colspan="4">${l}</td></tr>${items.map(i=>`<tr><td>${esc(noSample(i.desc))}</td><td class="r">${+i.qty}</td><td class="r">${money(i.price)}</td><td class="r">${money((+i.qty||0)*(+i.price||0))}</td></tr>`).join('')}</tbody>`).join('')}</table>
+ <div class="ph-bottom"><div class="ph-left">${d.notes?`<div class="ph-sec"><div class="ph-lbl">Notes</div><div>${esc(d.notes).replace(/\n/g,'<br>')}</div></div>`:''}</div>
+ <table class="ph-tot"><tr><td>Subtotal</td><td class="r">${money(t.sub)}</td></tr><tr><td>Tax (${+d.tax||0}%)</td><td class="r">${money(t.tax)}</td></tr><tr class="ph-grand"><td>Total</td><td class="r">${money(t.total)}</td></tr>${q?'':`${(d.payments||[]).map(p=>`<tr class="ph-pay"><td>Payment ${new Date(p.date+'T00:00').toLocaleDateString()} · ${esc(p.method)}</td><td class="r">−${money(p.amount)}</td></tr>`).join('')}<tr class="ph-due"><td>Balance due</td><td class="r">${money(t.bal)}</td></tr>`}</table></div>
+ <div class="ph-terms"><div class="ph-sec"><div class="ph-lbl">Terms</div><div>${esc(s.terms||DEF_TERMS).replace(/\n/g,'<br>')}</div></div><div class="ph-sec"><div class="ph-lbl">Payment methods</div><div>${esc(s.payMethods||DEF_PAY)}</div></div></div>
+ ${q?`<div class="ph-sign"><div class="ph-auth">I authorize the work described above and agree to the terms.</div><div class="ph-lines"><div><span></span>Customer signature</div><div><span></span>Printed name</div><div class="sm"><span></span>Date</div></div></div>`:''}
+ <div class="ph-foot">Thank you for choosing ${esc(s.company||'Central Plumbing')}!${s.phone||1?` · ${esc(s.phone||'308-390-8535')}`:''}</div></div>`}
+const PRINT_TIP='<div class="card noprint" style="font-size:13px;color:var(--m);padding:10px 14px">🖨 Tip: in the print window open <b>More settings</b> and turn off <b>Headers and footers</b> for the cleanest page (set Margins to Default).</div>';
+function swapDoc(h,kind,d){const i=h.lastIndexOf('<div class="qv">');if(i<0)return h;return h.slice(0,i)+PRINT_TIP+printDoc(kind,d)}
+{const _q=quoteDoc;quoteDoc=function(q){return swapDoc(_q(q),'quote',q)}}
+{const _i=invoiceDoc;invoiceDoc=function(i){return swapDoc(_i(i),'invoice',i)}}
+{const _r=render;render=function(){_r();const s=D.settings.company||'Central Plumbing';let t=s;if(view&&tab=='quotes'&&Q(view))t=`Quote ${Q(view).num} - ${s}`;else if(view&&tab=='invoices'&&IV(view))t=`Invoice ${IV(view).num} - ${s}`;document.title=t}}
+{const _vs=V.settings;V.settings=()=>{let h=_vs();if(!isOwner())return h;const s=D.settings;const f=(k,l,t='text',ph='')=>`<div><label>${l}</label><input type="${t}" value="${esc(s[k]??'')}" placeholder="${esc(ph)}" onchange="D.settings.${k}=this.type=='number'?+this.value:this.value;save()"></div>`;
+ return `<div class="card"><h2>Quotes & invoices (printed)</h2><div class="row">${f('address','Business address (optional)','text','Central City, NE')}${f('license','License # (optional)')}</div><div class="row">${f('email','Email (optional)')}${f('quoteValidDays','Quotes valid for (days)','number','30')}</div>
+ <label>Terms printed on quotes & invoices</label><textarea rows="4" onchange="D.settings.terms=this.value;save()" placeholder="${esc(DEF_TERMS)}">${esc(s.terms||'')}</textarea><small style="color:var(--m)">Leave blank to use the standard wording shown.</small>
+ <label>Payment methods accepted</label><input value="${esc(s.payMethods||'')}" placeholder="${esc(DEF_PAY)}" onchange="D.settings.payMethods=this.value;save()"></div>`+h}}
 render();
 </script>
 <script type="module">
