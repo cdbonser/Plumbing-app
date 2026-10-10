@@ -22,8 +22,10 @@ input,select,textarea{width:100%;padding:9px;border:1px solid #c5cfda;border-rad
 .clk{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--l);flex-wrap:wrap}.on-clock{color:#1e8e4e;font-weight:600}
 .qv{max-width:800px;margin:auto;background:#fff;padding:32px;border:1px solid var(--l)}.qv .tot td{font-weight:700}.right{text-align:right}
 @media print{header,nav,.noprint{display:none!important}main{padding:0}.qv{border:0}body{background:#fff}}
+.auth{position:fixed;inset:0;background:var(--bd);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}.auth>div{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:380px}.auth a{color:var(--b);font-size:13px;cursor:pointer}.amsg{font-size:13px;margin-top:10px;color:#c0392b}.amsg.ok{color:#1e8e4e}#syncst{font-size:12px;opacity:.85}
 </style></head><body>
-<header><h1 id="cname">Plumbing Ops</h1><span style="font-size:12px;opacity:.8" id="today"></span></header>
+<header><h1 id="cname">Plumbing Ops</h1><span style="font-size:12px;opacity:.8" id="today"></span><span id="syncst"></span><button class="btn s sm noprint" id="signout" style="display:none">Sign out</button></header>
+<div class="auth" id="auth"><div><h2>Plumbing Ops</h2><div id="authbody"><p style="color:var(--m)">Loading…</p></div></div></div>
 <nav id="nav"></nav><main id="app"></main><div id="modal"></div>
 <script>
 const K='plumbingAppData_v1';const TABS=[['dash','Dashboard'],['clock','Time Clock'],['jobs','Jobs'],['quotes','Quotes'],['clients','Clients'],['workers','Workers'],['sheets','Timesheets'],['settings','Settings']];
@@ -37,7 +39,8 @@ const hrs=e=>((e.out?new Date(e.out):new Date())-new Date(e.in))/36e5;const fmtD
 function weekStart(d){d=new Date(d);d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
 function blank(){return{settings:{company:'Your Plumbing Co.',rate:95,fee:89,tax:7.5,phone:'',email:''},workers:[],clients:[],quotes:[],jobs:[],time:[],seq:{q:1001,j:1001}}}
 function load(){try{D=JSON.parse(localStorage.getItem(K))}catch(e){}if(!D){D=blank();seed()}}
-function save(){localStorage.setItem(K,JSON.stringify(D))}
+function save(){localStorage.setItem(K,JSON.stringify(D));if(window.cloudSave)window.cloudSave()}
+window.getD=()=>D;window.setD=x=>{D=x;localStorage.setItem(K,JSON.stringify(D))};window.rerender=()=>{if(!$('#modal').innerHTML)render();else window._pendingRender=true};
 const W=id=>D.workers.find(x=>x.id==id),C=id=>D.clients.find(x=>x.id==id),Q=id=>D.quotes.find(x=>x.id==id),J=id=>D.jobs.find(x=>x.id==id);
 function seed(){const S=true,now=new Date(),day=n=>{const d=new Date(now);d.setDate(d.getDate()+n);return d};
  const w1={id:uid(),name:'Sample - Mike Torres',rate:32,sample:S},w2={id:uid(),name:'Sample - Dana Kealoha',rate:28,sample:S};D.workers.push(w1,w2);
@@ -127,8 +130,94 @@ V.clients=()=>`<div class="card"><h2>Clients</h2><div class="row" style="align-i
 function addClient(){const n=$('#cn').value.trim();if(!n)return alert('Name required');D.clients.push({id:uid(),name:n,phone:$('#cp').value,address:$('#ca').value});save();render()}
 V.settings=()=>{const s=D.settings;const f=(k,l,t='text')=>`<div><label>${l}</label><input type="${t}" step="0.01" value="${esc(s[k])}" onchange="D.settings.${k}=this.type=='number'?+this.value:this.value;save();render()"></div>`;
  return `<div class="card"><h2>Company settings</h2><div class="row">${f('company','Company name')}${f('phone','Phone')}${f('email','Email')}</div><div class="row">${f('rate','Default labor rate ($/hr)','number')}${f('fee','Service call / trip fee ($)','number')}${f('tax','Tax rate (%)','number')}</div></div>
- <div class="card"><h2>Backup</h2><p style="color:var(--m);font-size:14px">Data is stored only in this browser on this device. Export a backup regularly.</p><button class="btn" onclick="dl('plumbing-backup-'+ymd(new Date())+'.json',JSON.stringify(D,null,1),'application/json')">Export JSON backup</button><label class="btn s" style="display:inline-block">Import backup<input type="file" accept=".json" style="display:none" onchange="importJSON(this.files[0])"></label></div>
+ <div class="card"><h2>Backup</h2><p style="color:var(--m);font-size:14px">Data syncs live to the shared company account (and is cached on this device for offline use). You can still export a JSON backup any time.</p><button class="btn" onclick="dl('plumbing-backup-'+ymd(new Date())+'.json',JSON.stringify(D,null,1),'application/json')">Export JSON backup</button><label class="btn s" style="display:inline-block">Import backup<input type="file" accept=".json" style="display:none" onchange="importJSON(this.files[0])"></label></div>
  <div class="card"><h2>Sample data</h2><button class="btn s" onclick="clearSample()">Clear sample data</button><button class="btn s" onclick="seed();render()">Re-add sample data</button><button class="btn d" onclick="if(confirm('Erase ALL data?')){D=blank();save();render()}">Erase everything</button></div>`};
 function importJSON(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.settings||!x.jobs)throw 0;if(confirm('Replace current data with backup?')){D=x;save();render()}}catch(e){alert('Not a valid backup file')}};r.readAsText(f)}
 load();render();setInterval(()=>{if(!$('#modal').innerHTML&&(tab=='clock'||tab=='dash'))render()},60000);
+</script>
+<script type="module">
+/* ================================================================
+   FIREBASE CONFIG — paste your config from Firebase Console here
+   (Project settings > General > Your apps > Web app > SDK setup)
+   ================================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAka3SYqrDLxlxRIul4z1rzLW2M3BNrqyg",
+  authDomain: "plumbing-ops.firebaseapp.com",
+  projectId: "plumbing-ops",
+  storageBucket: "plumbing-ops.firebasestorage.app",
+  messagingSenderId: "666842819764",
+  appId: "1:666842819764:web:9ddcad8fb444159854bbe1"
+};
+/* ================================================================ */
+const COMPANY='main';
+const COLS={clients:'clients',workers:'workers',jobs:'jobs',quotes:'quotes',time:'timeEntries'}; // D key -> Firestore collection
+const $=s=>document.querySelector(s), body=$('#authbody'), st=$('#syncst');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+if(firebaseConfig.apiKey.startsWith('PASTE')){
+  body.innerHTML=`<p><b>Live sync is not configured yet.</b></p><p style="color:var(--m);font-size:14px">Paste your Firebase config into <code>index.html</code> (see SETUP.md). Until then you can keep using the app on this device only.</p><button class="btn" id="offline">Use offline on this device</button>`;
+  $('#offline').onclick=()=>{$('#auth').style.display='none'};
+} else start().catch(e=>{body.innerHTML=`<p class="amsg">Could not load sync: ${esc(e.message)}</p><button class="btn" onclick="location.reload()">Retry</button>`});
+
+async function start(){
+  const V='10.12.2', base=`https://www.gstatic.com/firebasejs/${V}/`;
+  const {initializeApp}=await import(base+'firebase-app.js');
+  const A=await import(base+'firebase-auth.js');
+  const F=await import(base+'firebase-firestore.js');
+  const app=initializeApp(firebaseConfig), auth=A.getAuth(app);
+  let db; try{db=F.initializeFirestore(app,{localCache:F.persistentLocalCache({tabManager:F.persistentMultipleTabManager()})})}catch(e){db=F.getFirestore(app)}
+  const co=F.doc(db,'companies',COMPANY), metaRef=F.doc(co,'settings','main');
+  let unsubs=[], last={}, applying=false, ready=false;
+
+  function showLogin(msg='',ok=false){
+    $('#auth').style.display='flex';$('#signout').style.display='none';st.textContent='';
+    body.innerHTML=`<label>Email</label><input id="ae" type="email" autocomplete="username"><label>Password</label><input id="ap" type="password" autocomplete="current-password"><div style="margin-top:14px"><button class="btn" id="ain">Sign in</button></div><div style="margin-top:10px"><a id="areset">Forgot password? Send reset email</a></div><div class="amsg ${ok?'ok':''}" id="amsg">${esc(msg)}</div>`;
+    const go=async()=>{try{$('#amsg').textContent='Signing in…';await A.signInWithEmailAndPassword(auth,$('#ae').value.trim(),$('#ap').value)}catch(e){$('#amsg').className='amsg';$('#amsg').textContent=nice(e)}};
+    $('#ain').onclick=go;$('#ap').onkeydown=e=>{if(e.key=='Enter')go()};
+    $('#areset').onclick=async()=>{const e=$('#ae').value.trim();if(!e){$('#amsg').textContent='Type your email above first.';return}
+      try{await A.sendPasswordResetEmail(auth,e);$('#amsg').className='amsg ok';$('#amsg').textContent='Reset email sent — check your inbox.'}catch(x){$('#amsg').textContent=nice(x)}};
+  }
+  const nice=e=>({'auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong email or password.','auth/user-not-found':'No account with that email.','auth/invalid-email':'That email looks wrong.','auth/too-many-requests':'Too many tries — wait a bit and try again.','permission-denied':'This account is not allowed to access company data.'}[e.code]||e.message);
+  $('#signout').onclick=()=>A.signOut(auth);
+
+  const meta=D=>({settings:D.settings,seq:D.seq});
+  const snapLast=D=>{last={};for(const k in COLS){last[k]={};(D[k]||[]).forEach(x=>last[k][x.id]=JSON.stringify(x))}last.meta=JSON.stringify(meta(D))};
+  const clean=o=>JSON.parse(JSON.stringify(o)); // strips undefined (Firestore rejects it)
+
+  // Push only what changed since last sync
+  async function push(full=false){
+    if(applying||!ready&&!full)return;const D=getD();const b=[];
+    for(const k in COLS){const prev=full?{}:(last[k]||{}),cur={};(D[k]||[]).forEach(x=>{if(!x.id)return;const j=JSON.stringify(x);cur[x.id]=j;if(prev[x.id]!==j)b.push(['set',F.doc(co,COLS[k],x.id),clean(x)])});
+      for(const id in prev)if(!(id in cur))b.push(['del',F.doc(co,COLS[k],id)])}
+    const m=JSON.stringify(meta(D));if(full||m!==last.meta)b.push(['set',metaRef,clean(meta(D))]);
+    snapLast(D);
+    for(let i=0;i<b.length;i+=400){const wb=F.writeBatch(db);b.slice(i,i+400).forEach(([t,r,v])=>t=='set'?wb.set(r,v):wb.delete(r));
+      try{await wb.commit()}catch(e){st.textContent='⚠ sync error';alert('Sync error: '+nice(e))}}
+  }
+  window.cloudSave=()=>push();
+
+  function listen(){
+    unsubs.forEach(u=>u());unsubs=[];
+    for(const k in COLS)unsubs.push(F.onSnapshot(F.collection(co,COLS[k]),{includeMetadataChanges:true},s=>{
+      const D=getD();D[k]=s.docs.map(d=>d.data());last[k]={};D[k].forEach(x=>last[k][x.id]=JSON.stringify(x));apply(D,s)},err));
+    unsubs.push(F.onSnapshot(metaRef,{includeMetadataChanges:true},s=>{if(!s.exists())return;const D=getD(),m=s.data();if(m.settings)D.settings=m.settings;if(m.seq)D.seq=m.seq;last.meta=JSON.stringify(meta(D));apply(D,s)},err));
+  }
+  function apply(D,s){applying=true;setD(D);applying=false;st.textContent=s.metadata.fromCache?'● offline (cached)':(s.metadata.hasPendingWrites?'● syncing…':'● live');rerender();$('#cname').textContent=D.settings.company||'Plumbing Ops'}
+  function err(e){st.textContent='⚠ '+nice(e);if(e.code=='permission-denied'){alert(nice(e));A.signOut(auth)}}
+
+  A.onAuthStateChanged(auth,async u=>{
+    unsubs.forEach(x=>x());unsubs=[];ready=false;
+    if(!u){showLogin();return}
+    body.innerHTML='<p style="color:var(--m)">Loading company data…</p>';
+    try{
+      const ms=await F.getDoc(metaRef);let empty=!ms.exists();
+      if(empty){for(const k in COLS){const q=await F.getDocs(F.query(F.collection(co,COLS[k]),F.limit(1)));if(!q.empty){empty=false;break}}}
+      if(empty){const D=getD(),n=Object.keys(COLS).reduce((a,k)=>a+(D[k]||[]).filter(x=>!x.sample).length,0);
+        if(n&&!confirm(`The shared company account is empty.\n\nUpload the ${n} record(s) saved on this device so everyone can see them?\n\nOK = upload  ·  Cancel = start fresh`)){const b=blank();b.settings=D.settings;setD(b)}
+        await push(true);
+      }
+      ready=true;listen();
+      $('#auth').style.display='none';$('#signout').style.display='';$('#signout').title=u.email;
+    }catch(e){if(e.code=='permission-denied'){showLogin('This account ('+u.email+') is not on the allowed list.');A.signOut(auth)}else showLogin('Error: '+nice(e))}
+  });
+}
 </script></body></html>
