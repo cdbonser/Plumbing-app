@@ -23,6 +23,23 @@ input,select,textarea{width:100%;padding:9px;border:1px solid #c5cfda;border-rad
 .qv{max-width:800px;margin:auto;background:#fff;padding:32px;border:1px solid var(--l)}.qv .tot td{font-weight:700}.right{text-align:right}
 @media print{header,nav,.noprint{display:none!important}main{padding:0}.qv{border:0}body{background:#fff}}
 .hlogo{height:30px;vertical-align:middle;margin-right:10px}.cpm{display:inline-block;background:var(--b);color:#fff;font-weight:900;font-style:italic;letter-spacing:-1px;padding:2px 7px;border-radius:5px;margin-right:8px;border:2px solid #fff;box-shadow:2px 2px 0 #000}.auth{position:fixed;inset:0;background:linear-gradient(160deg,#111 60%,#D7262E);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}.auth>div{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:380px}.auth a{color:var(--b);font-size:13px;cursor:pointer}.amsg{font-size:13px;margin-top:10px;color:#c0392b}.amsg.ok{color:#1e8e4e}#syncst{font-size:12px;opacity:.85}
+.Overdue{background:#f9d6d2;color:#8a1c12}.Invoiced{background:#dde8ff}
+.cweek{display:grid;grid-template-columns:repeat(7,minmax(120px,1fr));gap:4px;overflow-x:auto}.cd{min-height:140px;background:#fafafa;border:1px solid var(--l);border-radius:6px;padding:4px;cursor:pointer}.cd.today,.cm.today{border-color:var(--b);box-shadow:inset 0 0 0 1px var(--b)}.cdh{font-size:12px;font-weight:700;color:var(--m);margin-bottom:4px}
+.chip{border-left:4px solid #888;border-radius:4px;padding:4px 6px;margin-bottom:4px;font-size:12px;cursor:pointer;background:#f0f0f0;line-height:1.3}.chip[draggable=true]{cursor:grab}
+.cmonth{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}.cmh{font-size:11px;font-weight:700;color:var(--m);text-align:center}.cm{min-height:78px;border:1px solid var(--l);border-radius:4px;padding:2px;cursor:pointer;overflow:hidden;background:#fff}.cm.other{background:#f4f4f5;opacity:.6}
+.mdot{color:#fff;font-size:10px;border-radius:3px;padding:1px 3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cday .hr{display:flex;gap:6px;border-top:1px solid var(--l);min-height:44px;padding:3px 0}.hl{width:36px;font-size:12px;color:var(--m)}.dov{background:#fde8ea!important;outline:2px dashed var(--b)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 4px;font-size:12px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
+.phgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:8px}.ph{position:relative;border:1px solid var(--l);border-radius:6px;overflow:hidden;background:#f4f4f5}.phimg{aspect-ratio:1;display:flex;align-items:center;justify-content:center}.phimg img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}.ph .pill{position:absolute;left:4px;top:4px;background:#111c;color:#fff}.ph .btn{position:absolute;right:2px;top:2px}
+.lb{position:fixed;inset:0;background:#000d;z-index:30;display:flex;align-items:center;justify-content:center;cursor:zoom-out}.lb img{max-width:96%;max-height:96%}
+.badge{background:#fff;color:var(--b);border-radius:9px;padding:0 6px;font-size:11px;font-weight:700}nav button.on .badge{background:#111;color:#fff}
+.tl{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--l)}.tlt{width:70px;font-weight:700;font-size:14px}
+.note{background:#fafafa;border:1px solid var(--l);border-radius:6px;padding:6px 8px;margin-bottom:6px;font-size:14px}.lead.due{border-left:5px solid #c0392b}.New{background:#fff1c9}.Contacted{background:#dde8ff}.Quoted{background:#e8ddff}.Won{background:#c7f0d8}.Lost{background:#eee}
+.wpick{display:inline-flex;gap:6px;align-items:center;border:2px solid #ccc;border-radius:20px;padding:6px 12px;margin:3px;color:var(--t)!important;font-size:14px!important}.wpick input{width:20px;height:20px}
+.unsch{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}.unsch .chip{min-width:150px}.crew td.cd{min-width:120px;vertical-align:top;min-height:60px}.crew th.today{color:var(--b)}
+.seg{display:flex;border:1px solid #ccc;border-radius:8px;overflow:hidden;margin-bottom:8px}.seg button{flex:1;border:0;background:#fff;padding:12px 4px;font-size:15px;cursor:pointer}.seg button.on{background:#111;color:#fff;font-weight:700}
+.bigcam{display:block;text-align:center;font-size:20px;padding:18px;border-radius:12px;margin:0}.phday{font-size:12px;font-weight:700;color:var(--m);margin:10px 0 4px}.phcap{font-size:11px;padding:3px 5px;color:var(--m);background:#fff}.ph-during{background:#e67e22!important}.ph-after{background:#1e8e4e!important}.ph-before{background:#1f6feb!important}
+.crewm{padding:6px 8px;margin-bottom:12px}.crewd{border-top:1px solid var(--l);padding:6px 0;cursor:pointer}.crewd.today .cdh{color:var(--b)}
 </style></head><body>
 <header><h1 id="cname"><img src="logo-mono-white.png" alt="" class="hlogo">Central Plumbing</h1><span style="font-size:12px;opacity:.8" id="today"></span><span id="syncst"></span><button class="btn s sm noprint" id="signout" style="display:none">Sign out</button></header>
 <div class="auth" id="auth"><div><div style="text-align:center;margin-bottom:12px"><img src="logo.png" alt="Central Plumbing" style="width:190px;max-width:70%"></div><div id="authbody"><p style="color:var(--m)">Loading…</p></div></div></div>
@@ -37,7 +54,7 @@ const ymd=d=>{d=new Date(d);return d.getFullYear()+'-'+String(d.getMonth()+1).pa
 const dtl=d=>{d=new Date(d);return ymd(d)+'T'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 const hrs=e=>((e.out?new Date(e.out):new Date())-new Date(e.in))/36e5;const fmtDT=d=>d?new Date(d).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'';
 function weekStart(d){d=new Date(d);d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
-function blank(){return{settings:{company:'Central Plumbing',rate:95,fee:89,tax:7.5,phone:'308-390-8535',email:''},workers:[],clients:[],quotes:[],jobs:[],time:[],parts:[],templates:[],seq:{q:1001,j:1001}}}
+function blank(){return{settings:{company:'Central Plumbing',rate:95,fee:89,tax:7.5,phone:'308-390-8535',email:''},workers:[],clients:[],quotes:[],jobs:[],time:[],parts:[],templates:[],invoices:[],recurring:[],checklistTemplates:[],users:[],notes:[],leads:[],messages:[],seq:{q:1001,j:1001,i:1001}}}
 function load(){try{D=JSON.parse(localStorage.getItem(K))}catch(e){}if(!D){D=blank();seed()}}
 function save(){localStorage.setItem(K,JSON.stringify(D));if(window.cloudSave)window.cloudSave()}
 window.getD=()=>D;window.setD=x=>{D=x;localStorage.setItem(K,JSON.stringify(D))};window.rerender=()=>{if(!$('#modal').innerHTML)render();else window._pendingRender=true};
@@ -55,7 +72,7 @@ function clearSample(){if(!confirm('Remove all sample data?'))return;['workers',
 const tag=x=>x&&x.sample?'<span class="sample">SAMPLE</span>':'';
 const qTotals=q=>{const sub=q.items.reduce((s,i)=>s+(+i.qty||0)*(+i.price||0),0),taxable=q.items.filter(i=>i.type=='part').reduce((s,i)=>s+i.qty*i.price,0);const tax=sub*(+q.tax||0)/100;return{sub,tax,total:sub+tax}};
 const jobHours=id=>D.time.filter(t=>t.job==id).reduce((s,t)=>s+hrs(t),0);
-const cname=id=>{const c=C(id);return c?esc(c.name):'<i>—</i>'};
+var cname=id=>{const c=C(id);return c?esc(c.name):'<i>—</i>'};
 function render(){if(!D.settings.company||D.settings.company=='Your Plumbing Co.')D.settings.company='Central Plumbing';if(!D.settings.phone)D.settings.phone='308-390-8535';$('#cname').innerHTML='<img src="logo-mono-white.png" alt="" class="hlogo">'+esc(D.settings.company);$('#today').textContent=new Date().toDateString();
  $('#nav').innerHTML=TABS.map(([k,v])=>`<button class="${k==tab?'on':''}" onclick="go('${k}')">${v}</button>`).join('');$('#app').innerHTML=(V[tab]||V.dash)()}
 function go(t){tab=t;view=null;render();scrollTo(0,0)}
@@ -131,15 +148,15 @@ function addClient(){const n=$('#cn').value.trim();if(!n)return alert('Name requ
 V.settings=()=>{const s=D.settings;const f=(k,l,t='text')=>`<div><label>${l}</label><input type="${t}" step="0.01" value="${esc(s[k])}" onchange="D.settings.${k}=this.type=='number'?+this.value:this.value;save();render()"></div>`;
  return `<div class="card"><h2>Company settings</h2><div class="row">${f('company','Company name')}${f('phone','Phone')}${f('email','Email')}</div><div class="row">${f('rate','Default labor rate ($/hr)','number')}${f('fee','Service call / trip fee ($)','number')}${f('tax','Tax rate (%)','number')}</div></div>
  <div class="card"><h2>Backup</h2><p style="color:var(--m);font-size:14px">Data syncs live to the shared company account (and is cached on this device for offline use). You can still export a JSON backup any time.</p><button class="btn" onclick="dl('plumbing-backup-'+ymd(new Date())+'.json',JSON.stringify(D,null,1),'application/json')">Export JSON backup</button><label class="btn s" style="display:inline-block">Import backup<input type="file" accept=".json" style="display:none" onchange="importJSON(this.files[0])"></label></div>
- <div class="card"><h2>Sample data</h2><button class="btn s" onclick="clearSample()">Clear sample data</button><button class="btn s" onclick="seed();render()">Re-add sample data</button><button class="btn d" onclick="if(confirm('Erase ALL data?')){D=norm(blank());save();render()}">Erase everything</button></div>`};
+ <div class="card"><h2>Sample data</h2><button class="btn s" onclick="clearSample()">Clear sample data</button><button class="btn s" onclick="seed();render()">Re-add sample data</button><button class="btn d" onclick="if(prompt('This erases ALL data for everyone (synced). Type ERASE to confirm.')==='ERASE'){D=norm(blank());save();render()}">Erase everything</button></div>`};
 function importJSON(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.settings||!x.jobs)throw 0;if(confirm('Replace current data with backup?')){D=x;save();render()}}catch(e){alert('Not a valid backup file')}};r.readAsText(f)}
 load();render();setInterval(()=>{if(!$('#modal').innerHTML&&(tab=='clock'||tab=='dash'))render()},60000);
 </script>
 <script>
 /* ===== Price book, parts catalog & profit (owner-only cost data) ===== */
 const OWNER_EMAILS=['cdbonser@gmail.com','thecentralplumber@gmail.com'];
-const isOwner=()=>!window.userEmail||OWNER_EMAILS.includes(String(window.userEmail).toLowerCase()); // offline/unconfigured = single-device owner
-function norm(x){if(!x)return x;['workers','clients','quotes','jobs','time','parts','templates'].forEach(k=>{if(!Array.isArray(x[k]))x[k]=[]});x.seq=x.seq||{q:1001,j:1001};x.settings=x.settings||blank().settings;return x}
+const isOwner=()=>window.userRole?window.userRole==='owner':(!window.userEmail||OWNER_EMAILS.includes(String(window.userEmail).toLowerCase())); // offline/unconfigured = single-device owner
+function norm(x){if(!x)return x;['workers','clients','quotes','jobs','time','parts','templates','invoices','recurring','checklistTemplates','users','notes','leads','messages'].forEach(k=>{if(!Array.isArray(x[k]))x[k]=[]});x.seq=Object.assign({q:1001,j:1001,i:1001},x.seq||{});x.settings=x.settings||blank().settings;return x}
 norm(D);
 if(!D.templates.length&&!D.parts.length&&[...D.workers,...D.clients,...D.jobs].every(x=>x.sample)){seedBook();localStorage.setItem(K,JSON.stringify(D))}
 {const _setD=window.setD;window.setD=x=>_setD(norm(x))}
@@ -231,6 +248,301 @@ function jprof(){const el=$('#jprof');if(!el)return;const j={id:window._jid||'',
 window.onUserChange=()=>render();
 render();
 </script>
+<script>
+/* ===================== FEATURES v3: invoices, team/roles, calendar, photos, checklists, recurring, reports ===================== */
+window.OWNER_LIST=OWNER_EMAILS;
+const ME=()=>String(window.userEmail||'').toLowerCase();
+const isTech=()=>!isOwner();
+const myWorkerId=()=>window.userWorkerId||(D.users.find(u=>u.id==ME())||{}).workerId||'';
+const TECH_TABS=['dash','cal','jobs','clock','sheets'];
+const PAL=['#D7262E','#1f6feb','#1e8e4e','#8e44ad','#e67e22','#16a085','#c2185b','#5d4037','#455a64','#b8860b'];
+const wColor=id=>{if(!id)return '#888';const w=W(id);if(w&&w.color)return w.color;let h=0;for(const ch of String(id))h=(h*31+ch.charCodeAt(0))>>>0;return PAL[h%PAL.length]};
+const tod=()=>ymd(new Date());
+const addDays=(d,n)=>{const x=new Date(d+'T00:00');x.setDate(x.getDate()+n);return ymd(x)};
+const jobClient=j=>{const c=C(j.client);return esc(c?c.name:(j.clientName||'—'))};
+const mapUrl=q=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
+
+/* tabs */
+{const ins=(after,arr)=>{const i=TABS.findIndex(t=>t[0]==after);TABS.splice(i+1,0,...arr)};ins('jobs',[['cal','Calendar']]);ins('quotes',[['invoices','Invoices']]);const s=TABS.findIndex(t=>t[0]=='settings');TABS.splice(s,0,['reports','Reports'],['team','Team'])}
+{const _r=render;render=function(){const all=TABS.slice();if(isTech()){TABS.splice(0,TABS.length,...all.filter(t=>TECH_TABS.includes(t[0])));if(!TECH_TABS.includes(tab))tab='dash'}try{_r()}finally{TABS.splice(0,TABS.length,...all)}}}
+const asTech=fn=>{if(isOwner())return fn();const w=D.workers,me=myWorkerId();D.workers=w.filter(x=>x.id==me);try{return fn()}finally{D.workers=w}};
+
+/* derived/denormalised fields used by Firestore rules (owner side) */
+function derive(){if(isOwner()){D.jobs.forEach(j=>{const c=C(j.client);if(c){j.clientName=c.name||'';j.clientPhone=c.phone||'';j.clientAddress=c.address||''}j.techEmails=D.users.filter(u=>u.workerId&&(j.workers||[]).includes(u.workerId)).map(u=>u.id).sort()});
+ D.time.forEach(t=>{const u=D.users.find(u=>u.workerId&&u.workerId==t.worker);t.email=u?u.id:(t.email||'')})}
+ else{const me=ME(),w=myWorkerId();D.time.forEach(t=>{if(!t.email&&t.worker==w)t.email=me})}}
+{const _s=save;save=function(){derive();_s()}}
+
+/* ---------- jobTable: client from denormalised fields for techs ---------- */
+cname=function(id){const c=C(id);if(c)return esc(c.name);const j=D.jobs.find(x=>x.client==id&&x.clientName);return j?esc(j.clientName):'<i>—</i>'};
+
+timeTable=function(L){return L.length?`<div class="tw"><table><tr><th>Worker</th><th>Job</th><th>In</th><th>Out</th><th>Hours</th><th></th></tr>${L.map(t=>`<tr><td>${esc(W(t.worker)?.name)}${tag(t)}</td><td>${t.job?esc(J(t.job)?.num||''):'—'}</td><td>${fmtDT(t.in)}</td><td>${t.out?fmtDT(t.out):'<b class="on-clock">on clock</b>'}</td><td>${hrs(t).toFixed(2)}</td><td><button class="btn sm s" onclick="editTime('${t.id}')">Edit</button></td></tr>`).join('')}</table></div>`:'<span style="color:var(--m)">No entries.</span>'};
+
+/* ---------- tech-scoped views ---------- */
+{const _vc=V.clock;V.clock=()=>asTech(_vc)}
+{const _vs=V.sheets;V.sheets=()=>{if(isOwner())return _vs();return asTech(_vs).replace(/·? ?\$[\d,.]+\/hr ·? ?/g,'').replace(/ · <b>Labor cost: [^<]*<\/b>/g,'').replace(/<button class="btn" onclick="exportCSV\(\)">[^<]*<\/button>/,'')}}
+{const _et=editTime;editTime=function(id,wk){if(isOwner())return _et(id,wk);asTech(()=>_et(id,wk||myWorkerId()));document.querySelectorAll('#modal .btn.d').forEach(b=>b.remove())}}
+{const _vj=V.jobs;V.jobs=()=>{let h=_vj();if(isTech())return h.replace(/<div style="flex:0"><button class="btn" onclick="editJob\(\)">\+ Job<\/button><\/div>/,'');return h+recurringCard()}}
+
+/* ---------- dashboard ---------- */
+{const _vd=V.dash;V.dash=()=>{if(isTech())return techDash();const L=D.invoices.filter(i=>invStatus(i)!='Paid'&&invStatus(i)!='Draft');const out=L.reduce((s,i)=>s+invT(i).bal,0),ov=L.filter(i=>invStatus(i)=='Overdue');
+ return `<div class="grid"><div class="card stat" onclick="go('invoices')" style="cursor:pointer"><div class="n">${money(out)}</div><div class="k">Outstanding invoices (${L.length})</div></div><div class="card stat" onclick="inf='Overdue';go('invoices')" style="cursor:pointer"><div class="n" style="color:${ov.length?'#c0392b':'var(--b)'}">${money(ov.reduce((s,i)=>s+invT(i).bal,0))}</div><div class="k">Overdue (${ov.length})</div></div></div>`+_vd()}}
+function techDash(){const me=myWorkerId(),t=tod(),mine=D.jobs.filter(j=>(j.workers||[]).includes(me)||isTech());const today=mine.filter(j=>(j.when||'').slice(0,10)==t),up=mine.filter(j=>(j.when||'').slice(0,10)>t&&j.status!='Paid').sort((a,b)=>a.when.localeCompare(b.when)).slice(0,10);
+ const e=D.time.find(x=>x.worker==me&&!x.out);
+ return `<div class="card"><h2>Hi${W(me)?', '+esc(W(me).name):''} 👋</h2>${e?`<span class="on-clock">On clock since ${fmtDT(e.in)}</span> <button class="btn d" onclick="clockOut('${e.id}')">Clock out</button>`:`<button class="btn g" onclick="go('clock')">Clock in</button>`}</div><div class="card"><h2>My jobs today</h2>${jobTable(today)}</div><div class="card"><h2>Upcoming</h2>${jobTable(up)}</div>`}
+
+/* ---------- invoices ---------- */
+let inf='';
+const invT=i=>{const t=qTotals(i);const paid=(i.payments||[]).reduce((s,p)=>s+(+p.amount||0),0);return{...t,paid,bal:Math.round((t.total-paid)*100)/100}};
+const invStatus=i=>{if(i.status=='Paid')return 'Paid';if(i.status!='Draft'&&i.due&&i.due<tod()&&invT(i).bal>0)return 'Overdue';return i.status||'Draft'};
+const IV=id=>D.invoices.find(x=>x.id==id);
+V.invoices=()=>{if(view&&IV(view))return invoiceDoc(IV(view));let L=D.invoices.slice().reverse();if(inf)L=L.filter(i=>invStatus(i)==inf);
+ return `<div class="card"><div class="row" style="align-items:end"><div><label>Status</label><select onchange="inf=this.value;render()">${opt(['Draft','Sent','Overdue','Paid'].map(s=>[s,s]),inf,'All')}</select></div><div style="flex:2"><button class="btn" onclick="editInvoice()">+ New invoice</button></div></div></div><div class="card"><div class="tw"><table><tr><th>Invoice</th><th>Client</th><th>Date</th><th>Due</th><th>Status</th><th class="right">Total</th><th class="right">Balance</th><th></th></tr>${L.map(i=>{const t=invT(i),s=invStatus(i);return `<tr><td>${esc(i.num)}${tag(i)}</td><td>${cname(i.client)}</td><td>${i.date}</td><td>${i.due||''}</td><td><span class="pill ${s}">${s}</span></td><td class="right">${money(t.total)}</td><td class="right">${money(t.bal)}</td><td><button class="btn sm s" onclick="viewInvoice('${i.id}')">View</button></td></tr>`}).join('')||'<tr><td colspan=8>No invoices yet. Create one from a job or an approved quote.</td></tr>'}</table></div></div>`};
+function viewInvoice(id){tab='invoices';view=id;modal();render();scrollTo(0,0)}
+function jobItems(j){const q=Q(j.quote);if(q)return JSON.parse(JSON.stringify(q.items));const h=Math.round(jobHours(j.id)*4)/4;return [{type:'fee',desc:'Service call / trip fee',qty:1,price:D.settings.fee},{type:'labor',desc:'Labor'+(j.desc?' - '+j.desc:''),qty:h||1,price:D.settings.rate}]}
+function invFromJob(jid){const j=J(jid);if(j.invoice&&IV(j.invoice))return viewInvoice(j.invoice);const q=Q(j.quote);modal();editInvoice(null,{client:j.client,job:j.id,quote:j.quote||'',tax:q?q.tax:D.settings.tax,items:jobItems(j),notes:j.desc||''})}
+function invFromQuote(qid){const q=Q(qid),j=D.jobs.find(x=>x.quote==qid);if(j&&j.invoice&&IV(j.invoice))return viewInvoice(j.invoice);editInvoice(null,{client:q.client,job:j?j.id:'',quote:qid,tax:q.tax,items:JSON.parse(JSON.stringify(q.items)),notes:q.notes||''})}
+function editInvoice(id,pre){const i=id?IV(id):Object.assign({client:'',job:'',quote:'',date:tod(),terms:15,due:addDays(tod(),15),status:'Draft',tax:D.settings.tax,notes:'',items:[{type:'fee',desc:'Service call / trip fee',qty:1,price:D.settings.fee},{type:'labor',desc:'Labor',qty:1,price:D.settings.rate}],payments:[]},pre||{});qi=JSON.parse(JSON.stringify(i.items));window._inv={job:i.job,quote:i.quote};
+ modal(`<h2>${id?'Edit '+esc(i.num):'New invoice'}</h2>${i.job?`<div style="color:var(--m);font-size:13px">For job ${esc(J(i.job)?.num||'')}</div>`:''}${clientPicker(i.client)}<div class="row"><div><label>Invoice date</label><input id="id_" type="date" value="${i.date}" onchange="invDue()"></div><div><label>Terms</label><select id="iterm" onchange="invDue()">${opt([[0,'Due on receipt'],[15,'Net 15'],[30,'Net 30'],[45,'Net 45'],[60,'Net 60']],i.terms)}</select></div><div><label>Due date</label><input id="idue" type="date" value="${i.due||''}"></div></div><div class="row"><div><label>Status</label><select id="ist">${opt(['Draft','Sent','Paid'].map(s=>[s,s]),i.status)}</select></div><div><label>Tax %</label><input id="qt" type="number" step="0.01" value="${i.tax}" oninput="qtot()"></div></div>
+ <label>Line items</label><div id="qitems"></div><div><button class="btn sm s" onclick="addLi('labor')">+ Labor</button><button class="btn sm s" onclick="addLi('part')">+ Part/material</button><button class="btn sm s" onclick="addLi('fee')">+ Service fee</button></div><div id="qtot" style="text-align:right;font-weight:700;margin:8px 0"></div>
+ <label>Notes</label><textarea id="qn" rows="2">${esc(i.notes)}</textarea><div style="margin-top:14px"><button class="btn" onclick="saveInvoice('${id||''}')">Save</button>${id?`<button class="btn d" onclick="delInvoice('${id}')">Delete</button>`:''}<button class="btn s" onclick="modal()">Cancel</button></div>`);drawLi()}
+function invDue(){$('#idue').value=addDays($('#id_').value||tod(),+$('#iterm').value)}
+function saveInvoice(id){const cl=pickClient();if(!cl)return;let i=id?IV(id):{id:uid(),num:'INV-'+(D.seq.i=D.seq.i||1001,D.seq.i++),payments:[],job:window._inv.job||'',quote:window._inv.quote||''};
+ Object.assign(i,{client:cl,date:$('#id_').value,terms:+$('#iterm').value,due:$('#idue').value,status:$('#ist').value,tax:+$('#qt').value,notes:$('#qn').value,items:qi.map(x=>{const y={...x};delete y.cost;return y})});
+ if(!id)D.invoices.push(i);const j=J(i.job);if(j){j.invoice=i.id;if(j.status!='Paid')j.status='Invoiced'}syncPaid(i,true);save();viewInvoice(i.id)}
+function delInvoice(id){if(!confirm('Delete invoice?'))return;D.invoices=D.invoices.filter(x=>x.id!=id);D.jobs.forEach(j=>{if(j.invoice==id){delete j.invoice;if(j.status=='Invoiced'||j.status=='Paid')j.status='Completed'}});save();modal();view=null;render()}
+function syncPaid(i,manual){const t=invT(i),j=J(i.job);if(t.total>0&&t.bal<=0.005){i.status='Paid';i.paidDate=i.paidDate||((i.payments||[]).slice(-1)[0]?.date)||tod()}else if(i.status=='Paid'&&!manual){i.status='Sent';delete i.paidDate}
+ if(i.status=='Paid'&&!i.paidDate)i.paidDate=tod();if(j){if(i.status=='Paid')j.status='Paid';else if(j.status=='Paid')j.status='Invoiced'}}
+function payModal(id){const i=IV(id);modal(`<h2>Record payment · ${esc(i.num)}</h2><div class="row"><div><label>Amount ($)</label><input id="pa" type="number" step="0.01" value="${invT(i).bal.toFixed(2)}"></div><div><label>Date</label><input id="pd" type="date" value="${tod()}"></div><div><label>Method</label><select id="pmth">${opt([['cash','Cash'],['check','Check'],['card','Card'],['other','Other']],'check')}</select></div></div><label>Reference (check #, last 4, note)</label><input id="pref"><div style="margin-top:14px"><button class="btn g" onclick="savePay('${id}')">Save payment</button><button class="btn s" onclick="modal()">Cancel</button></div>`)}
+function savePay(id){const i=IV(id),a=+$('#pa').value;if(!(a>0))return alert('Enter an amount');i.payments=i.payments||[];i.payments.push({id:uid(),amount:a,date:$('#pd').value||tod(),method:$('#pmth').value,ref:$('#pref').value});if(i.status=='Draft')i.status='Sent';syncPaid(i);save();modal();render()}
+function delPay(id,pid){if(!confirm('Remove this payment?'))return;const i=IV(id);i.payments=i.payments.filter(p=>p.id!=pid);syncPaid(i);save();render()}
+function setInvSt(id,s){const i=IV(id);i.status=s;syncPaid(i,true);save();render()}
+function invoiceDoc(i){const t=invT(i),c=C(i.client)||{},s=D.settings,st=invStatus(i);
+ return `<div class="noprint card"><button class="btn s" onclick="view=null;render()">← Back</button><button class="btn" onclick="print()">Print / Save PDF</button><button class="btn s" onclick="editInvoice('${i.id}')">Edit</button>${st!='Paid'?`<button class="btn g" onclick="payModal('${i.id}')">Record payment</button>`:''}${i.status=='Draft'?`<button class="btn s" onclick="setInvSt('${i.id}','Sent')">Mark sent</button>`:''}${i.job&&J(i.job)?`<button class="btn s" onclick="go('jobs');editJob('${i.job}')">Job ${esc(J(i.job).num)}</button>`:''}</div>
+ <div class="qv"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px"><div><img src="logo.png" alt="" style="height:90px;display:block;margin-bottom:6px"><div style="font-size:22px;font-weight:700;color:var(--bd)">${esc(s.company)}</div><div style="color:var(--m);font-size:13px">${esc(s.phone||'308-390-8535')} ${esc(s.email)}</div></div><div class="right"><div style="font-size:20px;font-weight:700">INVOICE</div><div>${esc(i.num)}</div><div style="color:var(--m)">Date: ${i.date}</div><div style="color:var(--m)">Due: ${i.due||'On receipt'}</div><span class="pill ${st}">${st}</span></div></div>
+ <div style="margin:22px 0"><div style="color:var(--m);font-size:12px">BILL TO</div><b>${esc(c.name)}</b><br>${esc(c.address)}<br>${esc(c.phone)}</div>
+ <table><tr><th>Description</th><th class="right">Qty/Hrs</th><th class="right">Rate</th><th class="right">Amount</th></tr>${i.items.map(x=>`<tr><td>${esc(x.desc)}</td><td class="right">${x.qty}</td><td class="right">${money(x.price)}</td><td class="right">${money(x.qty*x.price)}</td></tr>`).join('')}
+ <tr><td colspan=3 class="right">Subtotal</td><td class="right">${money(t.sub)}</td></tr><tr><td colspan=3 class="right">Tax (${i.tax}%)</td><td class="right">${money(t.tax)}</td></tr><tr class="tot"><td colspan=3 class="right">Total</td><td class="right">${money(t.total)}</td></tr>${(i.payments||[]).map(p=>`<tr><td colspan=3 class="right">Payment ${p.date} · ${esc(p.method)}${p.ref?' '+esc(p.ref):''} <button class="btn sm s noprint" onclick="delPay('${i.id}','${p.id}')">✕</button></td><td class="right">−${money(p.amount)}</td></tr>`).join('')}<tr class="tot"><td colspan=3 class="right">Balance due</td><td class="right">${money(t.bal)}</td></tr></table>
+ ${i.notes?`<div style="margin-top:18px"><div style="color:var(--m);font-size:12px">NOTES</div>${esc(i.notes).replace(/\n/g,'<br>')}</div>`:''}<div style="margin-top:30px;color:var(--m);font-size:13px">Thank you for your business! Please make checks payable to ${esc(s.company)}. Questions? Call ${esc(s.phone||'308-390-8535')}.</div></div>`}
+{const _qd=quoteDoc;quoteDoc=function(q){let h=_qd(q);if(isOwner()&&q.status=='Approved'){const j=D.jobs.find(x=>x.quote==q.id),iv=j&&j.invoice&&IV(j.invoice);h=h.replace('Print / Save PDF</button>','Print / Save PDF</button>'+(iv?`<button class="btn s" onclick="viewInvoice('${iv.id}')">Invoice ${esc(iv.num)}</button>`:`<button class="btn g" onclick="invFromQuote('${q.id}')">Create invoice</button>`))}return h}}
+
+/* ---------- jobs: owner extras, tech view, notes, checklist, photos, repeat ---------- */
+{const _ej=editJob;editJob=function(id,fq){if(isTech())return techJob(id);_ej(id,fq);const box=$('#modal .modal>div');if(!box)return;const btns=box.lastElementChild;const j=id?J(id):null;
+ btns.insertAdjacentHTML('beforebegin',`<label>Field notes (visible to assigned techs)</label><textarea id="jtn" rows="2">${esc(j?.techNotes||'')}</textarea>${j?jobExtras(j):'<p style="color:var(--m);font-size:13px">Save the job to add a checklist and photos.</p>'}${repeatBox(j)}`);
+ if(j)btns.insertAdjacentHTML('beforeend',j.invoice&&IV(j.invoice)?`<button class="btn s" onclick="viewInvoice('${j.invoice}')">Invoice ${esc(IV(j.invoice).num)}</button>`:`<button class="btn g" onclick="invFromJob('${j.id}')">Create invoice</button>`);
+ if(j){drawCl(j.id);loadPhotos(j.id)}}}
+function repeatBox(j){if(j&&j.recurring){const s=D.recurring.find(x=>x.id==j.recurring);return `<div style="margin-top:10px;font-size:13px;color:var(--m)">🔁 Part of a repeating series${s?` (every ${s.every} ${s.unit}${s.every>1?'s':''}${s.active?'':' · stopped'})`:''}. Manage it under Jobs → Repeating jobs.</div>`}
+ return `<div class="row" style="margin-top:8px;align-items:end"><div><label>Repeat</label><select id="jrep">${opt([['','Does not repeat'],['week','Every N weeks'],['month','Every N months'],['year','Every N years']],'')}</select></div><div><label>N</label><input id="jrepn" type="number" min="1" value="1"></div><div><label>Until (optional)</label><input id="jrepu" type="date"></div></div>`}
+{const _sj=saveJob;saveJob=function(id){const tn=$('#jtn')?.value,rep=$('#jrep')?.value,n=Math.max(1,+($('#jrepn')?.value||1)),until=$('#jrepu')?.value||'';const before=D.jobs.length;_sj(id);if($('#modal').innerHTML)return; // validation failed
+ const j=id?J(id):(D.jobs.length>before?D.jobs[D.jobs.length-1]:null);if(!j)return;if(tn!=null)j.techNotes=tn;
+ if(rep&&!j.recurring){const d=(j.when||tod()+'T08:00');const s={id:uid(),client:j.client,desc:j.desc,workers:j.workers.slice(),time:d.slice(11,16)||'08:00',start:d.slice(0,10),every:n,unit:rep,until,active:true,lastGen:d.slice(0,10),checklist:(j.checklist||[]).map(x=>({t:x.t,done:false}))};D.recurring.push(s);j.recurring=s.id;genRecurring()}
+ save();render()}}
+function jobExtras(j){const o=isOwner();return `<div style="margin-top:12px;border-top:1px solid var(--l);padding-top:10px"><h3 style="font-size:15px;margin:0 0 6px">Checklist</h3><div id="jcl"></div>${o?`<div class="row" style="margin-top:6px"><select id="jclt">${opt(D.checklistTemplates.map(t=>[t.id,t.name]),'','— add checklist template —')}</select><button class="btn sm s" style="flex:0" onclick="clAddTpl('${j.id}')">Add</button><input id="jcli" placeholder="Custom step"><button class="btn sm s" style="flex:0" onclick="clAdd('${j.id}')">+ Step</button></div>`:''}</div>
+ <div style="margin-top:12px;border-top:1px solid var(--l);padding-top:10px"><h3 style="font-size:15px;margin:0 0 6px">📷 Job photos</h3><div class="seg" id="phseg">${[['before','Before'],['during','During'],['after','After'],['other','Other']].map(([v,l])=>`<button type="button" class="${defTag(j)==v?'on':''}" data-t="${v}" onclick="setPhTag(this)">${l}</button>`).join('')}</div><input type="hidden" id="phtag" value="${defTag(j)}">
+ <label class="btn bigcam">📷 Take photo<input type="file" accept="image/*" capture="environment" style="display:none" onchange="addPhotos('${j.id}',this.files);this.value=''"></label><label class="btn s" style="display:block;text-align:center;margin:6px 0 0;color:var(--t)">🖼 Add from gallery (several at once)<input type="file" accept="image/*" multiple style="display:none" onchange="addPhotos('${j.id}',this.files);this.value=''"></label><div id="phmsg" style="font-size:13px;color:var(--m);margin-top:4px"></div><div id="jph"></div></div>`}
+const defTag=j=>j.status=='In Progress'?'during':['Completed','Invoiced','Paid'].includes(j.status)?'after':'before';
+function setPhTag(b){document.querySelectorAll('#phseg button').forEach(x=>x.classList.toggle('on',x==b));$('#phtag').value=b.dataset.t}
+function drawCl(jid){const el=$('#jcl');if(!el)return;const j=J(jid);const L=j.checklist||[],dn=L.filter(x=>x.done).length;
+ el.innerHTML=L.length?`<div style="font-size:12px;color:var(--m);margin-bottom:4px">${dn}/${L.length} done</div>`+L.map((x,n)=>`<label style="display:flex;gap:8px;align-items:center;color:var(--t);font-size:15px;margin:4px 0"><input type="checkbox" style="width:22px;height:22px" ${x.done?'checked':''} onchange="clToggle('${jid}',${n},this.checked)"><span style="flex:1;${x.done?'text-decoration:line-through;color:var(--m)':''}">${esc(x.t)}</span>${isOwner()?`<button class="btn sm s" onclick="event.preventDefault();clDel('${jid}',${n})">✕</button>`:''}</label>`).join(''):'<small style="color:var(--m)">No checklist yet.</small>'}
+function clToggle(jid,n,v){const j=J(jid);const x=j.checklist[n];x.done=v;x.by=v?ME()||'':'';x.at=v?new Date().toISOString():'';save();drawCl(jid)}
+function clAdd(jid){const t=$('#jcli').value.trim();if(!t)return;const j=J(jid);j.checklist=j.checklist||[];j.checklist.push({t,done:false});$('#jcli').value='';save();drawCl(jid)}
+function clAddTpl(jid){const t=D.checklistTemplates.find(x=>x.id==$('#jclt').value);if(!t)return;const j=J(jid);j.checklist=(j.checklist||[]).concat(t.items.map(s=>({t:s,done:false})));save();drawCl(jid)}
+function clDel(jid,n){const j=J(jid);j.checklist.splice(n,1);save();drawCl(jid)}
+function techJob(id){const j=J(id);if(!j)return;const c=C(j.client)||{name:j.clientName,phone:j.clientPhone,address:j.clientAddress};
+ modal(`<h2>Job ${esc(j.num)} <span class="pill ${j.status}">${j.status}</span></h2><div class="card" style="margin:0 0 10px"><b style="font-size:17px">${esc(c.name||'—')}</b>${c.phone?`<div style="margin-top:6px">📞 <a href="tel:${esc(c.phone)}">${esc(c.phone)}</a></div>`:''}${c.address?`<div style="margin-top:6px">📍 <a href="${mapUrl(c.address)}" target="_blank" rel="noopener">${esc(c.address)}</a></div>`:''}</div>
+ <div><b>When:</b> ${fmtDT(j.when)||'—'}</div><div style="margin-top:4px"><b>Crew:</b> ${(j.workers||[]).map(w=>esc(W(w)?.name||'')).join(', ')||'—'}</div><div style="margin-top:8px;white-space:pre-wrap">${esc(j.desc)}</div>
+ <label>Field notes</label><textarea id="jtn" rows="3">${esc(j.techNotes||'')}</textarea>${jobExtras(j)}<div style="margin-top:14px"><button class="btn" onclick="J('${id}').techNotes=$('#jtn').value;save();modal();render()">Save notes</button><button class="btn s" onclick="modal()">Close</button></div>`);drawCl(id);loadPhotos(id)}
+
+/* photos: compressed JPEG (max 1280px). Stored in IndexedDB offline, or Firestore chunks when signed in (module overrides photoStore) */
+const idb={p:null,open(){return this.p||(this.p=new Promise((res,rej)=>{const r=indexedDB.open('cp-photos',1);r.onupgradeneeded=()=>r.result.createObjectStore('p',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}))},
+ async run(mode,fn){const db=await this.open();return new Promise((res,rej)=>{const t=db.transaction('p',mode),rq=fn(t.objectStore('p'));t.oncomplete=()=>res(rq&&rq.result);t.onerror=()=>rej(t.error)})}};
+window.localPhotoStore={async list(jid){return ((await idb.run('readonly',s=>s.getAll()))||[]).filter(p=>p.jobId==jid).map(p=>({...p,data:undefined,_d:p.data}))},async get(p){return p._d},
+ async add(j,tag,data){const p={id:uid(),jobId:j.id,tag,by:ME(),byName:phName(),at:new Date().toISOString(),data};await idb.run('readwrite',s=>s.put(p));return p},async del(p){await idb.run('readwrite',s=>s.delete(p.id))}};
+window.photoStore=window.localPhotoStore;
+function compress(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const M=1280,k=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let q=0.75,d=c.toDataURL('image/jpeg',q);while(d.length>2.5e6&&q>0.3){q-=0.15;d=c.toDataURL('image/jpeg',q)}res(d)};im.onerror=()=>rej(new Error('Not an image'));im.src=u})}
+const phName=()=>W(myWorkerId())?.name||(D.users.find(u=>u.id==ME())||{}).name||(ME()?ME().split('@')[0]:'Owner');window.phName=phName;
+async function addPhotos(jid,files){const m=$('#phmsg');const tagv=$('#phtag').value;let n=0;for(const f of files){try{m.textContent=`Saving photo ${++n}/${files.length}…`;const d=await compress(f);await photoStore.add(J(jid),tagv,d)}catch(e){alert('Photo failed: '+e.message)}}m.textContent=n?`✔ Saved ${n} ${tagv} photo${n>1?'s':''} — tap Take photo for another`:'';loadPhotos(jid)}
+const phCache={};
+async function loadPhotos(jid){const el=$('#jph');if(!el)return;el.innerHTML='<small style="color:var(--m)">Loading photos…</small>';try{const L=(await photoStore.list(jid)).sort((a,b)=>(a.at||'').localeCompare(b.at||''));if(!$('#jph'))return;
+ const byD={};L.forEach(p=>{const d=(p.at||'').slice(0,10);(byD[d]=byD[d]||[]).push(p)});
+ el.innerHTML=L.length?Object.keys(byD).sort().map(d=>`<div class="phday">${new Date(d+'T00:00').toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})}</div><div class="phgrid">${byD[d].map(p=>`<div class="ph" id="ph_${p.id}"><div class="phimg"></div><span class="pill ph-${esc(p.tag)}">${esc(p.tag)}</span>${isOwner()||p.by==ME()?`<button class="btn sm d" onclick="delPhoto('${jid}','${p.id}')">✕</button>`:''}<div class="phcap">${p.at?fmtT(p.at):''} · ${esc(p.byName||p.by||'')}</div></div>`).join('')}</div>`).join(''):'<small style="color:var(--m)">No photos yet — tap Take photo.</small>';
+ for(const p of L){phCache[p.id]=p;const d=await photoStore.get(p);const box=document.querySelector('#ph_'+p.id+' .phimg');if(box&&d)box.innerHTML=`<img src="${d}" onclick="lightbox(this.src)">`}}catch(e){el.innerHTML='<small class="amsg">Could not load photos: '+esc(e.message)+'</small>'}}
+async function delPhoto(jid,pid){if(!confirm('Delete photo?'))return;await photoStore.del(phCache[pid]);loadPhotos(jid)}
+function lightbox(src){const d=document.createElement('div');d.className='lb';d.innerHTML=`<img src="${src}">`;d.onclick=()=>d.remove();document.body.appendChild(d)}
+
+/* ---------- recurring jobs ---------- */
+function occDates(s,to){const out=[],st=new Date(s.start+'T00:00');for(let k=0;k<2000;k++){let d;if(s.unit=='week'){d=new Date(st);d.setDate(d.getDate()+7*s.every*k)}else{const mm=s.unit=='month'?s.every*k:12*s.every*k;const y=st.getFullYear(),m=st.getMonth()+mm,dim=new Date(y,m+1,0).getDate();d=new Date(y,m,Math.min(st.getDate(),dim))}const v=ymd(d);if(v>to||(s.until&&v>s.until))break;if(v>s.lastGen)out.push(v)}return out}
+function genRecurring(){if(!isOwner())return 0;const to=addDays(tod(),60);let n=0;D.recurring.filter(s=>s.active).forEach(s=>{occDates(s,to).forEach(d=>{const id='r_'+s.id+'_'+d.replace(/-/g,'');if(!J(id)){D.jobs.push({id,num:'J-'+D.seq.j++,client:s.client,desc:s.desc,workers:s.workers.slice(),when:d+'T'+(s.time||'08:00'),status:'Scheduled',quote:'',recurring:s.id,checklist:(s.checklist||[]).map(x=>({t:x.t,done:false}))});n++}});s.lastGen=to});if(n||D.recurring.some(s=>s.active))save();return n}
+window.onDataReady=()=>{genRecurring();render()};
+function recurringCard(){if(!D.recurring.length)return '';return `<div class="card"><h2>🔁 Repeating jobs <small style="color:var(--m);font-weight:400;font-size:12px">upcoming jobs are created automatically 60 days ahead</small></h2><div class="tw"><table><tr><th>Job</th><th>Client</th><th>Repeats</th><th>Since</th><th>Status</th><th></th></tr>${D.recurring.map(s=>`<tr><td>${esc(s.desc)}</td><td>${cname(s.client)}</td><td>every ${s.every} ${s.unit}${s.every>1?'s':''} at ${s.time}${s.until?' until '+s.until:''}</td><td>${s.start}</td><td>${s.active?'Active':'Stopped'}</td><td>${s.active?`<button class="btn sm s" onclick="stopRec('${s.id}')">Stop</button>`:`<button class="btn sm s" onclick="(x=>{x.active=true;if(x.lastGen<tod())x.lastGen=tod()})(D.recurring.find(x=>x.id=='${s.id}'));genRecurring();save();render()">Resume</button>`}</td></tr>`).join('')}</table></div></div>`}
+function stopRec(id){if(!confirm('Stop this series? Future scheduled jobs from it will be removed (past/started jobs stay).'))return;const s=D.recurring.find(x=>x.id==id);s.active=false;const t=tod();D.jobs=D.jobs.filter(j=>!(j.recurring==id&&j.status=='Scheduled'&&(j.when||'').slice(0,10)>t));save();render()}
+
+/* ---------- calendar ---------- */
+let cal={v:'week',d:'',w:''};
+const calJobs=(a,b)=>D.jobs.filter(j=>j.when&&j.when.slice(0,10)>=a&&j.when.slice(0,10)<b&&(!cal.w||(j.workers||[]).includes(cal.w))).sort((x,y)=>x.when.localeCompare(y.when));
+const chip=j=>{const col=wColor((j.workers||[])[0]);return `<div class="chip" ${isOwner()?`draggable="true" ondragstart="event.dataTransfer.setData('text/plain','${j.id}')"`:''} onclick="event.stopPropagation();calTap('${j.id}')" style="border-left-color:${col};background:${col}1a"><b>${new Date(j.when).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}</b> ${jobClient(j)}<br><small>${esc(j.num)} · ${esc((j.desc||'').slice(0,40))}</small></div>`};
+const dropAttr=(day,h)=>isOwner()?`ondragover="event.preventDefault();this.classList.add('dov')" ondragleave="this.classList.remove('dov')" ondrop="event.preventDefault();this.classList.remove('dov');calMove(event.dataTransfer.getData('text/plain'),'${day}',${h==null?'null':h})"`:'';
+V.cal=()=>{if(!cal.d)cal.d=tod();const d=cal.d;let a,b,body='',title;
+ if(cal.v=='day'){a=d;b=addDays(d,1);title=new Date(d+'T00:00').toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'});const L=calJobs(a,b);
+  body=`<div class="cday">${[...Array(15)].map((_,i)=>{const h=i+6;return `<div class="hr" ${dropAttr(d,h)} onclick="calCell('${d}',${h})"><div class="hl">${(h%12)||12}${h<12?'a':'p'}</div><div style="flex:1">${L.filter(j=>+j.when.slice(11,13)==h||(h==6&&+j.when.slice(11,13)<6)||(h==20&&+j.when.slice(11,13)>20)).map(chip).join('')}</div></div>`}).join('')}</div>`}
+ else if(cal.v=='week'){a=ymd(weekStart(new Date(d+'T00:00')));b=addDays(a,7);title='Week of '+new Date(a+'T00:00').toLocaleDateString([],{month:'short',day:'numeric'});const L=calJobs(a,b);
+  body=`<div class="cweek">${[...Array(7)].map((_,i)=>{const day=addDays(a,i);return `<div class="cd ${day==tod()?'today':''}" ${dropAttr(day)} onclick="calCell('${day}')"><div class="cdh" onclick="event.stopPropagation();cal.v='day';cal.d='${day}';render()">${new Date(day+'T00:00').toLocaleDateString([],{weekday:'short',month:'numeric',day:'numeric'})}</div>${L.filter(j=>j.when.slice(0,10)==day).map(chip).join('')}</div>`}).join('')}</div>`}
+ else{const f=new Date(d+'T00:00');f.setDate(1);const m=f.getMonth();a=ymd(weekStart(f));b=addDays(a,42);title=f.toLocaleDateString([],{month:'long',year:'numeric'});const L=calJobs(a,b);
+  body=`<div class="cmonth">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>`<div class="cmh">${x}</div>`).join('')}${[...Array(42)].map((_,i)=>{const day=addDays(a,i),jl=L.filter(j=>j.when.slice(0,10)==day);return `<div class="cm ${new Date(day+'T00:00').getMonth()!=m?'other':''} ${day==tod()?'today':''}" ${dropAttr(day)} onclick="calCell('${day}')"><div class="cdh" onclick="event.stopPropagation();cal.v='day';cal.d='${day}';render()">${+day.slice(8)}</div>${jl.slice(0,3).map(j=>`<div class="mdot" ${isOwner()?`draggable="true" ondragstart="event.dataTransfer.setData('text/plain','${j.id}')"`:''} onclick="event.stopPropagation();calTap('${j.id}')" style="background:${wColor((j.workers||[])[0])}">${new Date(j.when).toLocaleTimeString([],{hour:'numeric'})} ${jobClient(j)}</div>`).join('')}${jl.length>3?`<small>+${jl.length-3} more</small>`:''}</div>`}).join('')}</div>`}
+ const step=n=>cal.v=='day'?addDays(d,n):cal.v=='week'?addDays(d,7*n):(()=>{const x=new Date(d+'T00:00');x.setDate(1);x.setMonth(x.getMonth()+n);return ymd(x)})();
+ const ws=isOwner()?D.workers:D.workers.filter(w=>D.jobs.some(j=>(j.workers||[]).includes(w.id)));
+ return `<div class="card noprint"><div class="row" style="align-items:center"><div style="flex:2;min-width:220px"><button class="btn s" onclick="cal.d='${step(-1)}';render()">◀</button><button class="btn s" onclick="cal.d=tod();render()">Today</button><button class="btn s" onclick="cal.d='${step(1)}';render()">▶</button> <b style="margin-left:6px">${title}</b></div><div>${['day','week','month'].map(v=>`<button class="btn sm ${cal.v==v?'':'s'}" onclick="cal.v='${v}';render()">${v[0].toUpperCase()+v.slice(1)}</button>`).join('')}</div><div><select onchange="cal.w=this.value;render()">${opt(ws.map(w=>[w.id,w.name]),cal.w,'All workers')}</select></div></div>
+ <div class="legend">${ws.map(w=>`<span><i style="background:${wColor(w.id)}"></i>${esc(w.name)}</span>`).join('')}</div>${isOwner()?'<small style="color:var(--m)">Drag a job to another day/hour to reschedule, or tap it.</small>':''}</div><div class="card" style="padding:8px">${body}</div>`};
+function calMove(id,day,h){const j=J(id);if(!j||!isOwner())return;const t=h==null?(j.when||'T08:00').slice(11,16)||'08:00':String(h).padStart(2,'0')+':'+((j.when||'').slice(14,16)||'00');j.when=day+'T'+t;save();render()}
+function calTap(id){const j=J(id);if(!j)return;if(isTech())return techJob(id);
+ modal(`<h2>${esc(j.num)} · ${jobClient(j)}</h2><div style="color:var(--m)">${esc(j.desc)}</div><div style="margin-top:4px">Crew: ${(j.workers||[]).map(w=>esc(W(w)?.name||'')).join(', ')||'—'}</div><label>Reschedule to</label><input id="rsw" type="datetime-local" value="${j.when||''}"><div style="margin-top:14px"><button class="btn" onclick="J('${id}').when=$('#rsw').value;save();modal();render()">Move</button><button class="btn s" onclick="modal();editJob('${id}')">Open job</button><button class="btn s" onclick="modal()">Close</button></div>`)}
+
+/* ---------- checklist templates (in Price Book) ---------- */
+function seedChecklists(){D.checklistTemplates.push({id:uid(),name:'Sample - Water heater install',items:['Shut off gas and water; verify off','Drain and disconnect old heater','Set new heater on pan / stand','Connect water lines with new flex lines','Connect gas with new flex connector; leak test with soap','Install / verify expansion tank and T&P discharge line','Check venting and draft','Fill tank, purge air, light / power on','Set temperature to 120°F and explain to customer','Haul away old unit; clean work area'],sample:true},
+ {id:uid(),name:'Sample - Annual water heater flush',items:['Turn off power/gas','Connect hose to drain valve','Flush until water runs clear','Test T&P valve','Check anode rod (note condition)','Refill, purge air, restore power/gas'],sample:true})}
+if(!D.checklistTemplates.length&&[...D.workers,...D.clients,...D.jobs].every(x=>x.sample)){seedChecklists();localStorage.setItem(K,JSON.stringify(D))}
+{const _vb=V.book;V.book=()=>_vb()+`<div class="card"><h2>Checklist templates</h2><button class="btn" onclick="editClt()">+ New checklist</button>${D.checklistTemplates.length?'':'<button class="btn s" onclick="seedChecklists();save();render()">Add sample checklists</button>'}<div class="tw"><table><tr><th>Name</th><th>Steps</th><th></th></tr>${D.checklistTemplates.map(t=>`<tr><td>${esc(t.name)}${tag(t)}</td><td>${t.items.length}</td><td><button class="btn sm s" onclick="editClt('${t.id}')">Edit</button></td></tr>`).join('')||'<tr><td colspan=3>None yet.</td></tr>'}</table></div></div>`}
+function editClt(id){const t=id?D.checklistTemplates.find(x=>x.id==id):{name:'',items:[]};modal(`<h2>${id?'Edit':'New'} checklist template</h2><label>Name</label><input id="ctn" value="${esc(t.name)}"><label>Steps (one per line)</label><textarea id="cti" rows="10">${esc(t.items.join('\n'))}</textarea><div style="margin-top:14px"><button class="btn" onclick="saveClt('${id||''}')">Save</button>${id?`<button class="btn d" onclick="if(confirm('Delete?')){D.checklistTemplates=D.checklistTemplates.filter(x=>x.id!='${id}');save();modal();render()}">Delete</button>`:''}<button class="btn s" onclick="modal()">Cancel</button></div>`)}
+function saveClt(id){const n=$('#ctn').value.trim();if(!n)return alert('Name required');const items=$('#cti').value.split('\n').map(s=>s.trim()).filter(Boolean);let t=id?D.checklistTemplates.find(x=>x.id==id):{id:uid()};Object.assign(t,{name:n,items});if(!id)D.checklistTemplates.push(t);save();modal();render()}
+
+/* ---------- team / users ---------- */
+V.team=()=>`<div class="card"><h2>Team & logins</h2><p style="font-size:14px;color:var(--m)">Owners (full access): ${OWNER_EMAILS.map(esc).join(', ')}. Techs see only their assigned jobs, those clients' contact info, job notes/photos/checklists, and their own time clock. No prices, costs, invoices, reports or settings.</p>
+ <div class="row" style="align-items:end"><div><label>Name</label><input id="un"></div><div><label>Email (their login)</label><input id="ue" type="email"></div><div><label>Role</label><select id="ur">${opt([['tech','Tech'],['owner','Owner']],'tech')}</select></div><div><label>Linked worker (for jobs & time clock)</label><select id="uw">${opt(D.workers.map(w=>[w.id,w.name]),'','— none —')}<option value="__new" selected>+ Create worker with this name</option></select></div><div style="flex:0"><button class="btn" onclick="addUser()">Add</button></div></div>
+ <div style="margin-top:12px;background:#fff6e5;border:1px solid #f3d49b;border-radius:8px;padding:10px;font-size:13px"><b>Step 2 — give them a login:</b> in <a href="https://console.firebase.google.com/project/plumbing-ops/authentication/users" target="_blank" rel="noopener">Firebase Console → Authentication → Users</a> click <b>Add user</b>, enter the same email and a temporary password. Then tell them to open the app, type their email and tap <b>Forgot password?</b> to set their own.</div></div>
+ <div class="card"><div class="tw"><table><tr><th>Name</th><th>Email</th><th>Role</th><th>Worker</th><th></th></tr>${D.users.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.email)}</td><td><select onchange="D.users.find(x=>x.id=='${u.id}').role=this.value;save()">${opt([['tech','Tech'],['owner','Owner']],u.role)}</select></td><td><select onchange="D.users.find(x=>x.id=='${u.id}').workerId=this.value;save()">${opt(D.workers.map(w=>[w.id,w.name]),u.workerId,'— none —')}</select></td><td><button class="btn sm d" onclick="if(confirm('Remove access for ${esc(u.email)}? (Also disable/delete them in Firebase Authentication.)')){D.users=D.users.filter(x=>x.id!='${u.id}');save();render()}">Remove</button></td></tr>`).join('')||'<tr><td colspan=5>No employees yet.</td></tr>'}</table></div></div>`;
+function addUser(){const name=$('#un').value.trim(),email=$('#ue').value.trim().toLowerCase();if(!name||!/^[^@\s\/]+@[^@\s\/]+\.[^@\s\/]+$/.test(email))return alert('Enter a name and a valid email');let wid=$('#uw').value;if(wid=='__new'){const w={id:uid(),name,rate:0};D.workers.push(w);wid=w.id}
+ const ex=D.users.find(u=>u.id==email);const u=ex||{id:email};Object.assign(u,{email,name,role:$('#ur').value,workerId:wid});if(!ex)D.users.push(u);save();render();alert('Added. Now create their login in Firebase Authentication (see the yellow box).')}
+
+/* ---------- reports (owner) ---------- */
+V.reports=()=>{if(isTech())return '';const pays=D.invoices.flatMap(i=>(i.payments||[]).map(p=>({...p,inv:i})));const bm={};pays.forEach(p=>{const m=(p.date||'').slice(0,7);bm[m]=(bm[m]||0)+(+p.amount||0)});
+ const qs=D.quotes,ap=qs.filter(q=>q.status=='Approved').length,dc=qs.filter(q=>q.status=='Declined').length,se=qs.filter(q=>q.status=='Sent').length,decided=ap+dc;
+ const js={};JS.forEach(s=>js[s]=0);D.jobs.forEach(j=>js[j.status]=(js[j.status]||0)+1);
+ const since=new Date();since.setDate(since.getDate()-30);const hw=D.workers.map(w=>({w,all:D.time.filter(t=>t.worker==w.id).reduce((s,t)=>s+hrs(t),0),m:D.time.filter(t=>t.worker==w.id&&new Date(t.in)>=since).reduce((s,t)=>s+hrs(t),0)}));
+ const tc={};pays.forEach(p=>{tc[p.inv.client]=(tc[p.inv.client]||0)+(+p.amount||0)});const top=Object.entries(tc).sort((a,b)=>b[1]-a[1]).slice(0,10);
+ const ar={cur:0,a30:0,a60:0,a90:0};const open=D.invoices.filter(i=>i.status!='Paid'&&i.status!='Draft'&&invT(i).bal>0);open.forEach(i=>{const late=i.due?Math.floor((new Date(tod())-new Date(i.due))/864e5):0,b=invT(i).bal;if(late<=0)ar.cur+=b;else if(late<=30)ar.a30+=b;else if(late<=60)ar.a60+=b;else ar.a90+=b});
+ const max=Math.max(1,...Object.values(bm));const tbl=(h,rows)=>`<div class="tw"><table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.join('')||`<tr><td colspan=${h.length}>No data yet.</td></tr>`}</table></div>`;
+ return `<div class="grid"><div class="card stat"><div class="n">${money(Object.values(bm).reduce((s,v)=>s+v,0))}</div><div class="k">Collected (all time)</div></div><div class="card stat"><div class="n">${decided?Math.round(ap/decided*100)+'%':'—'}</div><div class="k">Quote conversion (${ap} approved / ${decided} decided · ${se} pending)</div></div><div class="card stat"><div class="n">${money(ar.cur+ar.a30+ar.a60+ar.a90)}</div><div class="k">Outstanding A/R (${open.length} invoices)</div></div></div>
+ <div class="card"><h2>Revenue by month <small style="color:var(--m);font-weight:400;font-size:12px">payments received on invoices</small></h2>${tbl(['Month','Collected',''],Object.keys(bm).sort().reverse().map(m=>`<tr><td>${m}</td><td>${money(bm[m])}</td><td style="width:50%"><div style="background:var(--b);height:12px;border-radius:3px;width:${bm[m]/max*100}%"></div></td></tr>`))}</div>
+ <div class="card"><h2>Outstanding A/R aging</h2>${tbl(['Current','1–30 days late','31–60','60+'],[`<tr><td>${money(ar.cur)}</td><td>${money(ar.a30)}</td><td>${money(ar.a60)}</td><td style="color:${ar.a90?'#c0392b':''}">${money(ar.a90)}</td></tr>`])}${tbl(['Invoice','Client','Due','Balance'],open.sort((a,b)=>(a.due||'').localeCompare(b.due||'')).map(i=>`<tr><td><a href="#" onclick="viewInvoice('${i.id}');return false">${esc(i.num)}</a></td><td>${cname(i.client)}</td><td>${i.due||''}</td><td>${money(invT(i).bal)}</td></tr>`))}</div>
+ <div class="grid"><div class="card"><h2>Jobs by status</h2>${tbl(['Status','Jobs'],Object.entries(js).map(([s,n])=>`<tr><td><span class="pill ${s}">${s}</span></td><td>${n}</td></tr>`))}</div><div class="card"><h2>Hours by worker</h2>${tbl(['Worker','Last 30 days','All time'],hw.map(x=>`<tr><td>${esc(x.w.name)}</td><td>${x.m.toFixed(1)}</td><td>${x.all.toFixed(1)}</td></tr>`))}</div></div>
+ <div class="card"><h2>Top clients <small style="color:var(--m);font-weight:400;font-size:12px">by payments received</small></h2>${tbl(['Client','Paid'],top.map(([c,v])=>`<tr><td>${cname(c)}</td><td>${money(v)}</td></tr>`))}</div>`};
+
+/* sample data extensions */
+{const _seed=seed;seed=function(){_seed();if(!D.checklistTemplates.length){seedChecklists();save()}}}
+clearSample=function(){if(!confirm('Remove all sample data?'))return;['workers','clients','quotes','jobs','time','parts','templates','invoices','recurring','checklistTemplates'].forEach(k=>D[k]=D[k].filter(x=>!x.sample));save();render()};
+{const _vs=V.settings;V.settings=()=>_vs().replace('You can still export a JSON backup any time.','You can still export a JSON backup any time (includes invoices, team, checklists and repeating jobs; job photos are not included in the backup file).')}
+setTimeout(()=>{if(isOwner()&&!window.userEmail)genRecurring();render()},0);
+</script>
+<script>
+/* ===================== OCT 10: trip tracking, customer notes & leads, scheduling, messages ===================== */
+TECH_TABS.push('leads');
+{const i=TABS.findIndex(t=>t[0]=='invoices');TABS.splice(i+1,0,['leads','Leads']);const s=TABS.findIndex(t=>t[0]=='reports');TABS.splice(s,0,['messages','Messages'])}
+{const _r=render;render=function(){_r();const b=[...document.querySelectorAll('#nav button')].find(x=>x.textContent=='Leads');const n=openLeads().length;if(b&&n)b.insertAdjacentHTML('beforeend',` <span class="badge">${n}</span>`)}}
+const fmtT=d=>new Date(d).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+{const _d=derive;derive=function(){_d();if(isOwner())D.notes.forEach(n=>{const j=J(n.jobId);if(j)n.techEmails=(j.techEmails||[]).slice()})}}
+
+{const _ej=editJob;editJob=function(id,fq){_ej(id,fq);if(!isOwner()||!id)return;const box=$('#modal .modal>div');if(!box||!$('#jd'))return;box.lastElementChild.insertAdjacentHTML('beforebegin',notesBox({jobId:id}));drawNotes({jobId:id})}}
+{const _tj=techJob;techJob=function(id){_tj(id);const box=$('#modal .modal>div');if(!box)return;box.lastElementChild.insertAdjacentHTML('beforebegin',notesBox({jobId:id}));drawNotes({jobId:id})}}
+
+
+/* ---------- customer notes & leads ---------- */
+const LEADKW=/water heater|softener|next (week|month|year|spring|summer|fall|winter)|also want|wants? (a |to )|quote|estimate|later|replace|install|upgrade|remodel|new (toilet|faucet|sink|line)|interested|call back|follow ?up/i;
+const LS=['New','Contacted','Quoted','Won','Lost'];
+const openLeads=()=>D.leads.filter(l=>!['Won','Lost'].includes(l.status));
+function notesBox(ref){const k=ref.jobId?'j':'q';return `<div style="margin-top:12px;border-top:1px solid var(--l);padding-top:10px" class="noprint"><h3 style="font-size:15px;margin:0 0 6px">📝 Customer notes</h3><div id="nlog"></div><textarea id="ntx" rows="2" placeholder="What did the customer say?" oninput="if(!window._ltouch)$('#nlead').checked=LEADKW.test(this.value);$('#nfu').style.display=$('#nlead').checked?'':'none'"></textarea>
+ <div class="row" style="align-items:center;margin-top:4px"><label style="display:flex;gap:6px;align-items:center;color:var(--t);font-size:14px;margin:0"><input type="checkbox" id="nlead" style="width:22px;height:22px" onchange="window._ltouch=1;$('#nfu').style.display=this.checked?'':'none'"> Future work / lead</label><input id="nfu" type="date" title="Follow-up date" style="display:none;max-width:170px"><button class="btn sm" style="flex:0" onclick='addNote(${JSON.stringify(ref)})'>Add note</button></div></div>`}
+function drawNotes(ref){window._ltouch=0;const el=$('#nlog');if(!el)return;const L=D.notes.filter(n=>ref.jobId?n.jobId==ref.jobId:n.quoteId==ref.quoteId).sort((a,b)=>b.at.localeCompare(a.at));
+ el.innerHTML=L.map(n=>`<div class="note"><div style="font-size:12px;color:var(--m)">${esc(n.byName||n.by)} · ${fmtDT(n.at)}${n.lead?' · <span class="pill New">lead</span>':''}</div><div style="white-space:pre-wrap">${esc(n.text)}</div></div>`).join('')||'<small style="color:var(--m)">No notes yet.</small>'}
+function addNote(ref){const text=$('#ntx').value.trim();if(!text)return;const src=ref.jobId?J(ref.jobId):Q(ref.quoteId);const me=ME(),meName=W(myWorkerId())?.name||me||'Owner';const lead=$('#nlead').checked;
+ const n={id:uid(),jobId:ref.jobId||'',quoteId:ref.quoteId||'',client:src?.client||'',clientName:(C(src?.client)||{}).name||src?.clientName||'',by:me,byName:meName,at:new Date().toISOString(),text,lead,techEmails:ref.jobId?(src?.techEmails||[]).slice():[]};D.notes.push(n);
+ if(lead)D.leads.push({id:uid(),client:n.client,clientName:n.clientName,clientPhone:(C(n.client)||{}).phone||src?.clientPhone||'',text,job:n.jobId,quote:n.quoteId,note:n.id,date:tod(),follow:$('#nfu').value||'',status:'New',by:me,byName:meName});
+ save();$('#ntx').value='';$('#nlead').checked=false;$('#nfu').style.display='none';drawNotes(ref);if(lead)setTimeout(()=>alert('Saved as a lead ✔'),10)}
+{const _qd=quoteDoc;quoteDoc=function(q){let h=_qd(q);if(isOwner()){h=h.replace(/<div class="qv">/,`<div class="card noprint" id="qnotes">${notesBox({quoteId:q.id})}</div><div class="qv">`);setTimeout(()=>drawNotes({quoteId:q.id}),0)}return h}}
+let lf='open';
+V.leads=()=>{const t=tod();let L=D.leads.slice().sort((a,b)=>(a.follow||'9').localeCompare(b.follow||'9')||b.date.localeCompare(a.date));if(lf=='open')L=L.filter(l=>!['Won','Lost'].includes(l.status));else if(lf)L=L.filter(l=>l.status==lf);const o=isOwner();
+ return `<div class="card"><div class="row" style="align-items:end"><div><label>Show</label><select onchange="lf=this.value;render()">${opt([['open','Open leads'],['','All'],...LS.map(s=>[s,s])],lf)}</select></div><div style="flex:2"><button class="btn" onclick="editLead()">+ New lead</button></div></div>${o?'':'<p style="font-size:13px;color:var(--m)">Leads you add go to the owners to follow up.</p>'}</div>
+ ${L.map(l=>{const due=l.follow&&l.follow<=t&&!['Won','Lost'].includes(l.status);const j=J(l.job);return `<div class="card lead ${due?'due':''}"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><div><b>${esc(l.clientName||cname(l.client))}</b>${l.clientPhone?` · <a href="tel:${esc(l.clientPhone)}">${esc(l.clientPhone)}</a>`:''}<div style="font-size:12px;color:var(--m)">${l.date}${j?' · from '+esc(j.num):''}${l.byName?' · by '+esc(l.byName):''}</div></div><span class="pill ${l.status}">${l.status}</span></div><div style="margin:8px 0;white-space:pre-wrap">${esc(l.text)}</div>
+ ${o?`<div class="row" style="align-items:end"><div><label>Status</label><select onchange="setLead('${l.id}','status',this.value)">${opt(LS.map(s=>[s,s]),l.status)}</select></div><div><label>Follow up ${due?'<b style="color:#c0392b">· due</b>':''}</label><input type="date" value="${l.follow||''}" onchange="setLead('${l.id}','follow',this.value)"></div><div style="flex:0;white-space:nowrap">${l.quote&&Q(l.quote)?`<button class="btn s" onclick="viewQuote('${l.quote}')">Quote ${esc(Q(l.quote).num)}</button>`:`<button class="btn g" onclick="leadQuote('${l.id}')">Create quote</button>`}<button class="btn sm s" onclick="editLead('${l.id}')">Edit</button></div></div>`:''}</div>`}).join('')||'<div class="card">No leads here.</div>'}`};
+function setLead(id,k,v){D.leads.find(x=>x.id==id)[k]=v;save();render()}
+function editLead(id){const l=id?D.leads.find(x=>x.id==id):{client:'',text:'',follow:'',status:'New'};const o=isOwner();
+ modal(`<h2>${id?'Edit':'New'} lead</h2>${o?clientPicker(l.client):`<label>Customer</label><select id="lcl">${opt(D.jobs.map(j=>[j.id,(j.clientName||'')+' ('+j.num+')']),'','— pick from my jobs —')}</select>`}<label>What do they want?</label><textarea id="ltx" rows="3">${esc(l.text)}</textarea><label>Follow-up date</label><input id="lfu" type="date" value="${l.follow||''}">
+ <div style="margin-top:14px"><button class="btn" onclick="saveLead('${id||''}')">Save</button>${id&&o?`<button class="btn d" onclick="if(confirm('Delete lead?')){D.leads=D.leads.filter(x=>x.id!='${id}');save();modal();render()}">Delete</button>`:''}<button class="btn s" onclick="modal()">Cancel</button></div>`)}
+function saveLead(id){const text=$('#ltx').value.trim();if(!text)return alert('Describe the work');let l=id?D.leads.find(x=>x.id==id):{id:uid(),date:tod(),status:'New',by:ME(),byName:W(myWorkerId())?.name||ME()||'Owner'};
+ if(isOwner()){const cl=pickClient();if(!cl)return;const c=C(cl)||{};Object.assign(l,{client:cl,clientName:c.name||'',clientPhone:c.phone||''})}else{const j=J($('#lcl').value);if(!j)return alert('Pick the customer');Object.assign(l,{client:j.client,clientName:j.clientName||'',clientPhone:j.clientPhone||'',job:j.id})}
+ Object.assign(l,{text,follow:$('#lfu').value});if(!id)D.leads.push(l);save();modal();render()}
+function leadQuote(id){const l=D.leads.find(x=>x.id==id);go('quotes');editQuote();if(l.client&&C(l.client))$('#cl').value=l.client;$('#qn').value=l.text;window._leadQ=id}
+{const _sq=saveQuote;saveQuote=function(id){const lid=window._leadQ,n=D.quotes.length;window._leadQ=null;_sq(id);if(lid&&D.quotes.length>n){const l=D.leads.find(x=>x.id==lid);if(l){l.quote=D.quotes[D.quotes.length-1].id;l.status='Quoted';save()}}}}
+{const _vd=V.dash;V.dash=()=>{const h=_vd();if(isTech())return h;const L=openLeads(),due=L.filter(l=>l.follow&&l.follow<=tod());return `<div class="grid"><div class="card stat" style="cursor:pointer" onclick="lf='open';go('leads')"><div class="n">${L.length}</div><div class="k">Open leads</div></div><div class="card stat" style="cursor:pointer" onclick="lf='open';go('leads')"><div class="n" style="color:${due.length?'#c0392b':'var(--b)'}">${due.length}</div><div class="k">Follow-ups due</div></div></div>`+h}}
+
+/* ---------- scheduling calendar ---------- */
+function calCell(day,h){if(isOwner())quickSched(day,h);else{cal.v='day';cal.d=day;render()}}
+function quickSched(day,h){const un=D.jobs.filter(j=>!j.when&&!['Paid','Invoiced'].includes(j.status));const time=h!=null?String(h).padStart(2,'0')+':00':'08:00';
+ modal(`<h2>Schedule · ${new Date(day+'T00:00').toLocaleDateString([],{weekday:'long',month:'short',day:'numeric'})}</h2>${un.length?`<label>Existing unscheduled job</label><select id="qsj">${opt(un.map(j=>[j.id,j.num+' · '+(C(j.client)?.name||'')+' · '+(j.desc||'').slice(0,40)]),'','+ New job')}</select>`:'<input type="hidden" id="qsj" value="">'}
+ <div id="qsnew">${clientPicker('')}<label>Description</label><input id="qsd"></div><div class="row"><div><label>Time</label><input id="qst" type="time" value="${time}"></div></div><label>Assign workers</label><div>${D.workers.map(w=>`<label class="wpick" style="border-color:${wColor(w.id)}"><input type="checkbox" class="qsw" value="${w.id}">${esc(w.name)}</label>`).join('')}</div>
+ <div style="margin-top:14px"><button class="btn" onclick="saveQuick('${day}')">Schedule</button><button class="btn s" onclick="cal.v='day';cal.d='${day}';modal();render()">Open day view</button><button class="btn s" onclick="modal()">Cancel</button></div>`);
+ const s=$('#qsj');if(s.tagName=='SELECT')s.onchange=()=>{$('#qsnew').style.display=s.value?'none':'';const j=J(s.value);if(j)document.querySelectorAll('.qsw').forEach(c=>c.checked=(j.workers||[]).includes(c.value))}}
+function saveQuick(day){const ws=[...document.querySelectorAll('.qsw:checked')].map(x=>x.value),when=day+'T'+($('#qst').value||'08:00');let j=J($('#qsj').value);
+ if(!j){const cl=pickClient();if(!cl)return;j={id:uid(),num:'J-'+D.seq.j++,client:cl,desc:$('#qsd').value,workers:[],when:'',status:'Scheduled',quote:''};D.jobs.push(j)}j.when=when;if(ws.length)j.workers=ws;save();modal();render()}
+function unschedPanel(){if(!isOwner())return '';const un=D.jobs.filter(j=>!j.when&&!['Paid','Invoiced'].includes(j.status));return `<div class="card noprint"><h2 style="font-size:15px">Unscheduled (${un.length}) <small style="color:var(--m);font-weight:400">drag onto a day, or tap a day to schedule</small></h2><div class="unsch">${un.map(j=>`<div class="chip" draggable="true" ondragstart="event.dataTransfer.setData('text/plain','${j.id}')" onclick="calTap('${j.id}')"><b>${esc(j.num)}</b> ${jobClient(j)}<br><small>${esc((j.desc||'').slice(0,40))}</small></div>`).join('')||'<small style="color:var(--m)">Nothing waiting.</small>'}</div></div>`}
+function weekText(wid,a){const w=W(wid);const L=D.jobs.filter(j=>(j.workers||[]).includes(wid)&&j.when&&j.when.slice(0,10)>=a&&j.when.slice(0,10)<addDays(a,7)).sort((x,y)=>x.when.localeCompare(y.when));const ord=n=>n+(['th','st','nd','rd'][(n%100-20)%10]||['th','st','nd','rd'][n%100]||'th');
+ return `${D.settings.company} schedule for ${w?w.name:''} (week of ${new Date(a+'T00:00').toLocaleDateString([],{month:'short',day:'numeric'})}):\n`+(L.map(j=>{const d=new Date(j.when);const c=C(j.client)||{};return `• ${d.toLocaleDateString([],{weekday:'long'})} the ${ord(d.getDate())}, ${fmtT(d)}: ${c.name||j.clientName||''}${(c.address||j.clientAddress)?' — '+(c.address||j.clientAddress):''}${j.desc?' ('+j.desc+')':''}`}).join('\n')||'No jobs scheduled.')}
+async function sendSched(wid,a){const t=weekText(wid,a);try{if(navigator.share){await navigator.share({text:t});return}}catch(e){if(e.name=='AbortError')return}location.href='sms:?&body='+encodeURIComponent(t)}
+function crewView(a){const days=[...Array(7)].map((_,i)=>addDays(a,i));const ws=(cal.w?D.workers.filter(w=>w.id==cal.w):D.workers);
+ if(innerWidth<700)return ws.map(w=>`<div class="crewm" style="border-left:5px solid ${wColor(w.id)}"><div style="display:flex;justify-content:space-between;align-items:center"><b>${esc(w.name)}</b><button class="btn sm s" onclick="sendSched('${w.id}','${a}')">📤 Send schedule</button></div>${days.map(d=>{const L=D.jobs.filter(j=>(j.workers||[]).includes(w.id)&&(j.when||'').slice(0,10)==d).sort((x,y)=>x.when.localeCompare(y.when));return `<div class="crewd ${d==tod()?'today':''}" ${dropAttr(d)} onclick="calCellW('${d}','${w.id}')"><div class="cdh">${new Date(d+'T00:00').toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})}</div>${L.map(chip).join('')||'<small style="color:#aaa">— tap to assign</small>'}</div>`}).join('')}</div>`).join('');
+ return `<div class="tw"><table class="crew"><tr><th>Worker</th>${days.map(d=>`<th class="${d==tod()?'today':''}">${new Date(d+'T00:00').toLocaleDateString([],{weekday:'short',day:'numeric'})}</th>`).join('')}</tr>${ws.map(w=>`<tr><td style="border-left:5px solid ${wColor(w.id)}"><b>${esc(w.name)}</b><br><button class="btn sm s" onclick="sendSched('${w.id}','${a}')">📤 Send schedule</button></td>${days.map(d=>`<td class="cd" ${dropAttr(d)} onclick="calCellW('${d}','${w.id}')">${D.jobs.filter(j=>(j.workers||[]).includes(w.id)&&(j.when||'').slice(0,10)==d).sort((x,y)=>x.when.localeCompare(y.when)).map(chip).join('')}</td>`).join('')}</tr>`).join('')}</table></div>`}
+function calCellW(day,wid){quickSched(day);setTimeout(()=>{const c=document.querySelector(`.qsw[value="${wid}"]`);if(c)c.checked=true},0)}
+function myWeek(a){const me=myWorkerId();return `<div style="white-space:pre-wrap;font-size:15px;line-height:1.6">${esc(weekText(me,a)).replace(/^.*\n/,'')}</div>`}
+{const _vc=V.cal;V.cal=()=>{if(!cal.d)cal.d=tod();if(isTech()&&!cal._t){cal.v='myweek';cal._t=1}if(cal.v=='crew'||cal.v=='myweek'){const a=ymd(weekStart(new Date(cal.d+'T00:00')));const sv=cal.v;cal.v='week';let h=_vc();cal.v=sv;const body=sv=='crew'?crewView(a):myWeek(a);
+  h=h.replace(/<div class="card" style="padding:8px">[\s\S]*$/,`<div class="card" style="padding:8px">${body}</div>`);return fixCal(h)+''}return fixCal(_vc())}}
+function fixCal(h){const views=isOwner()?[['day','Day'],['week','Week'],['month','Month'],['crew','Crew week']]:[['myweek','My week'],['day','Day'],['week','Week'],['month','Month']];
+ h=h.replace(/<div>(<button class="btn sm[^"]*" onclick="cal.v='day';render\(\)">Day<\/button>[\s\S]*?)<\/div>/,'<div>'+views.map(([v,l])=>`<button class="btn sm ${cal.v==v?'':'s'}" onclick="cal.v='${v}';render()">${l}</button>`).join('')+'</div>');
+ return (isOwner()?unschedPanel():'')+h}
+if(!localStorage.getItem('cp-calv')){localStorage.setItem('cp-calv','1')}
+
+/* ---------- messages (owner) ---------- */
+const MSG1={id:'msg-2026-10-10-call',title:'Voice call with Lil Plumber - Sat Oct 10, 2026 (morning)',date:'2026-10-10',body:`## Overnight review
+**4 bug fixes:**
+- "Erase everything" now requires typing ERASE.
+- Resuming a stopped repeating job restores its future visits.
+- Deleting an invoice sets the job back to Completed.
+- Techs no longer see a non-working Delete button on time entries.
+
+**8 ranked ideas:**
+1. "My Day" one-tap tech screen
+2. "Finish & get paid" button
+3. Bigger phone buttons, main action at the bottom
+4. Load data once instead of twice (speed + free-tier reads)
+5. Keep about the last 12 months live, load older on request
+6. Back up photos too, plus a weekly backup reminder
+7. Keep photos small or auto-expire after ~2 years
+8. Text/email invoices via the phone's own apps
+
+## Go-live notes
+- Back up first.
+- Keep Dad's app closed during the first owner sign-in.
+- Then publish the new security rules.
+
+## Colt's decisions
+- Hold off on idea 8 (text/email invoicing) for now.
+
+## New requests
+- Auto clock-in when leaving the shop, with an automatic heading-to / arrived / time-on-site / left timeline. **Update:** Colt later decided to remove employee phone location tracking entirely, and to track vehicles/equipment with separate GPS trackers instead.
+- A notes section on jobs to capture what customers say, with future work flagged as leads.
+- A scheduling calendar to assign jobs to employees by date.
+
+## Status
+Code changes only — nothing pushed live.`};
+function seedMsg(){if(!isOwner()||D.settings.seededMsg1)return;if(!D.messages.some(m=>m.id==MSG1.id))D.messages.push({...MSG1,at:new Date().toISOString()});D.settings.seededMsg1=true;save()}
+{const _dr=window.onDataReady;window.onDataReady=()=>{seedMsg();_dr&&_dr()}}
+if(!window.userEmail)setTimeout(()=>{if(!window.userEmail&&!window.userRole)seedMsg()},0);
+const md=t=>esc(t).split('\n').map(l=>{l=l.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');if(/^## /.test(l))return `<h3 style="font-size:15px;margin:12px 0 4px">${l.slice(3)}</h3>`;if(/^# /.test(l))return `<h2>${l.slice(2)}</h2>`;if(/^[-•] /.test(l))return `<div style="padding-left:14px;text-indent:-10px">• ${l.slice(2)}</div>`;if(/^\d+\. /.test(l))return `<div style="padding-left:16px;text-indent:-14px">${l}</div>`;return l?`<div>${l}</div>`:'<div style="height:6px"></div>'}).join('');
+let msgOpen='';
+V.messages=()=>{if(isTech())return '';const L=D.messages.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.at||'').localeCompare(a.at||''));
+ return `<div class="card"><h2>Messages & call notes</h2><button class="btn" onclick="editMsg()">+ New note</button></div>${L.map(m=>`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;cursor:pointer" onclick="msgOpen=msgOpen=='${m.id}'?'':'${m.id}';render()"><div><b>${esc(m.title)}</b><div style="font-size:12px;color:var(--m)">${m.date||''}</div></div><span>${msgOpen==m.id?'▲':'▼'}</span></div>${msgOpen==m.id?`<div style="margin-top:10px;font-size:14px">${md(m.body)}</div><div style="margin-top:10px"><button class="btn sm s" onclick="editMsg('${m.id}')">Edit</button></div>`:`<div style="font-size:13px;color:var(--m);margin-top:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${esc((m.body||'').replace(/[#*]/g,'').slice(0,140))}</div>`}</div>`).join('')||'<div class="card">No notes yet.</div>'}`};
+function editMsg(id){const m=id?D.messages.find(x=>x.id==id):{title:'',date:tod(),body:''};modal(`<h2>${id?'Edit':'New'} note</h2><label>Title</label><input id="mt" value="${esc(m.title)}"><label>Date</label><input id="mdt" type="date" value="${m.date||tod()}"><label>Text (## heading, - bullet, **bold**)</label><textarea id="mb" rows="14">${esc(m.body)}</textarea><div style="margin-top:14px"><button class="btn" onclick="saveMsg('${id||''}')">Save</button>${id?`<button class="btn d" onclick="if(confirm('Delete note?')){D.messages=D.messages.filter(x=>x.id!='${id}');save();modal();render()}">Delete</button>`:''}<button class="btn s" onclick="modal()">Cancel</button></div>`)}
+function saveMsg(id){const t=$('#mt').value.trim();if(!t)return alert('Title required');let m=id?D.messages.find(x=>x.id==id):{id:uid(),at:new Date().toISOString()};Object.assign(m,{title:t,date:$('#mdt').value,body:$('#mb').value});if(!id)D.messages.push(m);msgOpen=m.id;save();modal();render()}
+render();
+</script>
 <script type="module">
 /* ================================================================
    FIREBASE CONFIG — paste your config from Firebase Console here
@@ -246,7 +558,11 @@ const firebaseConfig = {
 };
 /* ================================================================ */
 const COMPANY='main';
-const COLS={clients:'clients',workers:'workers',jobs:'jobs',quotes:'quotes',time:'timeEntries',parts:'parts',templates:'templates'}; // D key -> Firestore collection
+// D key -> Firestore collection. priv = fields moved to an owner-only "<collection>_private" doc
+const SPEC={clients:{c:'clients'},workers:{c:'workers',priv:['rate','cost']},jobs:{c:'jobs',priv:['actual']},quotes:{c:'quotes'},time:{c:'timeEntries'},parts:{c:'parts'},templates:{c:'templates'},invoices:{c:'invoices'},recurring:{c:'recurring'},checklistTemplates:{c:'checklistTemplates'},users:{c:'users'},notes:{c:'notes'},leads:{c:'leads'},messages:{c:'messages'}};
+// what techs may write: collection -> owner field that must equal their email, and whether they may delete
+const TECHW={time:{f:'email',del:false},notes:{f:'by',del:false},leads:{f:'by',del:false}};
+const SCHEMA=2;
 const $=s=>document.querySelector(s), body=$('#authbody'), st=$('#syncst');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 if(firebaseConfig.apiKey.startsWith('PASTE')){
@@ -261,8 +577,9 @@ async function start(){
   const F=await import(base+'firebase-firestore.js');
   const app=initializeApp(firebaseConfig), auth=A.getAuth(app);
   let db; try{db=F.initializeFirestore(app,{localCache:F.persistentLocalCache({tabManager:F.persistentMultipleTabManager()})})}catch(e){db=F.getFirestore(app)}
-  const co=F.doc(db,'companies',COMPANY), metaRef=F.doc(co,'settings','main');
-  let unsubs=[], last={}, applying=false, ready=false;
+  const co=F.doc(db,'companies',COMPANY), metaRef=F.doc(co,'settings','main'), pubRef=F.doc(co,'settings','public');
+  let unsubs=[], last={}, applying=false, ready=false, role=null, me='';
+  const pubM={}, privM={};
 
   function showLogin(msg='',ok=false){
     $('#auth').style.display='flex';$('#signout').style.display='none';st.textContent='';
@@ -272,49 +589,95 @@ async function start(){
     $('#areset').onclick=async()=>{const e=$('#ae').value.trim();if(!e){$('#amsg').textContent='Type your email above first.';return}
       try{await A.sendPasswordResetEmail(auth,e);$('#amsg').className='amsg ok';$('#amsg').textContent='Reset email sent — check your inbox.'}catch(x){$('#amsg').textContent=nice(x)}};
   }
-  const nice=e=>({'auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong email or password.','auth/user-not-found':'No account with that email.','auth/invalid-email':'That email looks wrong.','auth/too-many-requests':'Too many tries — wait a bit and try again.','permission-denied':'This account is not allowed to access company data.'}[e.code]||e.message);
-  $('#signout').onclick=()=>A.signOut(auth);
+  const nice=e=>({'auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong email or password.','auth/user-not-found':'No account with that email.','auth/invalid-email':'That email looks wrong.','auth/too-many-requests':'Too many tries — wait a bit and try again.','permission-denied':'This account is not allowed to do that.'}[e.code]||e.message);
+  $('#signout').onclick=async()=>{await A.signOut(auth);localStorage.removeItem(K);setD(norm(blank()));window.photoStore=window.localPhotoStore;render()};
 
-  const meta=D=>({settings:D.settings,seq:D.seq});
-  const snapLast=D=>{last={};for(const k in COLS){last[k]={};(D[k]||[]).forEach(x=>last[k][x.id]=JSON.stringify(x))}last.meta=JSON.stringify(meta(D))};
+  const stable=o=>JSON.stringify(o,(k,v)=>v&&typeof v=='object'&&!Array.isArray(v)?Object.keys(v).sort().reduce((a,x)=>(a[x]=v[x],a),{}):v);
   const clean=o=>JSON.parse(JSON.stringify(o)); // strips undefined (Firestore rejects it)
+  const meta=D=>({settings:D.settings,seq:D.seq,schema:SCHEMA});
+  const split=(k,x)=>{const p=SPEC[k].priv;if(!p)return[clean(x),null];const a={},b={};for(const f in x)(p.includes(f)?b:a)[f]=x[f];return[clean(a),clean(b)]};
+  const snapLast=D=>{last={};for(const k in SPEC){last[k]={};(D[k]||[]).forEach(x=>last[k][x.id]=stable(x))}last.meta=stable(meta(D))};
+
+  async function commit(ops){for(let i=0;i<ops.length;i+=400){const wb=F.writeBatch(db);ops.slice(i,i+400).forEach(([t,r,v])=>t=='set'?wb.set(r,v):t=='upd'?wb.update(r,v):wb.delete(r));
+    try{await wb.commit()}catch(e){st.textContent='⚠ sync error';alert('Sync error: '+nice(e))}}}
 
   // Push only what changed since last sync
   async function push(full=false){
-    if(applying||!ready&&!full)return;const D=getD();const b=[];
-    for(const k in COLS){const prev=full?{}:(last[k]||{}),cur={};(D[k]||[]).forEach(x=>{if(!x.id)return;const j=JSON.stringify(x);cur[x.id]=j;if(prev[x.id]!==j)b.push(['set',F.doc(co,COLS[k],x.id),clean(x)])});
-      for(const id in prev)if(!(id in cur))b.push(['del',F.doc(co,COLS[k],id)])}
-    const m=JSON.stringify(meta(D));if(full||m!==last.meta)b.push(['set',metaRef,clean(meta(D))]);
-    snapLast(D);
-    for(let i=0;i<b.length;i+=400){const wb=F.writeBatch(db);b.slice(i,i+400).forEach(([t,r,v])=>t=='set'?wb.set(r,v):wb.delete(r));
-      try{await wb.commit()}catch(e){st.textContent='⚠ sync error';alert('Sync error: '+nice(e))}}
+    if(applying||!ready&&!full)return;const D=getD();const ops=[];
+    if(role==='owner'){
+      for(const k in SPEC){const c=SPEC[k].c,prev=full?{}:(last[k]||{}),cur={};
+        (D[k]||[]).forEach(x=>{if(!x.id)return;const s=stable(x);cur[x.id]=s;if(prev[x.id]!==s){const [a,b]=split(k,x);ops.push(['set',F.doc(co,c,x.id),a]);if(b)ops.push(['set',F.doc(co,c+'_private',x.id),b])}});
+        for(const id in prev)if(!(id in cur)){ops.push(['del',F.doc(co,c,id)]);if(SPEC[k].priv)ops.push(['del',F.doc(co,c+'_private',id)])}
+        last[k]=cur}
+      const m=stable(meta(D));if(full||m!==last.meta){ops.push(['set',metaRef,clean(meta(D))]);const S=D.settings;ops.push(['set',pubRef,clean({company:S.company||'',phone:S.phone||''})])}last.meta=m;
+    }else if(role==='tech'){
+      for(const k in TECHW){const {f,del}=TECHW[k],c=SPEC[k].c,pt=last[k]||{},cur={};(D[k]||[]).forEach(t=>{const s=stable(t);cur[t.id]=s;if(pt[t.id]!==s&&t[f]===me)ops.push(['set',F.doc(co,c,t.id),clean(t)])});
+        if(del)for(const id in pt)if(!(id in cur)&&JSON.parse(pt[id])[f]===me)ops.push(['del',F.doc(co,c,id)]);last[k]=cur}
+      const pj=last.jobs||{},cj={};(D.jobs||[]).forEach(j=>{const s=stable(j);cj[j.id]=s;if(pj[j.id]&&pj[j.id]!==s){const o=JSON.parse(pj[j.id]);if(stable(o.techNotes)!==stable(j.techNotes)||stable(o.checklist)!==stable(j.checklist))ops.push(['upd',F.doc(co,'jobs',j.id),{techNotes:j.techNotes||'',checklist:clean(j.checklist||[]),updatedBy:me}])}});last.jobs=cj;
+    }
+    await commit(ops);
   }
   window.cloudSave=()=>push();
 
+  function compose(k){const D=getD();D[k]=Object.keys(pubM[k]||{}).map(id=>Object.assign({},pubM[k][id],(privM[k]||{})[id]||{}));last[k]={};D[k].forEach(x=>last[k][x.id]=stable(x));return D}
+  function listenCol(k,q,isPriv){unsubs.push(F.onSnapshot(q,{includeMetadataChanges:true},s=>{const M={};s.docs.forEach(d=>M[d.id]=d.data());(isPriv?privM:pubM)[k]=M;apply(compose(k),s)},err))}
   function listen(){
     unsubs.forEach(u=>u());unsubs=[];
-    for(const k in COLS)unsubs.push(F.onSnapshot(F.collection(co,COLS[k]),{includeMetadataChanges:true},s=>{
-      const D=getD();D[k]=s.docs.map(d=>d.data());last[k]={};D[k].forEach(x=>last[k][x.id]=JSON.stringify(x));apply(D,s)},err));
-    unsubs.push(F.onSnapshot(metaRef,{includeMetadataChanges:true},s=>{if(!s.exists())return;const D=getD(),m=s.data();if(m.settings)D.settings=m.settings;if(m.seq)D.seq=m.seq;last.meta=JSON.stringify(meta(D));apply(D,s)},err));
+    if(role==='owner'){
+      for(const k in SPEC){listenCol(k,F.collection(co,SPEC[k].c));if(SPEC[k].priv)listenCol(k,F.collection(co,SPEC[k].c+'_private'),true)}
+      unsubs.push(F.onSnapshot(metaRef,{includeMetadataChanges:true},s=>{if(!s.exists())return;const D=getD(),m=s.data();if(m.settings)D.settings=m.settings;if(m.seq)D.seq=Object.assign({i:1001},m.seq);last.meta=stable(meta(D));apply(D,s)},err));
+    }else{
+      listenCol('workers',F.collection(co,'workers'));
+      listenCol('jobs',F.query(F.collection(co,'jobs'),F.where('techEmails','array-contains',me)));
+      listenCol('time',F.query(F.collection(co,'timeEntries'),F.where('email','==',me)));
+      listenCol('checklistTemplates',F.collection(co,'checklistTemplates'));
+      listenCol('notes',F.query(F.collection(co,'notes'),F.where('techEmails','array-contains',me)));
+      listenCol('leads',F.query(F.collection(co,'leads'),F.where('by','==',me)));
+      unsubs.push(F.onSnapshot(pubRef,s=>{if(!s.exists())return;const D=getD();Object.assign(D.settings,s.data());apply(D,s)},err));
+    }
   }
   function apply(D,s){applying=true;setD(D);applying=false;st.textContent=s.metadata.fromCache?'● offline (cached)':(s.metadata.hasPendingWrites?'● syncing…':'● live');rerender();$('#cname').innerHTML='<img src="logo-mono-white.png" alt="" class="hlogo">'+esc(!D.settings.company||D.settings.company=='Your Plumbing Co.'?'Central Plumbing':D.settings.company)}
-  function err(e){st.textContent='⚠ '+nice(e);if(e.code=='permission-denied'){alert(nice(e));A.signOut(auth)}}
+  function err(e){st.textContent='⚠ '+nice(e);console.warn(e);if(e.code=='permission-denied'&&role!=='owner'){alert('Access problem: '+nice(e));A.signOut(auth)}}
+
+  // Firestore-backed photo store: photos/{id} (meta) + photos/{id}/chunks/{n} (base64 pieces < 1MB each)
+  const CH=700000;
+  const fsPhotos={
+    async list(jid){const c=F.collection(co,'photos');const q=role==='owner'?F.query(c,F.where('jobId','==',jid)):F.query(c,F.where('jobId','==',jid),F.where('techEmails','array-contains',me));return (await F.getDocs(q)).docs.map(d=>({id:d.id,...d.data()}))},
+    async get(p){const s=await F.getDocs(F.collection(co,'photos',p.id,'chunks'));return s.docs.sort((a,b)=>+a.id-+b.id).map(d=>d.data().d).join('')},
+    async add(j,tag,data){const id=Math.random().toString(36).slice(2,12),n=Math.ceil(data.length/CH),wb=F.writeBatch(db),te=(j.techEmails||[]).slice();if(role!=='owner'&&!te.includes(me))te.push(me);
+      wb.set(F.doc(co,'photos',id),{jobId:j.id,tag,by:me,byName:(window.phName?phName():me),at:new Date().toISOString(),n,techEmails:te});for(let i=0;i<n;i++)wb.set(F.doc(co,'photos',id,'chunks',String(i)),{d:data.slice(i*CH,(i+1)*CH)});await wb.commit();return {id}},
+    async del(p){const wb=F.writeBatch(db);for(let i=0;i<(p.n||1);i++)wb.delete(F.doc(co,'photos',p.id,'chunks',String(i)));wb.delete(F.doc(co,'photos',p.id));await wb.commit()}
+  };
+
+  async function loadAllOwner(){const D=norm(blank());let any=false;
+    for(const k in SPEC){const pub=await F.getDocs(F.collection(co,SPEC[k].c));let priv={};if(SPEC[k].priv){(await F.getDocs(F.collection(co,SPEC[k].c+'_private'))).docs.forEach(d=>priv[d.id]=d.data())}
+      D[k]=pub.docs.map(d=>Object.assign({},d.data(),priv[d.id]||{}));if(pub.size)any=true}
+    const ms=await F.getDoc(metaRef);if(ms.exists()){any=true;const m=ms.data();if(m.settings)D.settings=m.settings;if(m.seq)D.seq=Object.assign({i:1001},m.seq)}
+    return {D,empty:!any,schema:ms.exists()?(ms.data().schema||1):0}}
 
   A.onAuthStateChanged(auth,async u=>{
-    window.userEmail=u?u.email:null;window.onUserChange&&window.onUserChange();
-    unsubs.forEach(x=>x());unsubs=[];ready=false;
-    if(!u){showLogin();return}
-    body.innerHTML='<p style="color:var(--m)">Loading company data…</p>';
+    unsubs.forEach(x=>x());unsubs=[];ready=false;role=null;
+    window.userEmail=u?u.email:null;window.userRole=null;window.userWorkerId=null;
+    if(!u){window.photoStore=window.localPhotoStore;showLogin();return}
+    me=u.email.toLowerCase();body.innerHTML='<p style="color:var(--m)">Loading company data…</p>';
     try{
-      const ms=await F.getDoc(metaRef);let empty=!ms.exists();
-      if(empty){for(const k in COLS){const q=await F.getDocs(F.query(F.collection(co,COLS[k]),F.limit(1)));if(!q.empty){empty=false;break}}}
-      if(empty){const D=getD(),n=Object.keys(COLS).reduce((a,k)=>a+(D[k]||[]).filter(x=>!x.sample).length,0);
-        if(n&&!confirm(`The shared company account is empty.\n\nUpload the ${n} record(s) saved on this device so everyone can see them?\n\nOK = upload  ·  Cancel = start fresh`)){const b=norm(blank());b.settings=D.settings;setD(b)}
-        await push(true);
-      }
-      ready=true;listen();
-      $('#auth').style.display='none';$('#signout').style.display='';$('#signout').title=u.email;
-    }catch(e){if(e.code=='permission-denied'){showLogin('This account ('+u.email+') is not on the allowed list.');A.signOut(auth)}else showLogin('Error: '+nice(e))}
+      let workerId=null;if((window.OWNER_LIST||[]).includes(me))role='owner';
+      try{const ud=await F.getDoc(F.doc(co,'users',me));if(ud.exists()){const x=ud.data();if(!role)role=x.role==='owner'?'owner':'tech';workerId=x.workerId||null}}catch(e){if(!role)throw e}
+      if(!role){showLogin('This account ('+u.email+') is not on the team. Ask an owner to add you in Team.');await A.signOut(auth);return}
+      window.userRole=role;window.userWorkerId=workerId;window.photoStore=fsPhotos;
+      if(role==='owner'){
+        const r=await loadAllOwner();
+        if(r.empty){const D=getD(),n=Object.keys(SPEC).reduce((a,k)=>a+(D[k]||[]).filter(x=>!x.sample).length,0);
+          if(n&&!confirm(`The shared company account is empty.\n\nUpload the ${n} record(s) saved on this device so everyone can see them?\n\nOK = upload  ·  Cancel = start fresh`)){const b=norm(blank());b.settings=D.settings;setD(b)}
+          derive();await push(true);
+        }else{setD(r.D);snapLast(getD());derive();
+          if(r.schema<SCHEMA){st.textContent='● upgrading data…';await push(true)} // migration: split private fields out of public docs, add techEmails etc.
+        }
+        ready=true;await push();window.onDataReady&&window.onDataReady();
+      }else{setD(norm(blank()));ready=true}
+      listen();window.onUserChange&&window.onUserChange();
+      $('#auth').style.display='none';$('#signout').style.display='';$('#signout').title=u.email+' ('+role+')';
+    }catch(e){console.warn(e);if(e.code=='permission-denied'){showLogin('This account ('+u.email+') is not allowed to access company data.');A.signOut(auth)}else showLogin('Error: '+nice(e))}
   });
 }
 </script></body></html>
