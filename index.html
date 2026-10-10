@@ -37,7 +37,7 @@ const ymd=d=>{d=new Date(d);return d.getFullYear()+'-'+String(d.getMonth()+1).pa
 const dtl=d=>{d=new Date(d);return ymd(d)+'T'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 const hrs=e=>((e.out?new Date(e.out):new Date())-new Date(e.in))/36e5;const fmtDT=d=>d?new Date(d).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'';
 function weekStart(d){d=new Date(d);d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
-function blank(){return{settings:{company:'Your Plumbing Co.',rate:95,fee:89,tax:7.5,phone:'',email:''},workers:[],clients:[],quotes:[],jobs:[],time:[],seq:{q:1001,j:1001}}}
+function blank(){return{settings:{company:'Your Plumbing Co.',rate:95,fee:89,tax:7.5,phone:'',email:''},workers:[],clients:[],quotes:[],jobs:[],time:[],parts:[],templates:[],seq:{q:1001,j:1001}}}
 function load(){try{D=JSON.parse(localStorage.getItem(K))}catch(e){}if(!D){D=blank();seed()}}
 function save(){localStorage.setItem(K,JSON.stringify(D));if(window.cloudSave)window.cloudSave()}
 window.getD=()=>D;window.setD=x=>{D=x;localStorage.setItem(K,JSON.stringify(D))};window.rerender=()=>{if(!$('#modal').innerHTML)render();else window._pendingRender=true};
@@ -131,9 +131,105 @@ function addClient(){const n=$('#cn').value.trim();if(!n)return alert('Name requ
 V.settings=()=>{const s=D.settings;const f=(k,l,t='text')=>`<div><label>${l}</label><input type="${t}" step="0.01" value="${esc(s[k])}" onchange="D.settings.${k}=this.type=='number'?+this.value:this.value;save();render()"></div>`;
  return `<div class="card"><h2>Company settings</h2><div class="row">${f('company','Company name')}${f('phone','Phone')}${f('email','Email')}</div><div class="row">${f('rate','Default labor rate ($/hr)','number')}${f('fee','Service call / trip fee ($)','number')}${f('tax','Tax rate (%)','number')}</div></div>
  <div class="card"><h2>Backup</h2><p style="color:var(--m);font-size:14px">Data syncs live to the shared company account (and is cached on this device for offline use). You can still export a JSON backup any time.</p><button class="btn" onclick="dl('plumbing-backup-'+ymd(new Date())+'.json',JSON.stringify(D,null,1),'application/json')">Export JSON backup</button><label class="btn s" style="display:inline-block">Import backup<input type="file" accept=".json" style="display:none" onchange="importJSON(this.files[0])"></label></div>
- <div class="card"><h2>Sample data</h2><button class="btn s" onclick="clearSample()">Clear sample data</button><button class="btn s" onclick="seed();render()">Re-add sample data</button><button class="btn d" onclick="if(confirm('Erase ALL data?')){D=blank();save();render()}">Erase everything</button></div>`};
+ <div class="card"><h2>Sample data</h2><button class="btn s" onclick="clearSample()">Clear sample data</button><button class="btn s" onclick="seed();render()">Re-add sample data</button><button class="btn d" onclick="if(confirm('Erase ALL data?')){D=norm(blank());save();render()}">Erase everything</button></div>`};
 function importJSON(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.settings||!x.jobs)throw 0;if(confirm('Replace current data with backup?')){D=x;save();render()}}catch(e){alert('Not a valid backup file')}};r.readAsText(f)}
 load();render();setInterval(()=>{if(!$('#modal').innerHTML&&(tab=='clock'||tab=='dash'))render()},60000);
+</script>
+<script>
+/* ===== Price book, parts catalog & profit (owner-only cost data) ===== */
+const OWNER_EMAILS=['cdbonser@gmail.com','thecentralplumber@gmail.com'];
+const isOwner=()=>!window.userEmail||OWNER_EMAILS.includes(String(window.userEmail).toLowerCase()); // offline/unconfigured = single-device owner
+function norm(x){if(!x)return x;['workers','clients','quotes','jobs','time','parts','templates'].forEach(k=>{if(!Array.isArray(x[k]))x[k]=[]});x.seq=x.seq||{q:1001,j:1001};x.settings=x.settings||blank().settings;return x}
+norm(D);
+if(!D.templates.length&&!D.parts.length&&[...D.workers,...D.clients,...D.jobs].every(x=>x.sample)){seedBook();localStorage.setItem(K,JSON.stringify(D))}
+{const _setD=window.setD;window.setD=x=>_setD(norm(x))}
+const P=id=>D.parts.find(x=>x.id==id),T=id=>D.templates.find(x=>x.id==id);
+const sell=p=>p?(+p.sell>0?+p.sell:(+p.cost||0)*(1+(+p.markup||0)/100)):0;
+const wCost=w=>w?(+w.cost>0?+w.cost:(+w.rate||0)):0;
+const laborCostRate=()=>+D.settings.laborCost>0?+D.settings.laborCost:(D.workers.length?D.workers.reduce((s,w)=>s+wCost(w),0)/D.workers.length:0);
+const pct=(p,c)=>p?((p-c)/p*100).toFixed(1)+'%':'—';
+const profitBox=(price,cost,lbl='')=>`<div class="card noprint" style="background:#f3fbf6;border-color:#bfe5cc"><b>${lbl}Profit (owner only)</b><div class="row" style="margin-top:6px"><div>Price<br><b>${money(price)}</b></div><div>Cost<br><b>${money(cost)}</b></div><div>Profit<br><b style="color:${price-cost<0?'#c0392b':'#1e8e4e'}">${money(price-cost)}</b></div><div>Margin<br><b>${pct(price,cost)}</b></div></div></div>`;
+function quoteCost(q){const lc=laborCostRate();return (q.items||[]).reduce((s,i)=>s+(i.type=='part'?(+i.qty||0)*(i.cost!=null?+i.cost:(P(i.partId)?+P(i.partId).cost||0:0)):i.type=='labor'?(+i.qty||0)*lc:0),0)}
+function jobFin(j){const q=Q(j.quote);const price=q?qTotals(q).sub:0;const lab=D.time.filter(t=>t.job==j.id).reduce((s,t)=>s+hrs(t)*wCost(W(t.worker)),0);
+ const act=(j.actual||[]).reduce((s,a)=>s+(+a.qty||0)*(+a.cost||0),0);const estParts=q?q.items.filter(i=>i.type=='part').reduce((s,i)=>s+(+i.qty||0)*(+i.cost||0),0):0;
+ const parts=(j.actual||[]).length?act:estParts;return{price,lab,parts,cost:lab+parts,partsEst:!(j.actual||[]).length&&estParts>0}}
+
+TABS.splice(5,0,['parts','Parts'],['book','Price Book']);
+
+/* ---- seed sample price book ---- */
+function seedBook(){const S=true,mk=(name,cost,markup,sku)=>{const p={id:uid(),name:'Sample - '+name,sku,cost,markup,sell:0,lastCost:null,lastDate:'',sample:S};D.parts.push(p);return p.id};
+ const wh=mk('50-gal gas water heater',620,45,'WH-50G'),fx=mk('Gas flex connector 24"',14,60,'FLX-24'),wl=mk('Water heater flex lines (pair)',18,60,'WHL-18'),ex=mk('Expansion tank 2 gal',38,50,'EXP-2'),
+  tl=mk('Toilet - standard 2-piece',165,45,'TOI-2P'),wx=mk('Wax ring w/ bolts',6,100,'WAX-1'),sl=mk('Toilet supply line 12"',7,100,'SUP-12'),cl=mk('Drain cleaner enzyme (qt)',9,100,'ENZ-QT');
+ D.templates.push({id:uid(),name:'Sample - Water heater install - 50 gal gas',fee:D.settings.fee,laborHours:4,notes:'Remove and haul away old unit, install new 50-gal gas heater, test for leaks and proper venting.',parts:[{partId:wh,qty:1},{partId:fx,qty:1},{partId:wl,qty:1},{partId:ex,qty:1}],sample:S},
+  {id:uid(),name:'Sample - Toilet replace',fee:D.settings.fee,laborHours:1.5,notes:'Remove old toilet, install new toilet with new wax ring and supply line.',parts:[{partId:tl,qty:1},{partId:wx,qty:1},{partId:sl,qty:1}],sample:S},
+  {id:uid(),name:'Sample - Drain clear',fee:D.settings.fee,laborHours:1,notes:'Snake/auger clogged drain, test flow.',parts:[{partId:cl,qty:1}],sample:S})}
+{const _seed=seed;seed=function(){_seed();if(!D.templates.length){seedBook();save()}}}
+clearSample=function(){if(!confirm('Remove all sample data?'))return;['workers','clients','quotes','jobs','time','parts','templates'].forEach(k=>D[k]=D[k].filter(x=>!x.sample));save();render()};
+
+/* ---- Parts tab ---- */
+V.parts=()=>{const o=isOwner();return `<div class="card"><h2>Parts catalog</h2><div class="row" style="align-items:end"><div style="flex:2"><label>Name</label><input id="pn"></div><div><label>SKU / notes</label><input id="ps"></div>${o?`<div><label>My cost ($)</label><input id="pc" type="number" step="0.01"></div><div><label>Markup %</label><input id="pm" type="number" step="1" placeholder="e.g. 50"></div>`:''}<div><label>Sell price ($)</label><input id="pp" type="number" step="0.01" placeholder="${o?'or use markup':''}"></div><div style="flex:0"><button class="btn" onclick="addPart()">Add</button></div></div></div>
+ <div class="card"><div class="tw"><table><tr><th>Name</th><th>SKU / notes</th>${o?'<th>My cost</th><th>Markup %</th>':''}<th>Sell price</th>${o?'<th>Last cost paid</th>':''}<th></th></tr>${D.parts.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<tr><td><input value="${esc(p.name)}" onchange="P('${p.id}').name=this.value;save()">${tag(p)}</td><td><input value="${esc(p.sku)}" onchange="P('${p.id}').sku=this.value;save()"></td>
+ ${o?`<td><input type="number" step="0.01" style="max-width:95px" value="${p.cost??''}" onchange="P('${p.id}').cost=+this.value;save();render()"></td><td><input type="number" step="1" style="max-width:75px" value="${p.markup||''}" onchange="P('${p.id}').markup=+this.value;save();render()"></td>`:''}
+ <td><input type="number" step="0.01" style="max-width:95px" value="${+p.sell>0?p.sell:''}" placeholder="${money(sell(p))}" onchange="P('${p.id}').sell=+this.value;save();render()"><br><small style="color:var(--m)">${money(sell(p))}${+p.sell>0?'':' (markup)'}</small></td>
+ ${o?`<td>${p.lastCost!=null?money(p.lastCost)+'<br><small style="color:var(--m)">'+esc(p.lastDate)+'</small>':'—'}</td>`:''}<td><button class="btn sm d" onclick="if(confirm('Delete part?')){D.parts=D.parts.filter(x=>x.id!='${p.id}');save();render()}">✕</button></td></tr>`).join('')||'<tr><td colspan=7>No parts yet.</td></tr>'}</table></div></div>`};
+function addPart(){const n=$('#pn').value.trim();if(!n)return alert('Name required');D.parts.push({id:uid(),name:n,sku:$('#ps').value,cost:$('#pc')?+$('#pc').value:0,markup:$('#pm')?+$('#pm').value:0,sell:+$('#pp').value||0,lastCost:null,lastDate:''});save();render()}
+
+/* ---- Price book (templates) ---- */
+const tmplPrice=t=>(+t.fee||0)+(+t.laborHours||0)*(+D.settings.rate||0)+t.parts.reduce((s,x)=>s+(+x.qty||0)*sell(P(x.partId)),0);
+const tmplCost=t=>(+t.laborHours||0)*laborCostRate()+t.parts.reduce((s,x)=>s+(+x.qty||0)*(+P(x.partId)?.cost||0),0);
+V.book=()=>{const o=isOwner();return `<div class="card"><h2>Price book / job templates</h2><button class="btn" onclick="editTmpl()">+ New template</button>${D.templates.length?'':`<button class="btn s" onclick="seedBook();save();render()">Add sample templates</button>`}</div><div class="card"><div class="tw"><table><tr><th>Template</th><th>Labor hrs</th><th>Parts</th><th class="right">Price</th>${o?'<th class="right">Est. profit</th>':''}<th></th></tr>${D.templates.map(t=>{const pr=tmplPrice(t),c=tmplCost(t);return `<tr><td>${esc(t.name)}${tag(t)}<br><small style="color:var(--m)">${esc(t.notes)}</small></td><td>${t.laborHours}</td><td>${t.parts.length}</td><td class="right">${money(pr)}</td>${o?`<td class="right">${money(pr-c)}<br><small>${pct(pr,c)}</small></td>`:''}<td><button class="btn sm s" onclick="editTmpl('${t.id}')">Edit</button></td></tr>`}).join('')||'<tr><td colspan=6>No templates yet.</td></tr>'}</table></div></div>`};
+let tp=[];
+function editTmpl(id){const t=id?T(id):{name:'',fee:D.settings.fee,laborHours:1,notes:'',parts:[]};tp=JSON.parse(JSON.stringify(t.parts));
+ modal(`<h2>${id?'Edit template':'New template'}</h2><label>Name</label><input id="tn" value="${esc(t.name)}" placeholder="Water heater install - 50 gal gas"><div class="row"><div><label>Labor hours</label><input id="th" type="number" step="0.25" value="${t.laborHours}"></div><div><label>Trip / service fee ($)</label><input id="tf" type="number" step="0.01" value="${t.fee}"></div></div><label>Notes (added to quote)</label><textarea id="tno" rows="2">${esc(t.notes)}</textarea>
+ <label>Parts</label><div id="tparts"></div><div class="row"><select id="tadd">${opt(D.parts.map(p=>[p.id,p.name+' · '+money(sell(p))]),'','— add part from catalog —')}</select><button class="btn sm s" style="flex:0" onclick="if($('#tadd').value){tp.push({partId:$('#tadd').value,qty:1});drawTp()}">Add</button></div><small style="color:var(--m)">Add new parts in the Parts tab first.</small>
+ <div style="margin-top:14px"><button class="btn" onclick="saveTmpl('${id||''}')">Save</button>${id?`<button class="btn d" onclick="if(confirm('Delete template?')){D.templates=D.templates.filter(x=>x.id!='${id}');save();modal();render()}">Delete</button>`:''}<button class="btn s" onclick="modal()">Cancel</button></div>`);drawTp()}
+function drawTp(){$('#tparts').innerHTML=tp.map((x,n)=>`<div class="row" style="align-items:center;margin-bottom:4px"><div style="flex:3">${esc(P(x.partId)?.name||'(deleted part)')} <small style="color:var(--m)">${money(sell(P(x.partId)))} ea</small></div><input style="flex:0 0 75px;min-width:0" type="number" step="0.25" value="${x.qty}" oninput="tp[${n}].qty=+this.value"><button class="btn sm d" style="flex:0" onclick="tp.splice(${n},1);drawTp()">✕</button></div>`).join('')||'<i style="color:var(--m)">No parts.</i>'}
+function saveTmpl(id){const n=$('#tn').value.trim();if(!n)return alert('Name required');let t=id?T(id):{id:uid()};Object.assign(t,{name:n,laborHours:+$('#th').value||0,fee:+$('#tf').value||0,notes:$('#tno').value,parts:tp});if(!id)D.templates.push(t);save();modal();render()}
+
+/* ---- Quotes: template picker, part catalog, costs ---- */
+{const _eq=editQuote;editQuote=function(id){_eq(id);const box=$('#qitems');if(!box)return;box.insertAdjacentHTML('beforebegin',`<div class="row noprint" style="margin-bottom:8px;background:#eef4fb;padding:8px;border-radius:8px"><select id="qtpl">${opt(D.templates.map(t=>[t.id,t.name+' · '+money(tmplPrice(t))]),'','— Start from template —')}</select><button class="btn sm" style="flex:0" onclick="applyTmpl()">Add template</button></div>`);
+ box.nextElementSibling.insertAdjacentHTML('beforeend',` <select id="qpart" style="width:auto;max-width:220px" onchange="if(this.value){const p=P(this.value);qi.push({type:'part',desc:p.name,qty:1,price:+sell(p).toFixed(2),cost:+p.cost||0,partId:p.id});this.value='';drawLi()}">${opt(D.parts.map(p=>[p.id,p.name]),'','+ Part from catalog…')}</select>`);
+ if(isOwner())$('#qtot').insertAdjacentHTML('afterend','<div id="qprof" style="text-align:right;font-size:13px;color:#1e8e4e;margin-bottom:8px"></div>');qtot()}}
+function applyTmpl(){const t=T($('#qtpl').value);if(!t)return;
+ if(qi.length==2&&qi[0].type=='fee'&&qi[1].type=='labor'&&qi[1].qty==1&&qi[1].desc=='Labor'&&!qi.some(i=>i.type=='part'))qi=[]; // drop default lines on first template
+ if(+t.fee&&!qi.some(i=>i.type=='fee'))qi.push({type:'fee',desc:'Service call / trip fee',qty:1,price:+t.fee});
+ if(+t.laborHours)qi.push({type:'labor',desc:'Labor - '+t.name.replace(/^Sample - /,''),qty:+t.laborHours,price:+D.settings.rate||0});
+ t.parts.forEach(x=>{const p=P(x.partId);if(p)qi.push({type:'part',desc:p.name,qty:+x.qty||1,price:+sell(p).toFixed(2),cost:+p.cost||0,partId:p.id})});
+ if(t.notes){const n=$('#qn');n.value=(n.value?n.value+'\n':'')+t.notes}$('#qtpl').value='';drawLi()}
+{const _qt=qtot;qtot=function(){_qt();const el=$('#qprof');if(el&&isOwner()){const q={items:qi,tax:0},pr=qTotals(q).sub,c=quoteCost(q);el.textContent=`Est. cost ${money(c)} · Profit ${money(pr-c)} · Margin ${pct(pr,c)}`}}}
+{const _dl=drawLi;drawLi=function(){_dl();if(!isOwner())return;[...$('#qitems').children].forEach((row,n)=>{const i=qi[n];if(i&&i.type=='part'){if(i.cost==null&&P(i.partId))i.cost=+P(i.partId).cost||0;row.querySelector('button').insertAdjacentHTML('beforebegin',`<input style="flex:0 0 85px;min-width:0" type="number" step="0.01" title="My cost (each)" placeholder="my cost" value="${i.cost??''}" oninput="qi[${n}].cost=this.value===''?null:+this.value;qtot()">`)}})}}
+{const _qd=quoteDoc;quoteDoc=function(q){let h=_qd(q);if(isOwner()){const pr=qTotals(q).sub,c=quoteCost(q);h=h.replace('<div class="qv">',profitBox(pr,c,'Quote ')+'<div class="qv">')}return h}}
+
+/* ---- Jobs: actual part costs + profit ---- */
+let ja=[];
+{const _ej=editJob;editJob=function(id,fq){_ej(id,fq);if(!isOwner()||!$('#modal').innerHTML)return;const j=id?J(id):{};ja=JSON.parse(JSON.stringify(j.actual||[]));
+ const btns=$('#modal .modal>div>div:last-child');btns.insertAdjacentHTML('beforebegin',`<div class="noprint" style="margin-top:14px;border-top:1px solid var(--l);padding-top:10px"><h3 style="font-size:15px;margin:0">Actual part costs paid <small style="color:var(--m);font-weight:400">(owner only · updates the part's "last cost")</small></h3><div id="jact"></div><div class="row"><select id="jaadd">${opt(D.parts.map(p=>[p.id,p.name]),'','— part from catalog —')}<option value="__other">Other (not in catalog)</option></select><button class="btn sm s" style="flex:0" onclick="addJa()">Add</button></div><div id="jprof"></div></div>`);drawJa(j)}}
+function addJa(){const v=$('#jaadd').value;if(!v)return;const p=P(v);ja.push({partId:p?p.id:'',desc:p?p.name:'',qty:1,cost:p?(p.lastCost??p.cost??0):0,date:ymd(new Date())});drawJa()}
+function drawJa(){$('#jact').innerHTML=ja.map((a,n)=>`<div class="row" style="align-items:center;margin-bottom:4px">${a.partId?`<div style="flex:3">${esc(P(a.partId)?.name||a.desc)}</div>`:`<input style="flex:3" placeholder="Description" value="${esc(a.desc)}" oninput="ja[${n}].desc=this.value">`}<input style="flex:0 0 70px;min-width:0" type="number" step="0.25" title="Qty" value="${a.qty}" oninput="ja[${n}].qty=+this.value;jprof()"><input style="flex:0 0 90px;min-width:0" type="number" step="0.01" title="Cost paid each" value="${a.cost}" oninput="ja[${n}].cost=+this.value;jprof()"><input style="flex:0 0 140px;min-width:0" type="date" value="${a.date}" oninput="ja[${n}].date=this.value"><button class="btn sm d" style="flex:0" onclick="ja.splice(${n},1);drawJa()">✕</button></div>`).join('')||'<small style="color:var(--m)">None recorded — profit uses the quote\'s estimated part costs.</small>';jprof()}
+function jprof(){const el=$('#jprof');if(!el)return;const j={id:window._jid||'',quote:$('#jq')?.value,actual:ja};const f=jobFin(j);el.innerHTML=f.price||f.cost?profitBox(f.price,f.cost,'Job '):'<small style="color:var(--m)">Link a quote to see job profit.</small>'}
+{const _ej2=editJob;editJob=function(id,fq){window._jid=id||'';_ej2(id,fq)}}
+{const _sj=saveJob;saveJob=function(id){const before=D.jobs.length;const keep=ja.slice(),own=isOwner()&&!!$('#jact');
+ const _save=save;let jobRef=null;save=function(){if(own){jobRef=id?J(id):D.jobs[D.jobs.length-1];if(jobRef){jobRef.actual=keep.filter(a=>a.partId||a.desc);jobRef.actual.forEach(a=>{const p=P(a.partId);if(p&&(!p.lastDate||a.date>=p.lastDate)){p.lastCost=+a.cost;p.lastDate=a.date}})}}_save()};
+ try{_sj(id)}finally{save=_save}}}
+
+/* ---- Dashboard profit report ---- */
+{const _vd=V.dash;V.dash=()=>{let h=_vd();if(!isOwner())return h;const L=D.jobs.filter(j=>j.quote||(j.actual||[]).length||jobHours(j.id)).map(j=>({j,f:jobFin(j)}));
+ const by={};L.forEach(({j,f})=>{const m=(j.when||'').slice(0,7)||'No date';by[m]=by[m]||{p:0,c:0,n:0};by[m].p+=f.price;by[m].c+=f.cost;by[m].n++});
+ const tp=L.reduce((s,x)=>s+x.f.price,0),tc=L.reduce((s,x)=>s+x.f.cost,0);
+ return h+`<div class="card noprint"><h2>Profit report <small style="color:var(--m);font-weight:400;font-size:12px">owner only · price = linked quote subtotal (pre-tax) · cost = parts (actual, else quoted cost) + logged labor at worker cost</small></h2>
+ <div class="grid"><div class="stat"><div class="n">${money(tp)}</div><div class="k">Revenue (all jobs)</div></div><div class="stat"><div class="n">${money(tc)}</div><div class="k">Cost</div></div><div class="stat"><div class="n" style="color:${tp-tc<0?'#c0392b':'#1e8e4e'}">${money(tp-tc)}</div><div class="k">Profit · ${pct(tp,tc)}</div></div></div>
+ <h3 style="font-size:15px">By month</h3><div class="tw"><table><tr><th>Month</th><th>Jobs</th><th class="right">Price</th><th class="right">Cost</th><th class="right">Profit</th><th class="right">Margin</th></tr>${Object.keys(by).sort().reverse().map(m=>`<tr><td>${m}</td><td>${by[m].n}</td><td class="right">${money(by[m].p)}</td><td class="right">${money(by[m].c)}</td><td class="right">${money(by[m].p-by[m].c)}</td><td class="right">${pct(by[m].p,by[m].c)}</td></tr>`).join('')||'<tr><td colspan=6>No data yet.</td></tr>'}</table></div>
+ <h3 style="font-size:15px">By job</h3><div class="tw"><table><tr><th>Job</th><th>Client</th><th class="right">Price</th><th class="right">Parts</th><th class="right">Labor</th><th class="right">Profit</th><th class="right">Margin</th></tr>${L.sort((a,b)=>(b.j.when||'').localeCompare(a.j.when||'')).map(({j,f})=>`<tr><td><a href="#" onclick="editJob('${j.id}');return false">${esc(j.num)}</a>${tag(j)}</td><td>${cname(j.client)}</td><td class="right">${money(f.price)}</td><td class="right">${money(f.parts)}${f.partsEst?'<small> est</small>':''}</td><td class="right">${money(f.lab)}</td><td class="right">${money(f.price-f.cost)}</td><td class="right">${pct(f.price,f.cost)}</td></tr>`).join('')||'<tr><td colspan=7>No jobs yet.</td></tr>'}</table></div></div>`}}
+
+/* ---- Workers: optional hourly cost ---- */
+{const _vw=V.workers;V.workers=()=>{let h=_vw();if(!isOwner())return h;h=h.replace('<th>Rate</th>','<th>Rate</th><th>My cost/hr <small>(optional, for profit)</small></th>');
+ D.workers.forEach(w=>{h=h.replace(`onchange="W('${w.id}').rate=+this.value;save()"></td>`,`onchange="W('${w.id}').rate=+this.value;save()"></td><td><input type="number" step="0.01" style="max-width:110px" placeholder="= rate" value="${w.cost||''}" onchange="W('${w.id}').cost=+this.value;save()"></td>`)});return h}}
+
+/* ---- Settings: labor cost rate ---- */
+{const _vs=V.settings;V.settings=()=>{let h=_vs();if(isOwner())h=h.replace('</div></div>\n <div class="card"><h2>Backup','</div><div class="row"><div><label>Labor cost $/hr for quote estimates (owner only; blank = avg worker cost '+money(laborCostRate())+')</label><input type="number" step="0.01" value="'+(D.settings.laborCost||'')+'" onchange="D.settings.laborCost=+this.value;save()"></div></div></div>\n <div class="card"><h2>Backup');return h}}
+{const _ij=importJSON;importJSON=function(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.settings||!x.jobs)throw 0;if(confirm('Replace current data with backup?')){D=norm(x);save();render()}}catch(e){alert('Not a valid backup file')}};r.readAsText(f)}}
+window.onUserChange=()=>render();
+render();
 </script>
 <script type="module">
 /* ================================================================
@@ -150,7 +246,7 @@ const firebaseConfig = {
 };
 /* ================================================================ */
 const COMPANY='main';
-const COLS={clients:'clients',workers:'workers',jobs:'jobs',quotes:'quotes',time:'timeEntries'}; // D key -> Firestore collection
+const COLS={clients:'clients',workers:'workers',jobs:'jobs',quotes:'quotes',time:'timeEntries',parts:'parts',templates:'templates'}; // D key -> Firestore collection
 const $=s=>document.querySelector(s), body=$('#authbody'), st=$('#syncst');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 if(firebaseConfig.apiKey.startsWith('PASTE')){
@@ -205,6 +301,7 @@ async function start(){
   function err(e){st.textContent='⚠ '+nice(e);if(e.code=='permission-denied'){alert(nice(e));A.signOut(auth)}}
 
   A.onAuthStateChanged(auth,async u=>{
+    window.userEmail=u?u.email:null;window.onUserChange&&window.onUserChange();
     unsubs.forEach(x=>x());unsubs=[];ready=false;
     if(!u){showLogin();return}
     body.innerHTML='<p style="color:var(--m)">Loading company data…</p>';
@@ -212,7 +309,7 @@ async function start(){
       const ms=await F.getDoc(metaRef);let empty=!ms.exists();
       if(empty){for(const k in COLS){const q=await F.getDocs(F.query(F.collection(co,COLS[k]),F.limit(1)));if(!q.empty){empty=false;break}}}
       if(empty){const D=getD(),n=Object.keys(COLS).reduce((a,k)=>a+(D[k]||[]).filter(x=>!x.sample).length,0);
-        if(n&&!confirm(`The shared company account is empty.\n\nUpload the ${n} record(s) saved on this device so everyone can see them?\n\nOK = upload  ·  Cancel = start fresh`)){const b=blank();b.settings=D.settings;setD(b)}
+        if(n&&!confirm(`The shared company account is empty.\n\nUpload the ${n} record(s) saved on this device so everyone can see them?\n\nOK = upload  ·  Cancel = start fresh`)){const b=norm(blank());b.settings=D.settings;setD(b)}
         await push(true);
       }
       ready=true;listen();
