@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Plumbing Ops</title>
-<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#08427c"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Plumbing Ops"><link rel="apple-touch-icon" href="icon-180.png">
+<title>Central Plumbing</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#111111"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Central Plumbing"><link rel="apple-touch-icon" href="icon-180.png">
 <style>
-:root{--b:#0b5cad;--bd:#08427c;--bg:#f3f6fa;--c:#fff;--t:#1d2733;--m:#66768a;--l:#dde3ea}
+:root{--b:#D7262E;--bd:#111;--bg:#f4f4f5;--c:#fff;--t:#1d2733;--m:#66768a;--l:#dde3ea}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--t)}
 header{background:var(--bd);color:#fff;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-header h1{font-size:18px;margin:0;flex:1}nav{display:flex;gap:4px;overflow-x:auto;background:var(--b);padding:6px}
-nav button{background:none;border:0;color:#dbe8f7;padding:8px 12px;border-radius:6px;font-size:14px;white-space:nowrap;cursor:pointer}
-nav button.on{background:#fff;color:var(--bd);font-weight:600}
+header h1{font-size:18px;margin:0;flex:1}nav{display:flex;gap:4px;overflow-x:auto;background:#1f1f1f;padding:6px;border-bottom:3px solid var(--b)}
+nav button{background:none;border:0;color:#e6e6e6;padding:8px 12px;border-radius:6px;font-size:14px;white-space:nowrap;cursor:pointer}
+nav button.on{background:var(--b);color:#fff;font-weight:700}
 main{max-width:1100px;margin:auto;padding:16px}.card{background:var(--c);border:1px solid var(--l);border-radius:10px;padding:16px;margin-bottom:14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.stat .n{font-size:28px;font-weight:700;color:var(--b)}.stat .k{color:var(--m);font-size:13px}
 table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--l)}th{color:var(--m);font-weight:600;font-size:12px;text-transform:uppercase}
 .tw{overflow-x:auto}button.btn,.btn{background:var(--b);color:#fff;border:0;border-radius:6px;padding:9px 14px;font-size:14px;cursor:pointer;margin:2px}
-.btn.s{background:#e7edf4;color:var(--t)}.btn.d{background:#c0392b}.btn.g{background:#1e8e4e}.btn.sm{padding:5px 9px;font-size:12px}
+.btn.s{background:#e8e8ea;color:var(--t)}.btn.d{background:#c0392b}.btn.g{background:#1e8e4e}.btn.sm{padding:5px 9px;font-size:12px}
 input,select,textarea{width:100%;padding:9px;border:1px solid #c5cfda;border-radius:6px;font-size:15px;font-family:inherit}label{display:block;font-size:12px;color:var(--m);margin:8px 0 3px}
 .row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:140px}.pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;background:#e7edf4}
 .Scheduled,.Draft{background:#e7edf4}.In.Progress,.Sent{background:#fff1c9}.Completed,.Approved{background:#d4f3df}.Invoiced{background:#dde8ff}.Paid{background:#c7f0d8}.Declined{background:#f9d6d2}
@@ -22,10 +22,10 @@ input,select,textarea{width:100%;padding:9px;border:1px solid #c5cfda;border-rad
 .clk{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--l);flex-wrap:wrap}.on-clock{color:#1e8e4e;font-weight:600}
 .qv{max-width:800px;margin:auto;background:#fff;padding:32px;border:1px solid var(--l)}.qv .tot td{font-weight:700}.right{text-align:right}
 @media print{header,nav,.noprint{display:none!important}main{padding:0}.qv{border:0}body{background:#fff}}
-.auth{position:fixed;inset:0;background:var(--bd);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}.auth>div{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:380px}.auth a{color:var(--b);font-size:13px;cursor:pointer}.amsg{font-size:13px;margin-top:10px;color:#c0392b}.amsg.ok{color:#1e8e4e}#syncst{font-size:12px;opacity:.85}
+.hlogo{height:30px;vertical-align:middle;margin-right:10px}.cpm{display:inline-block;background:var(--b);color:#fff;font-weight:900;font-style:italic;letter-spacing:-1px;padding:2px 7px;border-radius:5px;margin-right:8px;border:2px solid #fff;box-shadow:2px 2px 0 #000}.auth{position:fixed;inset:0;background:linear-gradient(160deg,#111 60%,#D7262E);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}.auth>div{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:380px}.auth a{color:var(--b);font-size:13px;cursor:pointer}.amsg{font-size:13px;margin-top:10px;color:#c0392b}.amsg.ok{color:#1e8e4e}#syncst{font-size:12px;opacity:.85}
 </style></head><body>
-<header><h1 id="cname">Plumbing Ops</h1><span style="font-size:12px;opacity:.8" id="today"></span><span id="syncst"></span><button class="btn s sm noprint" id="signout" style="display:none">Sign out</button></header>
-<div class="auth" id="auth"><div><h2>Plumbing Ops</h2><div id="authbody"><p style="color:var(--m)">Loading…</p></div></div></div>
+<header><h1 id="cname"><img src="logo-mono-white.png" alt="" class="hlogo">Central Plumbing</h1><span style="font-size:12px;opacity:.8" id="today"></span><span id="syncst"></span><button class="btn s sm noprint" id="signout" style="display:none">Sign out</button></header>
+<div class="auth" id="auth"><div><div style="text-align:center;margin-bottom:12px"><img src="logo.png" alt="Central Plumbing" style="width:190px;max-width:70%"></div><div id="authbody"><p style="color:var(--m)">Loading…</p></div></div></div>
 <nav id="nav"></nav><main id="app"></main><div id="modal"></div>
 <script>
 const K='plumbingAppData_v1';const TABS=[['dash','Dashboard'],['clock','Time Clock'],['jobs','Jobs'],['quotes','Quotes'],['clients','Clients'],['workers','Workers'],['sheets','Timesheets'],['settings','Settings']];
@@ -37,7 +37,7 @@ const ymd=d=>{d=new Date(d);return d.getFullYear()+'-'+String(d.getMonth()+1).pa
 const dtl=d=>{d=new Date(d);return ymd(d)+'T'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 const hrs=e=>((e.out?new Date(e.out):new Date())-new Date(e.in))/36e5;const fmtDT=d=>d?new Date(d).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'';
 function weekStart(d){d=new Date(d);d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
-function blank(){return{settings:{company:'Your Plumbing Co.',rate:95,fee:89,tax:7.5,phone:'',email:''},workers:[],clients:[],quotes:[],jobs:[],time:[],parts:[],templates:[],seq:{q:1001,j:1001}}}
+function blank(){return{settings:{company:'Central Plumbing',rate:95,fee:89,tax:7.5,phone:'308-390-8535',email:''},workers:[],clients:[],quotes:[],jobs:[],time:[],parts:[],templates:[],seq:{q:1001,j:1001}}}
 function load(){try{D=JSON.parse(localStorage.getItem(K))}catch(e){}if(!D){D=blank();seed()}}
 function save(){localStorage.setItem(K,JSON.stringify(D));if(window.cloudSave)window.cloudSave()}
 window.getD=()=>D;window.setD=x=>{D=x;localStorage.setItem(K,JSON.stringify(D))};window.rerender=()=>{if(!$('#modal').innerHTML)render();else window._pendingRender=true};
@@ -56,7 +56,7 @@ const tag=x=>x&&x.sample?'<span class="sample">SAMPLE</span>':'';
 const qTotals=q=>{const sub=q.items.reduce((s,i)=>s+(+i.qty||0)*(+i.price||0),0),taxable=q.items.filter(i=>i.type=='part').reduce((s,i)=>s+i.qty*i.price,0);const tax=sub*(+q.tax||0)/100;return{sub,tax,total:sub+tax}};
 const jobHours=id=>D.time.filter(t=>t.job==id).reduce((s,t)=>s+hrs(t),0);
 const cname=id=>{const c=C(id);return c?esc(c.name):'<i>—</i>'};
-function render(){$('#cname').textContent=D.settings.company||'Plumbing Ops';$('#today').textContent=new Date().toDateString();
+function render(){if(!D.settings.company||D.settings.company=='Your Plumbing Co.')D.settings.company='Central Plumbing';if(!D.settings.phone)D.settings.phone='308-390-8535';$('#cname').innerHTML='<img src="logo-mono-white.png" alt="" class="hlogo">'+esc(D.settings.company);$('#today').textContent=new Date().toDateString();
  $('#nav').innerHTML=TABS.map(([k,v])=>`<button class="${k==tab?'on':''}" onclick="go('${k}')">${v}</button>`).join('');$('#app').innerHTML=(V[tab]||V.dash)()}
 function go(t){tab=t;view=null;render();scrollTo(0,0)}
 function modal(h){$('#modal').innerHTML=h?`<div class="modal" onclick="if(event.target==this)modal()"><div>${h}</div></div>`:''}
@@ -88,7 +88,7 @@ V.quotes=()=>{if(view)return quoteDoc(Q(view));return `<div class="card"><button
 function viewQuote(id){tab='quotes';view=id;render();scrollTo(0,0)}
 function quoteDoc(q){const t=qTotals(q),c=C(q.client)||{},s=D.settings,job=D.jobs.find(j=>j.quote==q.id);
  return `<div class="noprint card"><button class="btn s" onclick="view=null;render()">← Back</button><button class="btn" onclick="print()">Print / Save PDF</button><button class="btn s" onclick="editQuote('${q.id}')">Edit</button>${QS.map(st=>`<button class="btn sm ${st==q.status?'':'s'}" onclick="setQS('${q.id}','${st}')">${st}</button>`).join('')}${q.status=='Approved'?(job?`<button class="btn s" onclick="go('jobs');editJob('${job.id}')">Open job ${esc(job.num)}</button>`:`<button class="btn g" onclick="toJob('${q.id}')">Convert to job</button>`):''}</div>
- <div class="qv"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px"><div><div style="font-size:22px;font-weight:700;color:var(--bd)">${esc(s.company)}</div><div style="color:var(--m);font-size:13px">${esc(s.phone)} ${esc(s.email)}</div></div><div class="right"><div style="font-size:20px;font-weight:700">QUOTE</div><div>${esc(q.num)}</div><div style="color:var(--m)">${q.date}</div><span class="pill ${q.status} noprint">${q.status}</span></div></div>
+ <div class="qv"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px"><div><img src="logo.png" alt="" style="height:90px;display:block;margin-bottom:6px"><div style="font-size:22px;font-weight:700;color:var(--bd)">${esc(s.company)}</div><div style="color:var(--m);font-size:13px">${esc(s.phone)} ${esc(s.email)}</div></div><div class="right"><div style="font-size:20px;font-weight:700">QUOTE</div><div>${esc(q.num)}</div><div style="color:var(--m)">${q.date}</div><span class="pill ${q.status} noprint">${q.status}</span></div></div>
  <div style="margin:22px 0"><div style="color:var(--m);font-size:12px">PREPARED FOR</div><b>${esc(c.name)}</b><br>${esc(c.address)}<br>${esc(c.phone)}</div>
  <table><tr><th>Description</th><th class="right">Qty/Hrs</th><th class="right">Rate</th><th class="right">Amount</th></tr>${q.items.map(i=>`<tr><td>${esc(i.desc)} <small style="color:var(--m)">(${{labor:'Labor',part:'Parts',fee:'Service fee'}[i.type]})</small></td><td class="right">${i.qty}</td><td class="right">${money(i.price)}</td><td class="right">${money(i.qty*i.price)}</td></tr>`).join('')}
  <tr><td colspan=3 class="right">Subtotal</td><td class="right">${money(t.sub)}</td></tr><tr><td colspan=3 class="right">Tax (${q.tax}%)</td><td class="right">${money(t.tax)}</td></tr><tr class="tot"><td colspan=3 class="right">Total</td><td class="right">${money(t.total)}</td></tr></table>
@@ -187,7 +187,7 @@ function drawTp(){$('#tparts').innerHTML=tp.map((x,n)=>`<div class="row" style="
 function saveTmpl(id){const n=$('#tn').value.trim();if(!n)return alert('Name required');let t=id?T(id):{id:uid()};Object.assign(t,{name:n,laborHours:+$('#th').value||0,fee:+$('#tf').value||0,notes:$('#tno').value,parts:tp});if(!id)D.templates.push(t);save();modal();render()}
 
 /* ---- Quotes: template picker, part catalog, costs ---- */
-{const _eq=editQuote;editQuote=function(id){_eq(id);const box=$('#qitems');if(!box)return;box.insertAdjacentHTML('beforebegin',`<div class="row noprint" style="margin-bottom:8px;background:#eef4fb;padding:8px;border-radius:8px"><select id="qtpl">${opt(D.templates.map(t=>[t.id,t.name+' · '+money(tmplPrice(t))]),'','— Start from template —')}</select><button class="btn sm" style="flex:0" onclick="applyTmpl()">Add template</button></div>`);
+{const _eq=editQuote;editQuote=function(id){_eq(id);const box=$('#qitems');if(!box)return;box.insertAdjacentHTML('beforebegin',`<div class="row noprint" style="margin-bottom:8px;background:#f6eaeb;padding:8px;border-radius:8px"><select id="qtpl">${opt(D.templates.map(t=>[t.id,t.name+' · '+money(tmplPrice(t))]),'','— Start from template —')}</select><button class="btn sm" style="flex:0" onclick="applyTmpl()">Add template</button></div>`);
  box.nextElementSibling.insertAdjacentHTML('beforeend',` <select id="qpart" style="width:auto;max-width:220px" onchange="if(this.value){const p=P(this.value);qi.push({type:'part',desc:p.name,qty:1,price:+sell(p).toFixed(2),cost:+p.cost||0,partId:p.id});this.value='';drawLi()}">${opt(D.parts.map(p=>[p.id,p.name]),'','+ Part from catalog…')}</select>`);
  if(isOwner())$('#qtot').insertAdjacentHTML('afterend','<div id="qprof" style="text-align:right;font-size:13px;color:#1e8e4e;margin-bottom:8px"></div>');qtot()}}
 function applyTmpl(){const t=T($('#qtpl').value);if(!t)return;
@@ -297,7 +297,7 @@ async function start(){
       const D=getD();D[k]=s.docs.map(d=>d.data());last[k]={};D[k].forEach(x=>last[k][x.id]=JSON.stringify(x));apply(D,s)},err));
     unsubs.push(F.onSnapshot(metaRef,{includeMetadataChanges:true},s=>{if(!s.exists())return;const D=getD(),m=s.data();if(m.settings)D.settings=m.settings;if(m.seq)D.seq=m.seq;last.meta=JSON.stringify(meta(D));apply(D,s)},err));
   }
-  function apply(D,s){applying=true;setD(D);applying=false;st.textContent=s.metadata.fromCache?'● offline (cached)':(s.metadata.hasPendingWrites?'● syncing…':'● live');rerender();$('#cname').textContent=D.settings.company||'Plumbing Ops'}
+  function apply(D,s){applying=true;setD(D);applying=false;st.textContent=s.metadata.fromCache?'● offline (cached)':(s.metadata.hasPendingWrites?'● syncing…':'● live');rerender();$('#cname').innerHTML='<img src="logo-mono-white.png" alt="" class="hlogo">'+esc(!D.settings.company||D.settings.company=='Your Plumbing Co.'?'Central Plumbing':D.settings.company)}
   function err(e){st.textContent='⚠ '+nice(e);if(e.code=='permission-denied'){alert(nice(e));A.signOut(auth)}}
 
   A.onAuthStateChanged(auth,async u=>{
