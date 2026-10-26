@@ -79,6 +79,9 @@ main{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
 @media (hover:hover) and (pointer:fine){.tipq{display:none}}body.notips .tipq{display:none}
 #helpbtn{margin-left:6px}.tiptog{display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:600}.tiptog input{width:22px;height:22px}
 .hsec{padding:0}.hsec summary{padding:14px 16px;font-weight:700;font-size:16px;cursor:pointer;list-style:none;display:flex;justify-content:space-between}.hsec summary::after{content:'›';color:#D7262E;font-size:20px;transition:.2s}.hsec[open] summary::after{transform:rotate(90deg)}.hsec ol{margin:0;padding:0 18px 14px 36px;line-height:1.55}.hsec li{margin-bottom:6px}.hsec li.hit{background:#fff4c2}
+.pisub{color:var(--m);font-size:14px;margin:4px 0 10px}
+.pirow{display:flex;gap:10px;align-items:flex-start;padding:10px 8px;border-bottom:1px solid var(--l);cursor:pointer;font-weight:400;margin:0}.pirow:nth-child(even){background:#fafafa}.pirow.off{opacity:.5}.pirow.big{background:#fff1f1}.pirow.bad{color:var(--m)}.pirow input{width:22px;height:22px;flex:0 0 auto;margin-top:2px}
+.pimain{flex:1;min-width:0}.pid{font-weight:700}.pis{font-size:12.5px;color:var(--m)}.pinum{text-align:right;white-space:nowrap;font-size:14px}.pct{font-weight:700;color:#555}.pct.big{color:#D7262E}.pmatch{background:#e6f4ea;color:#1e7a3e;font-weight:700;padding:0 5px;border-radius:4px}.pnew{background:#e8f0fe;color:#1a56c4;font-weight:700;padding:0 5px;border-radius:4px}.pimap summary{cursor:pointer;font-weight:600;margin:6px 0}
 </style></head><body>
 <header><h1 id="cname"><img src="logo-mono-white.png" alt="" class="hlogo">Central Plumbing</h1><span style="font-size:12px;opacity:.8" id="today"></span><span id="syncst"></span><button class="btn s sm noprint" id="signout" style="display:none">Sign out</button></header>
 <div class="auth" id="auth"><div><div style="text-align:center;margin-bottom:12px"><img src="logo.png" alt="Central Plumbing" style="width:190px;max-width:70%"></div><div id="authbody"><p style="color:var(--m)">Loading…</p></div></div></div>
@@ -98,7 +101,7 @@ const ymd=d=>{d=new Date(d);return d.getFullYear()+'-'+String(d.getMonth()+1).pa
 const dtl=d=>{d=new Date(d);return ymd(d)+'T'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 const hrs=e=>((e.out?new Date(e.out):new Date())-new Date(e.in))/36e5;const fmtDT=d=>d?new Date(d).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'';
 function weekStart(d){d=new Date(d);d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
-function blank(){return{settings:{company:'Central Plumbing',rate:95,fee:89,tax:7.5,phone:'308-390-8535',email:''},workers:[],clients:[],quotes:[],jobs:[],time:[],parts:[],templates:[],invoices:[],recurring:[],checklistTemplates:[],users:[],notes:[],leads:[],messages:[],seq:{q:1001,j:1001,i:1001}}}
+function blank(){return{settings:{company:'Central Plumbing',rate:95,fee:89,tax:7.5,phone:'308-390-8535',email:''},workers:[],clients:[],quotes:[],jobs:[],time:[],parts:[],templates:[],invoices:[],recurring:[],checklistTemplates:[],users:[],notes:[],leads:[],messages:[],priceImports:[],seq:{q:1001,j:1001,i:1001}}}
 function load(){try{D=JSON.parse(localStorage.getItem(K))}catch(e){}if(!D){D=blank();seed()}}
 function save(){localStorage.setItem(K,JSON.stringify(D));if(window.cloudSave)window.cloudSave()}
 window.getD=()=>D;window.setD=x=>{D=x;localStorage.setItem(K,JSON.stringify(D))};window.rerender=()=>{if(!$('#modal').innerHTML)render();else window._pendingRender=true};
@@ -200,7 +203,7 @@ load();render();setInterval(()=>{if(!$('#modal').innerHTML&&(tab=='clock'||tab==
 /* ===== Price book, parts catalog & profit (owner-only cost data) ===== */
 const OWNER_EMAILS=['cdbonser@gmail.com','thecentralplumber@gmail.com'];
 const isOwner=()=>window.userRole?window.userRole==='owner':(!window.userEmail||OWNER_EMAILS.includes(String(window.userEmail).toLowerCase())); // offline/unconfigured = single-device owner
-function norm(x){if(!x)return x;['workers','clients','quotes','jobs','time','parts','templates','invoices','recurring','checklistTemplates','users','notes','leads','messages'].forEach(k=>{if(!Array.isArray(x[k]))x[k]=[]});x.seq=Object.assign({q:1001,j:1001,i:1001},x.seq||{});x.settings=x.settings||blank().settings;return x}
+function norm(x){if(!x)return x;['workers','clients','quotes','jobs','time','parts','templates','invoices','recurring','checklistTemplates','users','notes','leads','messages','priceImports'].forEach(k=>{if(!Array.isArray(x[k]))x[k]=[]});x.seq=Object.assign({q:1001,j:1001,i:1001},x.seq||{});x.settings=x.settings||blank().settings;return x}
 norm(D);
 if(!D.templates.length&&!D.parts.length&&[...D.workers,...D.clients,...D.jobs].every(x=>x.sample)){seedBook();localStorage.setItem(K,JSON.stringify(D))}
 {const _setD=window.setD;window.setD=x=>_setD(norm(x))}
@@ -823,6 +826,58 @@ new MutationObserver(()=>{clearTimeout(window._phT);window._phT=setTimeout(markP
 TIPS['Phone']='Phone number. Just type the digits and it formats itself as (000) 000-0000. Tap it later to call.';
 markPhones();render();
 </script>
+<script>
+render();
+</script>
+<script>
+/* ===================== Import supplier prices (owner-only) ===================== */
+const PI_FIELDS=[['item_no','Item # (supplier SKU)',/^(item[_ ]?(no|num|number|#)?|sku|winsupply.*|supplier.?(sku|item))$/],['model_no','Model # (manufacturer part #)',/^(model[_ ]?(no|num|number|#)?|mfr.?(part|no|#).*|mpn|part[_ ]?(no|num|number|#)|manufacturer.?part.*)$/],['manufacturer','Manufacturer',/^(manufacturer|mfr|mfg|brand|vendor)$/],['description','Description',/^(desc(ription)?|item.?desc.*|name|product)$/],['unit','Unit',/^(unit|uom|u\/m|unit.?of.?measure)$/],['unit_price','Unit price',/^(unit[_ ]?price|price|last[_ ]?(unit[_ ]?)?price|cost|unit[_ ]?cost|net[_ ]?price)$/],['last_purchase_date','Last purchase date',/^(last[_ ]?purchase[_ ]?date|last[_ ]?date|purchase[_ ]?date|order[_ ]?date|date|price[_ ]?date)$/],['supplier','Supplier',/^(supplier|vendor[_ ]?name|source)$/]];
+const PI_SUPPLIER='Kearney Winnelson';
+let pi=null;
+function piParseCSV(t){t=t.replace(/^\ufeff/,'');const rows=[];let r=[],f='',q=false;for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=false}else f+=c}else if(c=='"')q=true;else if(c==','){r.push(f);f=''}else if(c=='\n'||c=='\r'){if(c=='\r'&&t[i+1]=='\n')i++;r.push(f);f='';if(r.some(x=>x.trim()))rows.push(r);r=[]}else f+=c}r.push(f);if(r.some(x=>x.trim()))rows.push(r);return rows}
+const piKey=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const piToks=s=>new Set(noSample(String(s||'')).toLowerCase().replace(/(\d)\s*("|in\b|inch(es)?\b)/g,'$1in').split(/[^a-z0-9.\/]+/).filter(w=>w.length>1&&!['the','and','with','for','w'].includes(w)));
+function piSim(a,b){const A=piToks(a),B=piToks(b);if(!A.size||!B.size)return 0;let n=0;A.forEach(x=>B.has(x)&&n++);return n/(A.size+B.size-n)}
+const piMoney=v=>{const n=parseFloat(String(v??'').replace(/[$,\s]/g,''));return isFinite(n)?n:NaN};
+function piDate(v){v=String(v||'').trim();let m=v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);if(m)return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;m=v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);if(m){const y=m[3].length==2?'20'+m[3]:m[3];return `${y}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`}return ''}
+function piOpen(){if(!isOwner())return;const inp=document.createElement('input');inp.type='file';inp.accept='.csv,text/csv';inp.onchange=()=>{const f=inp.files[0];if(!f)return;if(/\.xlsx?$/i.test(f.name))return alert('Please save the spreadsheet as CSV first (Excel: File → Save As → CSV).');const r=new FileReader();r.onload=()=>piLoad(f.name,String(r.result));r.readAsText(f)};inp.click()}
+function piLoad(name,text){const rows=piParseCSV(text);if(rows.length<2)return alert('That file has no data rows.');const head=rows[0].map(h=>h.trim());const map={};
+ PI_FIELDS.forEach(([k,,re])=>{const i=head.findIndex(h=>re.test(h.toLowerCase().trim()));map[k]=i});
+ pi={name,head,data:rows.slice(1),map,markup:50,inc:{}};piBuild();go('priceimport')}
+function piBuild(){const g=(r,k)=>pi.map[k]>=0?String(r[pi.map[k]]??'').trim():'';const used=new Set();
+ pi.rows=pi.data.map((r,ix)=>{const x={ix,item_no:g(r,'item_no'),model_no:g(r,'model_no'),manufacturer:g(r,'manufacturer'),description:g(r,'description'),unit:g(r,'unit'),price:piMoney(g(r,'unit_price')),date:piDate(g(r,'last_purchase_date')),supplier:g(r,'supplier')||PI_SUPPLIER};
+  if(!(x.price>=0)||(!x.item_no&&!x.model_no&&!x.description)){x.bad=true;return x}
+  let p=null,how='';const ik=piKey(x.item_no),mk=piKey(x.model_no);
+  if(ik)p=D.parts.find(p=>!used.has(p.id)&&(piKey(p.itemNo)==ik||piKey(p.sku)==ik)),how=p?'Item #':'';
+  if(!p&&mk){p=D.parts.find(p=>!used.has(p.id)&&(piKey(p.modelNo)==mk||piKey(p.sku)==mk||(mk.length>=5&&piKey(p.name).includes(mk))));how=p?'Model #':''}
+  if(!p&&x.description){let best=0,bp=null;D.parts.forEach(q=>{if(used.has(q.id))return;const s=piSim(x.description,q.name);if(s>best){best=s;bp=q}});if(best>=0.45){p=bp;how=`Description (${Math.round(best*100)}%)`}}
+  if(p){used.add(p.id);x.part=p.id;x.how=how;x.old=+p.cost||0;x.pct=x.old>0?(x.price-x.old)/x.old*100:null;x.big=x.pct!=null&&Math.abs(x.pct)>15}
+  if(!(ix in pi.inc))pi.inc[ix]=!x.bad&&!(x.part&&x.old==x.price);return x})}
+V.priceimport=()=>{if(!isOwner())return '<div class="card">Owners only.</div>';if(!pi)return `<div class="card"><h2>Import supplier prices</h2><button class="btn" onclick="piOpen()">Choose CSV file</button></div>`;
+ const R=pi.rows,ok=R.filter(r=>!r.bad),m=ok.filter(r=>r.part),nw=ok.filter(r=>!r.part),sel=ok.filter(r=>pi.inc[r.ix]),big=m.filter(r=>r.big).length;
+ const fmtP=v=>v==null?'—':(v>0?'+':'')+v.toFixed(1)+'%';
+ return `<div class="card"><h2>Import supplier prices</h2><p class="pisub">File: <b>${esc(pi.name)}</b> · ${ok.length} rows · <b>${m.length}</b> match existing parts · <b>${nw.length}</b> new · ${big?`<b style="color:var(--r,#D7262E)">${big} big change${big>1?'s':''} (&gt;15%)</b>`:'no big changes'}${R.length-ok.length?` · ${R.length-ok.length} skipped (no price)`:''}</p>
+ <details class="pimap"><summary>Columns (change if the file uses different headers)</summary><div class="row">${PI_FIELDS.map(([k,l])=>`<div><label>${l}</label><select onchange="pi.map['${k}']=+this.value;pi.inc={};piBuild();render()"><option value="-1">— not in file —</option>${pi.head.map((h,i)=>`<option value="${i}" ${pi.map[k]==i?'selected':''}>${esc(h)}</option>`).join('')}</select></div>`).join('')}</div></details>
+ <div class="row" style="align-items:end"><div><label>Markup % for new parts</label><input type="number" value="${pi.markup}" onchange="pi.markup=+this.value||0;render()"></div><div style="flex:2;font-size:13px;color:var(--m)">Matched parts keep their own markup, so sell prices update automatically. Parts are never deleted.</div></div></div>
+ <div class="card" style="padding:8px"><div style="display:flex;gap:6px;flex-wrap:wrap;margin:4px 4px 8px"><button class="btn s sm" onclick="pi.rows.forEach(r=>{if(!r.bad)pi.inc[r.ix]=true});render()">Select all</button><button class="btn s sm" onclick="pi.rows.forEach(r=>pi.inc[r.ix]=false);render()">Select none</button><button class="btn s sm" onclick="pi.rows.forEach(r=>{if(!r.bad)pi.inc[r.ix]=!!r.part});render()">Only matches</button></div>
+ <div class="pilist">${R.slice().sort((a,b)=>(b.big-a.big)||(!!b.part-!!a.part)||a.ix-b.ix).map(r=>{if(r.bad)return `<div class="pirow bad"><div class="pimain"><b>Row ${r.ix+2}</b> skipped: missing price or item.</div></div>`;const p=r.part&&P(r.part);
+ return `<label data-tip="Tick to include this row, untick to skip it." class="pirow ${r.big?'big':''} ${pi.inc[r.ix]?'':'off'}"><input type="checkbox" ${pi.inc[r.ix]?'checked':''} onchange="pi.inc[${r.ix}]=this.checked;render()"><div class="pimain"><div class="pid">${esc(r.description||r.model_no||r.item_no)}</div><div class="pis">${[r.manufacturer,r.model_no&&'Model '+r.model_no,r.item_no&&'Item '+r.item_no,r.unit].filter(Boolean).map(esc).join(' · ')}</div>
+ ${p?`<div class="pis">↔ <span class="pmatch">Match</span> ${esc(noSample(p.name))} <i>by ${esc(r.how)}</i></div>`:'<div class="pis"><span class="pnew">New part</span> sells at '+money(r.price*(1+pi.markup/100))+'</div>'}</div>
+ <div class="pinum">${p?`<div>${money(r.old)} → <b>${money(r.price)}</b></div><div class="pct ${r.big?'big':''}">${fmtP(r.pct)}</div>${+p.sell>0?'<div class="pis">fixed sell kept</div>':''}`:`<div><b>${money(r.price)}</b></div>`}</div></label>`}).join('')}</div></div>
+ <div class="card" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn" onclick="piApply()">Apply ${sel.length} change${sel.length==1?'':'s'}</button><button class="btn s" onclick="pi=null;go('parts')">Cancel</button><span class="pisub" style="margin:0">${sel.filter(r=>r.part).length} updates, ${sel.filter(r=>!r.part).length} new</span></div>`};
+function piApply(){const sel=pi.rows.filter(r=>!r.bad&&pi.inc[r.ix]);if(!sel.length)return alert('Nothing selected.');if(!confirm(`Update ${sel.filter(r=>r.part).length} part cost(s) and add ${sel.filter(r=>!r.part).length} new part(s)?`))return;
+ let up=0,add=0;const today=tod();sel.forEach(r=>{const meta={itemNo:r.item_no,modelNo:r.model_no,manufacturer:r.manufacturer,unit:r.unit,supplier:r.supplier||PI_SUPPLIER,priceDate:r.date||today};
+  if(r.part){const p=P(r.part);if(!p)return;p.cost=r.price;p.lastCost=r.price;p.lastDate=r.date||today;Object.keys(meta).forEach(k=>{if(meta[k])p[k]=meta[k]});up++}
+  else{const name=String(r.description||[r.manufacturer,r.model_no].filter(Boolean).join(' ')||r.item_no).trim().slice(0,120);D.parts.push(Object.assign({id:uid(),name,sku:r.item_no||r.model_no,cost:r.price,markup:pi.markup,sell:0,lastCost:r.price,lastDate:r.date||today},meta,{supplier:PI_SUPPLIER}));add++}});
+ D.priceImports.push({id:uid(),date:new Date().toISOString(),file:pi.name,rows:pi.rows.length,updated:up,added:add,skipped:pi.rows.length-up-add,by:window.userEmail||''});
+ save();pi=null;go('parts');setTimeout(()=>alert(`Done: ${up} part(s) updated, ${add} new part(s) added.`),50)}
+{const _g=groupOf;groupOf=t=>t=='priceimport'?'more':_g(t)}
+{const _vp=V.parts;V.parts=()=>{const h=_vp();if(!isOwner())return h;const L=D.priceImports.slice().sort((a,b)=>a.date<b.date?1:-1).slice(0,5);
+ return `<div class="card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn" onclick="piOpen()">⬆ Import supplier prices</button><span class="pisub" style="margin:0">Update costs from a Winsupply / Kearney Winnelson CSV.</span></div>${L.length?`<div class="pis" style="margin-top:8px">Recent imports: ${L.map(l=>`${new Date(l.date).toLocaleDateString()} ${esc(l.file)} (${l.updated} updated, ${l.added} new)`).join(' · ')}</div>`:''}</div>`+h}}
+Object.assign(TIPS,{'⬆ Import supplier prices':'Load a price file from your supplier. You will see every change before anything is saved.','Import supplier prices':'Load a price file from your supplier. You will see every change before anything is saved.','Choose CSV file':'Pick the supplier price file (.csv).','Select all':'Tick every row.','Select none':'Untick every row.','Only matches':'Only update parts you already have; skip new ones.','Markup % for new parts':'New parts sell at cost plus this percent. Existing parts keep their own markup.','Columns (change if the file uses different headers)':'If a column was guessed wrong, pick the right one here.','Apply':'Save the ticked changes to your parts list. Nothing is deleted.','Item # (supplier SKU)':'The supplier\'s item number column.','Model # (manufacturer part #)':'The manufacturer part number column.','Manufacturer':'Brand / manufacturer column.','Unit':'Unit of measure column (EA, FT, BOX).','Unit price':'The price you pay per unit.','Last purchase date':'When you last bought it at that price.','Supplier':'Which supplier the price came from.'});
+G_OWNER.push(['Import supplier prices',['Tap More, then Parts catalog, then ⬆ Import supplier prices (owners only).','Pick the supplier CSV. In Excel, use File → Save As → CSV first.','Check the columns box: the app guesses which column is item #, model #, description and price. Change any that are wrong.','Each row shows Match (an existing part, found by item #, then model #, then a similar description) with old cost → new cost and % change, or New part.','Changes over 15% are highlighted in red. Untick any row you don\'t want.','Set the markup % for new parts, then tap Apply.','Matched parts keep their markup, so sell prices and price book templates update automatically. Parts with a fixed sell price keep that price. Nothing is deleted.','Each import is logged with the date, file name and counts.']]);
+render();
+</script>
 <script type="module">
 /* ================================================================
    FIREBASE CONFIG — paste your config from Firebase Console here
@@ -839,7 +894,7 @@ const firebaseConfig = {
 /* ================================================================ */
 const COMPANY='main';
 // D key -> Firestore collection. priv = fields moved to an owner-only "<collection>_private" doc
-const SPEC={clients:{c:'clients'},workers:{c:'workers',priv:['rate','cost']},jobs:{c:'jobs',priv:['actual']},quotes:{c:'quotes'},time:{c:'timeEntries'},parts:{c:'parts'},templates:{c:'templates'},invoices:{c:'invoices'},recurring:{c:'recurring'},checklistTemplates:{c:'checklistTemplates'},users:{c:'users'},notes:{c:'notes'},leads:{c:'leads'},messages:{c:'messages'}};
+const SPEC={clients:{c:'clients'},workers:{c:'workers',priv:['rate','cost']},jobs:{c:'jobs',priv:['actual']},quotes:{c:'quotes'},time:{c:'timeEntries'},parts:{c:'parts'},templates:{c:'templates'},invoices:{c:'invoices'},recurring:{c:'recurring'},checklistTemplates:{c:'checklistTemplates'},users:{c:'users'},notes:{c:'notes'},leads:{c:'leads'},messages:{c:'messages'},priceImports:{c:'priceImports'}};
 // what techs may write: collection -> owner field that must equal their email, and whether they may delete
 const TECHW={time:{f:'email',del:false},notes:{f:'by',del:false},leads:{f:'by',del:false}};
 const SCHEMA=2;
