@@ -1,0 +1,111 @@
+rules_version = '2';
+// Central Plumbing / Plumbing Ops — Firestore security rules
+// Owners: full access. Techs (listed in companies/main/users/{email} with role "tech"):
+//   read workers (names), checklist templates, public company info, their own assigned jobs,
+//   photos of their jobs, and their own time entries; write only their own time entries,
+//   job notes / checklist, photos on their jobs, customer notes on
+//   their jobs and new leads. Everything else (clients list, quotes,
+//   invoices, parts, price book, private cost/pay data, settings, users) is owner-only.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null && request.auth.token.email != null; }
+    function email() { return request.auth.token.email.lower(); }
+    function userPath(c) { return /databases/$(database)/documents/companies/$(c)/users/$(email()); }
+    function isOwner(c) {
+      return signedIn() && (
+        email() in ['cdbonser@gmail.com', 'thecentralplumber@gmail.com']
+        || (exists(userPath(c)) && get(userPath(c)).data.role == 'owner'));
+    }
+    function isStaff(c) { return signedIn() && (isOwner(c) || exists(userPath(c))); }
+    function jobPath(c, id) { return /databases/$(database)/documents/companies/$(c)/jobs/$(id); }
+    function photoPath(c, id) { return /databases/$(database)/documents/companies/$(c)/photos/$(id); }
+
+    match /companies/{c} {
+      // Owners can read and write everything under the company.
+      match /{document=**} {
+        allow read, write: if isOwner(c);
+      }
+
+      // Each person can read their own team record (to learn their role).
+      match /users/{uid} {
+        allow get: if signedIn() && uid == email();
+      }
+
+      // Company name/phone for everyone on the team.
+      match /settings/public {
+        allow get: if isStaff(c);
+      }
+
+      // Worker names/colors only (pay rates live in workers_private, owner-only).
+      match /workers/{id} {
+        allow read: if isStaff(c);
+      }
+
+      match /checklistTemplates/{id} {
+        allow read: if isStaff(c);
+      }
+
+      // Techs see only jobs they are assigned to, and may change only notes + checklist.
+      match /jobs/{id} {
+        allow read: if isStaff(c) && email() in resource.data.techEmails;
+        allow update: if isStaff(c) && email() in resource.data.techEmails
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['techNotes', 'checklist', 'updatedBy']);
+      }
+
+      // Techs read/write only their own clock entries (no deleting).
+      match /timeEntries/{id} {
+        allow read: if isStaff(c) && resource.data.email == email();
+        allow create: if isStaff(c) && request.resource.data.email == email();
+        allow update: if isStaff(c) && resource.data.email == email()
+          && request.resource.data.email == email();
+      }
+
+      // Customer notes on jobs: techs read notes on their jobs and add their own (no edits/deletes).
+      match /notes/{id} {
+        allow read: if isStaff(c) && email() in resource.data.techEmails;
+        allow create: if isStaff(c)
+          && request.resource.data.by == email()
+          && email() in request.resource.data.techEmails
+          && email() in get(jobPath(c, request.resource.data.jobId)).data.techEmails;
+      }
+
+      // Leads: techs can create leads and see the ones they created; owners manage them.
+      match /leads/{id} {
+        allow read: if isStaff(c) && resource.data.by == email();
+        allow create: if isStaff(c) && request.resource.data.by == email()
+          && request.resource.data.status == 'New';
+      }
+      // messages/* is owner-only (covered by the owner rule above).
+
+      // Push notification devices: one doc per phone/browser, tied to the signed-in email.
+      // Everyone (owner or tech) may add, refresh or remove only their OWN devices. Owners also have full access above.
+      // Sending is done by Cloud Functions (admin access, not affected by these rules).
+      match /pushSubs/{id} {
+        allow create: if isStaff(c) && request.resource.data.email == email();
+        allow update: if isStaff(c) && resource.data.email == email() && request.resource.data.email == email();
+        allow get, delete: if isStaff(c) && resource.data.email == email();
+      }
+
+      // Each person's alert choices (doc id = their email).
+      match /pushPrefs/{e} {
+        allow get, create, update: if isStaff(c) && e == email();
+      }
+
+      // Job photos (metadata) + base64 chunks.
+      match /photos/{pid} {
+        allow read: if isStaff(c) && email() in resource.data.techEmails;
+        allow create: if isStaff(c)
+          && request.resource.data.by == email()
+          && email() in request.resource.data.techEmails
+          && email() in get(jobPath(c, request.resource.data.jobId)).data.techEmails;
+        allow delete: if isStaff(c) && resource.data.by == email();
+
+        match /chunks/{n} {
+          allow read: if isStaff(c) && email() in get(photoPath(c, pid)).data.techEmails;
+          allow create: if isStaff(c) && getAfter(photoPath(c, pid)).data.by == email();
+          allow delete: if isStaff(c) && get(photoPath(c, pid)).data.by == email();
+        }
+      }
+    }
+  }
+}
