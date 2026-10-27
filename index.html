@@ -89,6 +89,7 @@ main{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
 .pisub{color:var(--m);font-size:14px;margin:4px 0 10px}
 .pirow{display:flex;gap:10px;align-items:flex-start;padding:10px 8px;border-bottom:1px solid var(--l);cursor:pointer;font-weight:400;margin:0}.pirow:nth-child(even){background:#fafafa}.pirow.off{opacity:.5}.pirow.big{background:#fff1f1}.pirow.bad{color:var(--m)}.pirow input{width:22px;height:22px;flex:0 0 auto;margin-top:2px}
 .pimain{flex:1;min-width:0}.pid{font-weight:700}.pis{font-size:12.5px;color:var(--m)}.pinum{text-align:right;white-space:nowrap;font-size:14px}.pct{font-weight:700;color:#555}.pct.big{color:#D7262E}.pmatch{background:#e6f4ea;color:#1e7a3e;font-weight:700;padding:0 5px;border-radius:4px}.pnew{background:#e8f0fe;color:#1a56c4;font-weight:700;padding:0 5px;border-radius:4px}.pimap summary{cursor:pointer;font-weight:600;margin:6px 0}
+.nban{display:flex;gap:12px;align-items:flex-start;position:relative;border-left:5px solid #D7262E}.nban .nx{position:absolute;top:6px;right:8px;background:none;border:0;font-size:16px;color:var(--m);cursor:pointer}.nban .btn{margin-top:8px}.nwarn{background:#fff4e5;border-left:5px solid #f0a020;padding:10px 12px;border-radius:8px;font-size:14.5px;line-height:1.45}.nwarn ol{margin:6px 0 0;padding-left:20px}.nstat{font-weight:700;margin-bottom:10px;color:var(--m)}.nstat.on{color:#1e7a3e}.nbig{font-size:18px;padding:14px 18px;width:100%}.nrow{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--l);font-weight:400;margin:0}.nrow input{width:22px;height:22px;flex:0 0 auto}
 </style></head><body>
 <header><h1 id="cname"><img src="logo-mono-white.png" alt="" class="hlogo">Central Plumbing</h1><span style="font-size:12px;opacity:.8" id="today"></span><span id="syncst"></span><button class="btn s sm noprint" id="signout" style="display:none">Sign out</button></header>
 <div class="auth" id="auth"><div><div style="text-align:center;margin-bottom:12px"><img src="logo.png" alt="Central Plumbing" style="width:190px;max-width:70%"></div><div id="authbody"><p style="color:var(--m)">Loading…</p></div></div></div>
@@ -630,7 +631,7 @@ let lastSub={};try{lastSub=JSON.parse(localStorage.getItem('cp-lastsub'))||{}}ca
 function goGroup(g){if(g=='more'){if(groupOf(tab)=='more'&&tab!='more'){go('more');return}go(lastSub.more&&lastSub.more!='more'&&isOwner()?'more':'more');return}const subs=GROUPS[g].subs();const t=subs.some(s=>s[0]==lastSub[g])?lastSub[g]:subs[0][0];if(t==tab&&g==groupOf(tab)){scrollTo(0,0);return}go(t)}
 V.more=()=>`<div class="card morelist">${MORE.map(([k,l,i])=>`<button onclick="go('${k}')"><span class="mi">${i}</span><span style="flex:1;text-align:left">${l}</span><span style="color:var(--m)">›</span></button>`).join('')}</div>`;
 document.body.insertAdjacentHTML('beforeend','<nav id="bnav" class="noprint"></nav>');
-{const _r=render;render=function(){_r();if(isTech()&&!['dash','clock','sheets','leads','cal','jobs','help'].includes(tab)){tab='dash';_r()}
+{const _r=render;render=function(){_r();if(isTech()&&!['dash','clock','sheets','leads','cal','jobs','help','notif'].includes(tab)){tab='dash';_r()}
  const g=groupOf(tab);if(tab!='more'){lastSub[g]=tab;localStorage.setItem('cp-lastsub',JSON.stringify(lastSub))}
  if(location.hash.slice(1)!=tab)history.replaceState(null,'','#'+tab);
  const nl=typeof openLeads=='function'?openLeads().length:0;
@@ -1021,6 +1022,60 @@ G_OWNER.push(['Day clock and job clock',['There are two clocks. The DAY clock is
 if(typeof G_TECH!='undefined')G_TECH.push(['Clocking in',['Clock in for the day at the top of Schedule or Home. That is your paid time.','On each of your jobs, tap ▶ Start job when you start working there and ■ Stop job when you leave. The job number (like J-1005) shows next to the button, with a timer.','Starting another job stops the first one. Clock out for the day stops everything.','Forgot to clock in for the day? Tapping Start job clocks you in for the day too.']]);
 render();
 </script>
+<script>
+/* ===================== PUSH NOTIFICATIONS (Web Push, VAPID) ===================== */
+const VAPID_PUBLIC='BOovCGs1wlE4p2sxpkUnSK2SjOoj3dQqBrnGZx8BidfEuS7owS-HLiBd4LbE5p8FgdXlQ-jUPSDwimiW_h7zK60';
+// Alert types. Edit labels/defaults here (keep the keys in sync with functions/lib/alerts.js).
+const NOTIF_TECH=[['assigned','You were put on a new job',true],['changed','Your job\'s date or time changed',true],['remind30','Reminder 30 minutes before your job',true],['clockout7','Still clocked in for the day at 7 PM',true]];
+const NOTIF_OWNER=[['dayClock','A worker clocks in or out for the day',true],['jobClock','A worker starts or stops a job',true],['completed','A job is marked Completed',true],['notes','A tech adds a field note or lead',true]];
+const nIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const nStandalone=()=>window.matchMedia&&matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const nCan=()=>'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;
+let nSub=null,nPrefs=null,nBusy=false,nMsg='';
+function nState(){if(nIOS()&&!nStandalone())return 'home';if(!nCan())return 'unsupported';if(Notification.permission==='denied')return 'denied';return nSub&&Notification.permission==='granted'?'on':'off'}
+function nB64(b){const p='='.repeat((4-b.length%4)%4),s=atob((b+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(s,c=>c.charCodeAt(0))}
+async function nReg(){return navigator.serviceWorker.register('sw.js',{scope:'./'})}
+async function nRefresh(){try{if(!nCan())return;const r=await navigator.serviceWorker.getRegistration('./');nSub=r?await r.pushManager.getSubscription():null}catch(e){nSub=null}}
+async function notifOn(){if(nBusy)return;const s=nState();if(s=='home'||s=='unsupported'||s=='denied'){nMsg='';render();return}
+ if(!window.cpPush){nMsg='Sign in first, then turn notifications on.';render();return}
+ nBusy=true;nMsg='Turning on…';render();
+ try{const perm=await Notification.requestPermission();if(perm!=='granted'){nMsg='Notifications were not allowed on this device.';return}
+  const reg=await nReg();await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();
+  if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:nB64(VAPID_PUBLIC)});
+  await cpPush.saveSub(sub.toJSON());nSub=sub;nMsg='✅ Notifications are on for this device.';localStorage.setItem('cp-notif-dismiss','1');
+ }catch(e){console.warn(e);nMsg='Could not turn on: '+(e&&e.message||e)}finally{nBusy=false;render()}}
+async function notifOff(){if(nBusy)return;nBusy=true;nMsg='Turning off…';render();
+ try{const r=await navigator.serviceWorker.getRegistration('./');const sub=r&&await r.pushManager.getSubscription();
+  if(sub){if(window.cpPush)await cpPush.delSub(sub.endpoint).catch(()=>{});await sub.unsubscribe()}nSub=null;nMsg='Notifications are off for this device.';
+ }catch(e){nMsg='Could not turn off: '+(e&&e.message||e)}finally{nBusy=false;render()}}
+function nHomeHelp(){return `<div class="nwarn"><b>First add the app to your Home Screen.</b> iPhone only sends notifications to apps on the Home Screen.<ol><li>Open this page in <b>Safari</b>.</li><li>Tap <b>Share</b> (square with an arrow up), then <b>Add to Home Screen</b>, then <b>Add</b>.</li><li>Close Safari and open <b>Central Plumbing</b> from the new icon.</li><li>Sign in, then tap <b>Turn on notifications</b>.</li></ol></div>`}
+function nDeniedHelp(){return `<div class="nwarn">Notifications are blocked for this app. ${nIOS()?'Open iPhone <b>Settings → Notifications → Central Plumbing</b> and turn on <b>Allow Notifications</b>.':'In Chrome tap the <b>lock icon</b> by the address (or ⋮ → Settings → Site settings → Notifications) and set this site to <b>Allow</b>.'} Then come back and tap the button again.</div>`}
+function notifBanner(){if(!window.userEmail||localStorage.getItem('cp-notif-dismiss')||nState()=='on'||nState()=='unsupported')return '';
+ return `<div class="card nban noprint"><button class="nx" title="Hide this" onclick="localStorage.setItem('cp-notif-dismiss','1');render()">✕</button><div style="font-size:26px">🔔</div><div style="flex:1"><b>Get job alerts on this phone</b><div style="font-size:13.5px;color:var(--m)">${isOwner()?'Know when the crew clocks in, starts jobs and finishes.':'New jobs, schedule changes and reminders.'}</div>
+ ${nState()=='home'?`<button class="btn sm" onclick="go('notif')">How to set up</button>`:`<button class="btn sm" onclick="notifOn()">Turn on notifications</button>`}</div></div>`}
+function nToggle(group,k,def){const v=nPrefs&&nPrefs[group]&&k in nPrefs[group]?nPrefs[group][k]:def;return v}
+async function nSetPref(group,k,v){nPrefs=nPrefs||{};nPrefs[group]=Object.assign({},nPrefs[group],{[k]:v});try{await cpPush.setPrefs(nPrefs)}catch(e){alert('Could not save: '+(e.message||e))}render()}
+V.notif=()=>{const s=nState(),o=isOwner();if(window.cpPush&&!nPrefs){nPrefs={};cpPush.getPrefs().then(p=>{nPrefs=p||{};render()}).catch(()=>{})}
+ const row=(g,[k,l,d])=>`<label class="nrow"><input type="checkbox" ${nToggle(g,k,d)?'checked':''} onchange="nSetPref('${g}','${k}',this.checked)"><span>${l}</span></label>`;
+ return `<div class="card"><h2>🔔 Notifications</h2><p style="color:var(--m);font-size:14px;margin:4px 0 12px">Alerts pop up on this phone even when the app is closed. Turn them on for each phone or computer you use.</p>
+ ${s=='home'?nHomeHelp():s=='unsupported'?'<div class="nwarn">This browser can\'t get notifications. On Android use <b>Chrome</b>. On iPhone (iOS 16.4 or newer) add the app to your Home Screen.</div>':s=='denied'?nDeniedHelp():
+ `<div class="nstat ${s=='on'?'on':''}">${s=='on'?'✅ On for this device':'Off for this device'}</div>${s=='on'?`<button class="btn s" onclick="notifOff()" ${nBusy?'disabled':''}>Turn off on this device</button>`:`<button class="btn nbig" onclick="notifOn()" ${nBusy?'disabled':''}>🔔 Turn on notifications</button>`}`}
+ ${nMsg?`<p style="font-size:14px;margin-top:10px">${wEsc(nMsg)}</p>`:''}</div>
+ <div class="card"><h2 style="font-size:16px">${o?'Alerts about my own jobs':'Which alerts I get'}</h2>${NOTIF_TECH.map(x=>row('tech',x)).join('')}</div>
+ ${o?`<div class="card"><h2 style="font-size:16px">Owner alerts</h2>${NOTIF_OWNER.map(x=>row('owner',x)).join('')}<p style="font-size:12.5px;color:var(--m)">These choices are saved for you (${wEsc(window.userEmail||'')}) and apply on all your devices.</p></div>`:'<p style="font-size:12.5px;color:var(--m);padding:0 4px">Your choices apply on all your devices.</p>'}`};
+{const _vd=V.dash;V.dash=()=>notifBanner()+_vd()}
+MORE.splice(MORE.length-1,0,['notif','Notifications','🔔']);TECH_TABS.push('notif');
+{const _hs=GROUPS.home.subs;GROUPS.home.subs=()=>{const s=_hs();return isOwner()?s:[...s,['notif','Alerts']]}}
+{const _ou=window.onUserChange;window.onUserChange=()=>{nPrefs=null;nMsg='';nRefresh().then(()=>{_ou&&_ou();if(window.cpPush&&nSub)cpPush.saveSub(nSub.toJSON()).catch(()=>{})})}}
+nRefresh();
+// deep link from a tapped notification: ?job=ID or a message from the service worker
+function nOpenJob(id){if(!id||typeof J!='function'||!J(id))return false;if(isTech())techJob(id);else editJob(id);return true}
+(function(){const q=new URLSearchParams(location.search).get('job');if(!q)return;let n=0;const t=setInterval(()=>{if(nOpenJob(q)||++n>40){clearInterval(t);history.replaceState(null,'',location.pathname)}},500)})();
+if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.job){go('dash');setTimeout(()=>nOpenJob(e.data.job),300)}});
+Object.assign(TIPS,{'Turn on notifications':'Get pop-up alerts on this phone, even when the app is closed.','Turn off on this device':'Stop alerts on this phone. Your other devices keep theirs.','Notifications':'Turn phone alerts on or off and choose which alerts you get.','Alerts':'Turn phone alerts on or off and choose which ones you get.','How to set up':'Shows how to add the app to your iPhone Home Screen so alerts can work.'});
+G_TECH.push(['Phone notifications (alerts)',['iPhone: open the app in Safari, tap Share, then Add to Home Screen. Open Central Plumbing from the new icon and sign in. (iPhone only sends alerts to Home Screen apps.)','Android: open the app in Chrome.','Tap Home, then Alerts, then Turn on notifications, and tap Allow.','You will get alerts when you are put on a new job, when your job\'s date or time changes, 30 minutes before a job, and at 7 PM if you are still clocked in.','Untick any alert you don\'t want. Tap Turn off on this device to stop all alerts on that phone.']]);
+G_OWNER.push(['Phone notifications (alerts)',['iPhone: open the app in Safari, tap Share, then Add to Home Screen. Open Central Plumbing from the new icon and sign in.','Android: open the app in Chrome.','Tap More, then Notifications, then Turn on notifications, and tap Allow. Do this on each phone or computer.','Owner alerts: workers clocking in/out for the day, starting/stopping a job, jobs marked Completed, and new field notes or leads from techs. Untick any you don\'t want.','You also get the tech alerts for jobs you are assigned to.','Techs turn theirs on under Home, then Alerts. Tap Turn off on this device to stop alerts on that phone.']]);
+</script>
 <script type="module">
 /* ================================================================
    FIREBASE CONFIG — paste your config from Firebase Console here
@@ -1136,6 +1191,7 @@ async function start(){
   A.onAuthStateChanged(auth,async u=>{
     unsubs.forEach(x=>x());unsubs=[];ready=false;role=null;
     window.userEmail=u?u.email:null;window.userRole=null;window.userWorkerId=null;
+    window.cpPush=null;
     if(!u){window.photoStore=window.localPhotoStore;showLogin();return}
     me=u.email.toLowerCase();body.innerHTML='<p style="color:var(--m)">Loading company data…</p>';
     try{
@@ -1143,6 +1199,12 @@ async function start(){
       try{const ud=await F.getDoc(F.doc(co,'users',me));if(ud.exists()){const x=ud.data();if(!role)role=x.role==='owner'?'owner':'tech';workerId=x.workerId||null}}catch(e){if(!role)throw e}
       if(!role){showLogin('This account ('+u.email+') is not on the team. Ask an owner to add you in Team.');await A.signOut(auth);return}
       window.userRole=role;window.userWorkerId=workerId;window.photoStore=fsPhotos;
+      const subId=async ep=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(ep)))).slice(0,20).map(b=>b.toString(16).padStart(2,'0')).join('');
+      window.cpPush={ // device subscriptions: companies/main/pushSubs/{hash(endpoint)}; prefs: companies/main/pushPrefs/{email}
+        async saveSub(s){await F.setDoc(F.doc(co,'pushSubs',await subId(s.endpoint)),{email:me,role,endpoint:s.endpoint,keys:{p256dh:s.keys.p256dh,auth:s.keys.auth},ua:navigator.userAgent.slice(0,200),at:new Date().toISOString()})},
+        async delSub(ep){await F.deleteDoc(F.doc(co,'pushSubs',await subId(ep)))},
+        async getPrefs(){const d=await F.getDoc(F.doc(co,'pushPrefs',me));return d.exists()?d.data():{}},
+        async setPrefs(p){await F.setDoc(F.doc(co,'pushPrefs',me),Object.assign({},p,{email:me,at:new Date().toISOString()}))}};
       if(role==='owner'){
         const r=await loadAllOwner();
         if(r.empty){const D=getD(),n=Object.keys(SPEC).reduce((a,k)=>a+(D[k]||[]).filter(x=>!x.sample).length,0);
