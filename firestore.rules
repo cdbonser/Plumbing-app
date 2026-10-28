@@ -16,7 +16,10 @@ service cloud.firestore {
         email() in ['cdbonser@gmail.com', 'thecentralplumber@gmail.com']
         || (exists(userPath(c)) && get(userPath(c)).data.role == 'owner'));
     }
-    function isStaff(c) { return signedIn() && (isOwner(c) || exists(userPath(c))); }
+    // Staff = owners and techs. Billing users are NOT staff: they get no write access anywhere.
+    function isStaff(c) { return signedIn() && (isOwner(c) || (exists(userPath(c)) && get(userPath(c)).data.get('role', 'tech') != 'billing')); }
+    // Billing (view hours only): reads time entries, worker names and job number/customer name. Nothing else.
+    function isBilling(c) { return signedIn() && !isOwner(c) && exists(userPath(c)) && get(userPath(c)).data.get('role', '') == 'billing'; }
     function jobPath(c, id) { return /databases/$(database)/documents/companies/$(c)/jobs/$(id); }
     function photoPath(c, id) { return /databases/$(database)/documents/companies/$(c)/photos/$(id); }
 
@@ -33,12 +36,12 @@ service cloud.firestore {
 
       // Company name/phone for everyone on the team.
       match /settings/public {
-        allow get: if isStaff(c);
+        allow get: if isStaff(c) || isBilling(c);
       }
 
       // Worker names/colors only (pay rates live in workers_private, owner-only).
       match /workers/{id} {
-        allow read: if isStaff(c);
+        allow read: if isStaff(c) || isBilling(c);
       }
 
       match /checklistTemplates/{id} {
@@ -54,6 +57,7 @@ service cloud.firestore {
 
       // Techs read/write only their own clock entries (no deleting).
       match /timeEntries/{id} {
+        allow read: if isBilling(c);
         allow read: if isStaff(c) && resource.data.email == email();
         allow create: if isStaff(c) && request.resource.data.email == email();
         allow update: if isStaff(c) && resource.data.email == email()
@@ -74,6 +78,10 @@ service cloud.firestore {
         allow read: if isStaff(c) && resource.data.by == email();
         allow create: if isStaff(c) && request.resource.data.by == email()
           && request.resource.data.status == 'New';
+      }
+      // Job number + customer name only, kept up to date by the owners' app. Read by Billing.
+      match /billingJobs/{id} {
+        allow read: if isBilling(c);
       }
       // messages/* is owner-only (covered by the owner rule above).
 
