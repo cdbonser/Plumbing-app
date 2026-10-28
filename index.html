@@ -363,6 +363,26 @@ timeTable=function(L){return L.length?`<div class="tw"><table><tr><th>Worker</th
 {const _et=editTime;editTime=function(id,wk){if(isOwner())return _et(id,wk);asTech(()=>_et(id,wk||myWorkerId()));document.querySelectorAll('#modal .btn.d').forEach(b=>b.remove())}}
 {const _vj=V.jobs;V.jobs=()=>{let h=_vj();if(isTech())return h.replace(/<div style="flex:0"><button class="btn" onclick="editJob\(\)">\+ Job<\/button><\/div>/,'');return h+recurringCard()}}
 
+/* ---------- jobs grouped by day (Central time) ---------- */
+const ctYmd=d=>d.toLocaleDateString('en-CA',{timeZone:'America/Chicago'});
+function jobDayLabel(k,t){const add=n=>{const d=new Date(t+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)};
+ const nice=new Date(k+'T12:00:00Z').toLocaleDateString('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric',year:k.slice(0,4)==t.slice(0,4)?undefined:'numeric'});
+ return k==t?'Today · '+nice:k==add(1)?'Tomorrow · '+nice:k==add(-1)?'Yesterday · '+nice:nice}
+function jobDays(L){if(!L.length)return '<div class="card"><span style="color:var(--m)">No jobs.</span></div>';
+ const t=ctYmd(new Date()),G={},none=[];
+ L.forEach(j=>{const k=j.when&&/^\d{4}-\d\d-\d\d/.test(j.when)?j.when.slice(0,10):'';if(!k)none.push(j);else(G[k]=G[k]||[]).push(j)});
+ const ks=Object.keys(G),up=ks.filter(k=>k>=t).sort(),past=ks.filter(k=>k<t).sort().reverse();
+ const n=a=>`<span class="pill" style="margin-left:6px">${a.length} job${a.length==1?'':'s'}</span>`;
+ const grp=(k,tip)=>`<div class="card jday"><h2 style="margin:0 0 8px" data-tip="${tip}">${esc(jobDayLabel(k,t))}${n(G[k])}</h2>${jobTable(G[k])}</div>`;
+ let h=up.map(k=>grp(k,k==t?'Jobs scheduled for today, earliest start first.':'Jobs scheduled for this day, earliest start first.')).join('');
+ if(none.length)h+=`<div class="card jday"><h2 style="margin:0 0 8px" data-tip="Jobs with no date or time set yet. Open a job to schedule it.">Unscheduled${n(none)}</h2>${jobTable(none)}</div>`;
+ if(past.length){const c=past.reduce((a,k)=>a+G[k].length,0);
+  h+=`<details class="card jearlier"${up.length||none.length?'':' open'}><summary data-tip="Tap to show or hide jobs from past days, most recent first." style="cursor:pointer;font-weight:600">Earlier <span class="pill" style="margin-left:6px">${c} job${c==1?'':'s'}</span></summary>${past.map(k=>grp(k,'Jobs that were scheduled for this day.')).join('')}</details>`}
+ return h}
+{const _vj2=V.jobs;V.jobs=()=>{const _jt=jobTable;let cap=null;jobTable=L=>{cap=L;return '<!--JOBDAYS-->'};let h;try{h=_vj2()}finally{jobTable=_jt}
+ return cap?h.replace(/<div class="card"><!--JOBDAYS--><\/div>/,()=>jobDays(cap)).replace('<!--JOBDAYS-->',()=>jobDays(cap)):h}}
+
+
 /* ---------- dashboard ---------- */
 {const _vd=V.dash;V.dash=()=>{if(isTech())return techDash();const L=D.invoices.filter(i=>invStatus(i)!='Paid'&&invStatus(i)!='Draft');const out=L.reduce((s,i)=>s+invT(i).bal,0),ov=L.filter(i=>invStatus(i)=='Overdue');
  return `<div class="grid"><div class="card stat" onclick="go('invoices')" style="cursor:pointer"><div class="n">${money(out)}</div><div class="k">Outstanding invoices (${L.length})</div></div><div class="card stat" onclick="inf='Overdue';go('invoices')" style="cursor:pointer"><div class="n" style="color:${ov.length?'#c0392b':'var(--b)'}">${money(ov.reduce((s,i)=>s+invT(i).bal,0))}</div><div class="k">Overdue (${ov.length})</div></div></div>`+_vd()}}
