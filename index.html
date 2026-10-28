@@ -644,12 +644,12 @@ render();
 </script>
 <script>
 /* ===================== Bottom tab bar navigation ===================== */
-const ICO={home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',schedule:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',sales:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/>',team:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14.2c2.6.2 4.4 2 5 4.8"/>',jobs:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4V2.5h6V4M8.5 10h7M8.5 14h7M8.5 18h4"/>',more:'<circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/>'};
+const ICO={home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',schedule:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',sales:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/>',team:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14.2c2.6.2 4.4 2 5 4.8"/>',jobs:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4V2.5h6V4M8.5 10h7M8.5 14h7M8.5 18h4"/>',onotes:'<path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4M8 12h8M8 16h5"/>',more:'<circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/>'};
 const GROUPS={home:{l:'Home',subs:()=>isOwner()?[['dash','Today'],['clock','Clock'],['leads','Leads']]:[['dash','Today'],['clock','Clock'],['sheets','My hours'],['leads','Leads']]},
- schedule:{l:'Schedule',subs:()=>[['cal','Calendar']]},jobs:{l:'Jobs',subs:()=>[['jobs','Jobs']]},sales:{l:'Sales',subs:()=>[['quotes','Quotes'],['invoices','Invoices'],['clients','Clients']]},
+ schedule:{l:'Schedule',subs:()=>[['cal','Calendar']]},jobs:{l:'Jobs',subs:()=>[['jobs','Jobs']]},onotes:{l:'Notes',subs:()=>[['onotes','Notes']]},sales:{l:'Sales',subs:()=>[['quotes','Quotes'],['invoices','Invoices'],['clients','Clients']]},
  team:{l:'Team',subs:()=>[['workers','Workers'],['sheets','Timesheets'],['team','Logins']]},more:{l:'More',subs:()=>[]}};
 const MORE=[['book','Price book & checklists','📘'],['parts','Parts catalog','🔧'],['reports','Reports','📊'],['messages','Messages & call notes','💬'],['settings','Settings & backup','⚙️']];
-const groupsFor=()=>isOwner()?['home','schedule','jobs','sales','team','more']:isTech()?['home','schedule','jobs']:['home','schedule'];
+const groupsFor=()=>isOwner()?['home','schedule','jobs','onotes','sales','team','more']:isTech()?['home','schedule','jobs']:['home','schedule'];
 function groupOf(t){if(t=='more')return 'more';if(isTech()&&t=='sheets')return 'home';for(const g of groupsFor())if(GROUPS[g].subs().some(s=>s[0]==t))return g;return MORE.some(m=>m[0]==t)?'more':'home'}
 let lastSub={};try{lastSub=JSON.parse(localStorage.getItem('cp-lastsub'))||{}}catch(e){}
 function goGroup(g){if(g=='more'){if(groupOf(tab)=='more'&&tab!='more'){go('more');return}go(lastSub.more&&lastSub.more!='more'&&isOwner()?'more':'more');return}const subs=GROUPS[g].subs();const t=subs.some(s=>s[0]==lastSub[g])?lastSub[g]:subs[0][0];if(t==tab&&g==groupOf(tab)){scrollTo(0,0);return}go(t)}
@@ -1170,6 +1170,58 @@ function jobUnsched(id){const j=J(id);if(!j||!isOwner())return;if(!confirm('Move
 {const _ej=editJob;editJob=function(id,fq){_ej(id,fq);if(!id||!isOwner()||!$('#jw'))return;const j=J(id);if(!j)return;const box=$('#modal .modal>div');const btns=box&&box.lastElementChild;
  if(btns)btns.insertAdjacentHTML('beforeend',`<button class="btn s" data-tip="Quick: set or change the day, time and worker" onclick="jobSched('${id}')">📅 Schedule</button>`)}}
 </script>
+<script>
+/* ===================== Owner notes (private by default, shareable between owners) ===================== */
+const ONAME={'cdbonser@gmail.com':'Colt','thecentralplumber@gmail.com':'Dad'};
+const oName=e=>ONAME[String(e||'').toLowerCase()]||String(e||'').split('@')[0]||'?';
+let ON={mine:[],shared:[]},onEdit='',onDoneOpen=false;
+const ONL='cp-ownernotes-local';
+/* offline fallback (no Firebase): notes live on this device only */
+const onLocal={all(){try{return JSON.parse(localStorage.getItem(ONL))||[]}catch(e){return[]}},put(L){localStorage.setItem(ONL,JSON.stringify(L))},
+ async add(n){const L=this.all();L.push(n);this.put(L);onLocalRefresh()},async update(id,p){const L=this.all(),n=L.find(x=>x.id==id);if(n)Object.assign(n,p);this.put(L);onLocalRefresh()},async del(id){this.put(this.all().filter(x=>x.id!=id));onLocalRefresh()}};
+function onLocalRefresh(){const me=ME(),L=onLocal.all();window.onNotesData(L.filter(n=>n.by==me),L.filter(n=>n.shared))}
+const onApi=()=>window.cpNotes||onLocal;
+window.onNotesData=(mine,shared)=>{ON={mine,shared};const ae=document.activeElement;if(tab=='onotes'&&!onEdit&&!(ae&&ae.closest&&ae.closest('#app .onl')&&ae.tagName!='BUTTON'&&ae.type!='checkbox'))render()};
+function onAll(){const m=new Map();[...ON.mine,...ON.shared].forEach(n=>m.set(n.id,n));return [...m.values()].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''))}
+const onNow=()=>new Date().toISOString();
+function onStamp(p){return Object.assign(p,{updatedAt:onNow(),updatedBy:ME()})}
+async function onRun(f){try{await f()}catch(e){console.warn(e);alert('Could not save the note: '+(e.message||e))}}
+function onAdd(){const t=$('#ont').value.trim();if(!t)return;const ty=$('#onty').value;const me=ME();const n={id:uid()+uid(),by:me,byName:oName(me),shared:false,text:t,type:ty,done:false,items:[],createdAt:onNow(),updatedAt:onNow(),updatedBy:me};
+ $('#ont').value='';onRun(()=>onApi().add(n)).then(()=>{if(!window.cpNotes)return;ON.mine=[n,...ON.mine.filter(x=>x.id!=n.id)];render();setTimeout(()=>$('#ont')&&$('#ont').focus(),0)})}
+const onGet=id=>onAll().find(n=>n.id==id);
+function onToggle(id){const n=onGet(id);if(!n)return;const d=!n.done;onRun(()=>onApi().update(id,onStamp({done:d,doneBy:d?ME():''})))}
+function onShare(id){const n=onGet(id);if(!n||n.by!=ME())return;onRun(()=>onApi().update(id,onStamp({shared:!n.shared})))}
+function onDel(id){const n=onGet(id);if(!n||n.by!=ME())return;if(!confirm('Delete this note?'))return;onRun(()=>onApi().del(id))}
+function onEditStart(id){onEdit=id;render();const e=$('#one_'+id);if(e){e.focus();e.setSelectionRange(e.value.length,e.value.length)}}
+function onEditSave(id){const e=$('#one_'+id),ty=$('#onety_'+id);if(!e)return;const t=e.value.trim();onEdit='';if(!t){render();return}onRun(()=>onApi().update(id,onStamp({text:t,type:ty?ty.value:''}))).then(render)}
+function onItemAdd(id){const e=$('#oni_'+id);if(!e)return;const t=e.value.trim();if(!t)return;const n=onGet(id);if(!n)return;const items=[...(n.items||[]),{id:uid(),t,done:false,by:ME()}];e.value='';onRun(()=>onApi().update(id,onStamp({items})))}
+function onItemTog(id,iid){const n=onGet(id);if(!n)return;const items=(n.items||[]).map(i=>i.id==iid?{...i,done:!i.done}:i);onRun(()=>onApi().update(id,onStamp({items})))}
+function onItemDel(id,iid){const n=onGet(id);if(!n)return;onRun(()=>onApi().update(id,onStamp({items:(n.items||[]).filter(i=>i.id!=iid)})))}
+const ONTY={todo:['To-do','#1565C0'],buy:['Need to get','#E0A100']};
+function onCard(n){const me=ME(),mine=n.by==me,ty=ONTY[n.type];const ed=onEdit==n.id;
+ const who=n.shared?(mine?'Shared by me':'From '+oName(n.by)):'';const last=n.shared&&n.updatedBy&&n.updatedAt?` · last edited by ${esc(n.updatedBy==me?'me':oName(n.updatedBy))} ${esc(fmtDT(n.updatedAt))}`:'';
+ const items=(n.items||[]);
+ return `<div class="onc" style="border-top:1px solid #eee;padding:10px 0"><div style="display:flex;gap:10px;align-items:flex-start">
+ <input type="checkbox" style="width:22px;height:22px;flex:0 0 auto;margin-top:2px" ${n.done?'checked':''} onchange="onToggle('${n.id}')" data-tip="Mark done">
+ <div style="flex:1;min-width:0">${ed?`<textarea id="one_${n.id}" rows="3" style="width:100%">${esc(n.text)}</textarea><div class="row" style="margin-top:6px"><select id="onety_${n.id}" style="width:auto">${opt([['','No type'],['todo','To-do'],['buy','Need to get/buy']],n.type||'')}</select><button class="btn sm" onclick="onEditSave('${n.id}')">Save</button><button class="btn sm s" onclick="onEdit='';render()">Cancel</button></div>`
+ :`<div style="white-space:pre-wrap;overflow-wrap:anywhere;${n.done?'text-decoration:line-through;color:var(--m)':''}">${esc(n.text)}</div>`}
+ <div style="margin-top:4px;font-size:12px;color:var(--m)">${ty?`<span class="pill" style="background:${ty[1]}22;color:${ty[1]}">${ty[0]}</span> `:''}${who?`<b>${esc(who)}</b>`:''}${last}</div>
+ ${items.length?`<div style="margin-top:6px">${items.map(i=>`<div style="display:flex;gap:8px;align-items:center;padding:3px 0"><input type="checkbox" style="width:18px;height:18px" ${i.done?'checked':''} onchange="onItemTog('${n.id}','${i.id}')"><span style="flex:1;overflow-wrap:anywhere;${i.done?'text-decoration:line-through;color:var(--m)':''}">${esc(i.t)}</span><button class="btn sm s" style="padding:2px 8px" data-tip="Remove this item" onclick="onItemDel('${n.id}','${i.id}')">✕</button></div>`).join('')}</div>`:''}
+ ${n.done?'':`<div style="display:flex;gap:6px;margin-top:6px"><input id="oni_${n.id}" placeholder="+ Add item to this list" style="flex:1;min-width:0" onkeydown="if(event.key=='Enter')onItemAdd('${n.id}')"><button class="btn sm s" onclick="onItemAdd('${n.id}')">Add</button></div>`}
+ <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${ed?'':`<button class="btn sm s" onclick="onEditStart('${n.id}')">Edit</button>`}${mine?`<button class="btn sm ${n.shared?'g':'s'}" data-tip="${n.shared?'Shared with the other owner. Tap to make it private again.':'Share this note with the other owner. They can edit it and check it off.'}" onclick="onShare('${n.id}')">${n.shared?'✓ Shared':'Share'}</button><button class="btn sm d" onclick="onDel('${n.id}')">Delete</button>`:''}</div>
+ </div></div></div>`}
+V.onotes=()=>{if(!isOwner())return '';const all=onAll(),open=all.filter(n=>!n.done),done=all.filter(n=>n.done);const my=open.filter(n=>!n.shared),sh=open.filter(n=>n.shared);
+ const sec=(t,L,tip,empty)=>`<div class="card"><h2 style="margin:0 0 4px" data-tip="${tip}">${t} <span class="pill">${L.length}</span></h2>${L.length?L.map(onCard).join(''):`<small style="color:var(--m)">${empty}</small>`}</div>`;
+ return `<div class="onl"><div class="card"><h2 style="margin:0 0 8px">Notes</h2><div style="display:flex;gap:6px"><input id="ont" placeholder="Something to do or get…" style="flex:1;min-width:0" onkeydown="if(event.key=='Enter')onAdd()"><button class="btn" onclick="onAdd()">Add</button></div>
+ <div style="margin-top:6px"><select id="onty" style="width:auto">${opt([['','No type'],['todo','To-do'],['buy','Need to get/buy']],'')}</select> <small style="color:var(--m)">Private to you until you tap Share.</small></div>${window.cpNotes?'':'<small style="color:var(--m);display:block;margin-top:4px">Offline: notes are saved on this device only.</small>'}</div>
+ ${sec('My notes',my,'Only you can see these.','Nothing here yet. Type above and tap Add.')}
+ ${sec('Shared',sh,'Notes shared between owners. Both of you can edit and check them off. Only the writer can delete or unshare.','No shared notes. Tap Share on a note to send it to the other owner.')}
+ ${done.length?`<details class="card"${onDoneOpen?' open':''} ontoggle="onDoneOpen=this.open"><summary style="cursor:pointer;font-weight:600" data-tip="Finished notes. Uncheck one to bring it back.">Done <span class="pill">${done.length}</span></summary>${done.map(onCard).join('')}</details>`:''}</div>`};
+Object.assign(TIPS,{'Notes':'Your own to-do and shopping notes. Private until you tap Share.'});
+if(typeof G_OWNER!='undefined')G_OWNER.push(['Notes (owners only)',['Tap Notes in the bar. Type something and tap Add. Pick To-do or Need to get/buy if you like.','Notes are private to you. Tap Share to send one to the other owner; it moves to Shared for both of you.','On a shared note, both of you can edit the text, add list items and check things off. It shows who wrote it and who edited it last.','Only the person who wrote a note can delete it or make it private again.','Checked-off notes move to Done at the bottom.']]);
+/* nav: owners get a Notes button */
+{const _r=render;render=function(){if(tab=='onotes'&&!isOwner()){tab='dash'}const r=_r();if(!window.cpNotes&&isOwner()&&!render._onl){render._onl=1;onLocalRefresh()}return r}}
+</script>
 <script type="module">
 /* ================================================================
    FIREBASE CONFIG — paste your config from Firebase Console here
@@ -1294,7 +1346,7 @@ async function start(){
   A.onAuthStateChanged(auth,async u=>{
     unsubs.forEach(x=>x());unsubs=[];ready=false;role=null;
     window.userEmail=u?u.email:null;window.userRole=null;window.userWorkerId=null;
-    window.cpPush=null;
+    window.cpPush=null;window.cpNotes=null;
     if(!u){window.photoStore=window.localPhotoStore;showLogin();return}
     me=u.email.toLowerCase();body.innerHTML='<p style="color:var(--m)">Loading company data…</p>';
     try{
@@ -1308,6 +1360,13 @@ async function start(){
         async delSub(ep){await F.deleteDoc(F.doc(co,'pushSubs',await subId(ep)))},
         async getPrefs(){const d=await F.getDoc(F.doc(co,'pushPrefs',me));return d.exists()?d.data():{}},
         async setPrefs(p){await F.setDoc(F.doc(co,'pushPrefs',me),Object.assign({},p,{email:me,at:new Date().toISOString()}))}};
+      window.cpNotes=null;
+      if(role==='owner'){ // owner notes: companies/main/ownerNotes, private unless shared (see firestore.rules)
+        const NC=F.collection(co,'ownerNotes');const got={mine:[],shared:[]};const emit=()=>window.onNotesData&&window.onNotesData(got.mine,got.shared);
+        const sub=(k,q)=>unsubs.push(F.onSnapshot(q,s=>{got[k]=s.docs.map(d=>({id:d.id,...d.data()}));emit()},e=>console.warn('notes',k,e)));
+        sub('mine',F.query(NC,F.where('by','==',me)));sub('shared',F.query(NC,F.where('shared','==',true)));
+        window.cpNotes={async add(n){const {id,...x}=n;await F.setDoc(F.doc(NC,id),x)},async update(id,p){await F.updateDoc(F.doc(NC,id),p)},async del(id){await F.deleteDoc(F.doc(NC,id))}};
+      }
       if(role==='owner'){
         const r=await loadAllOwner();
         if(r.empty){const D=getD(),n=Object.keys(SPEC).reduce((a,k)=>a+(D[k]||[]).filter(x=>!x.sample).length,0);
