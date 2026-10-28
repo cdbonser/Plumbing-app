@@ -448,7 +448,7 @@ function clAdd(jid){const t=$('#jcli').value.trim();if(!t)return;const j=J(jid);
 function clAddTpl(jid){const t=D.checklistTemplates.find(x=>x.id==$('#jclt').value);if(!t)return;const j=J(jid);j.checklist=(j.checklist||[]).concat(t.items.map(s=>({t:s,done:false})));save();drawCl(jid)}
 function clDel(jid,n){const j=J(jid);j.checklist.splice(n,1);save();drawCl(jid)}
 function techJob(id){const j=J(id);if(!j)return;const c=C(j.client)||{name:j.clientName,phone:j.clientPhone,address:j.clientAddress};
- modal(`<h2>Job ${esc(j.num)} <span class="pill ${j.status}">${j.status}</span></h2><div class="card" style="margin:0 0 10px"><b style="font-size:17px">${esc(c.name||'—')}</b>${c.phone?`<div style="margin-top:6px">📞 <a href="tel:${telD(c.phone)}">${esc(fmtPhone(c.phone))}</a></div>`:''}${c.address?`<div style="margin-top:6px">📍 <a href="${mapUrl(c.address)}" target="_blank" rel="noopener">${esc(c.address)}</a></div>`:''}</div>
+ modal(`<h2>Job ${esc(j.num)} <span class="pill ${j.status}">${j.status}</span></h2><div class="card" style="margin:0 0 10px"><b style="font-size:17px">${esc(c.name||'—')}</b>${c.phone?`<div style="margin-top:6px">📞 <a href="tel:${telD(c.phone)}">${esc(fmtPhone(c.phone))}</a></div>`:''}${jobAddrHTML(j)}</div>
  <div><b>When:</b> ${fmtDT(j.when)||'—'}</div><div style="margin-top:4px"><b>Crew:</b> ${(j.workers||[]).map(w=>esc(W(w)?.name||'')).join(', ')||'—'}</div><div style="margin-top:8px;white-space:pre-wrap">${esc(j.desc)}</div>
  <label>Field notes</label><textarea id="jtn" rows="3">${esc(j.techNotes||'')}</textarea>${jobExtras(j)}<div style="margin-top:14px"><button class="btn" onclick="J('${id}').techNotes=$('#jtn').value;save();modal();render()">Save notes</button><button class="btn s" onclick="modal()">Close</button></div>`);drawCl(id);loadPhotos(id)}
 
@@ -1143,6 +1143,17 @@ function bhCSV(){const {E}=bhData();const q=v=>'"'+String(v??'').replace(/"/g,'"
  const I={bhours:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 17h.01"/>'};
  $('#bnav').innerHTML=[['bhours','Hours'],['help','Help']].map(([k,l])=>`<button class="${k==tab?'on':''}" onclick="go('${k}')"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg><span>${l}</span></button>`).join('');
  if(location.hash.slice(1)!=tab)history.replaceState(null,'','#'+tab);if(typeof applyTips=='function')applyTips()}}
+</script>
+<script>
+/* ===================== Job address (job detail) ===================== */
+function jobAddr(j){if(!j)return '';const c=C(j.client);return String(j.address||(c&&c.address)||j.clientAddress||'').trim()}
+function jobAddrHTML(j){const a=jobAddr(j),own=isOwner()&&j&&j.id&&C(j.client);
+ const edit=own?` <button type="button" class="btn sm s" data-tip="Add or change this customer's address" onclick="jobAddrEdit('${j.id}')">${a?'Edit':'+ Add address'}</button>`:'';
+ return `<div class="jaddr" style="margin-top:6px;font-size:16px;line-height:1.35;overflow-wrap:anywhere">${a?`📍 <a href="https://maps.apple.com/?daddr=${encodeURIComponent(a)}" target="_blank" rel="noopener" data-tip="Tap for directions">${esc(a)}</a>`:'<span style="color:var(--m)">📍 No address on file</span>'}${edit}</div>`}
+function jobAddrEdit(jid){const j=J(jid),c=j&&C(j.client);if(!c)return;const v=prompt('Service address for '+(c.name||'this customer')+':',jobAddr(j));if(v===null)return;const a=v.trim();
+ if(j.address)j.address=a;else c.address=a;D.jobs.filter(x=>x.client==c.id&&!x.address).forEach(x=>x.clientAddress=a);save();document.querySelectorAll('#modal .jaddr').forEach(e=>e.outerHTML=jobAddrHTML(j))}
+{const _ej=editJob;editJob=function(id,fq){_ej(id,fq);if(!id||isTech()||!$('#modal').innerHTML||$('#modal .jaddr'))return;const j=J(id);if(!j)return;const h=$('#modal h2');if(!h)return;
+ const c=C(j.client);h.insertAdjacentHTML('afterend',`<div class="card jacard" style="margin:0 0 10px"><b style="font-size:17px">${esc(noSample(c?.name||j.clientName||'—'))}</b>${jobAddrHTML(j)}</div>`)}}
 </script>
 <script type="module">
 /* ================================================================
