@@ -4,8 +4,8 @@ const APP=new URL('./',self.location).href; // https://centralplumbingne.github.
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
 self.addEventListener('push',e=>{let d={};try{d=e.data?e.data.json():{}}catch(_){d={body:e.data?e.data.text():''}}
-  e.waitUntil(self.registration.showNotification(d.title||'Central Plumbing',{body:d.body||'',icon:'icon-192.png',badge:'icon-192.png',tag:d.tag||undefined,data:{job:d.jobId||''}}))});
-self.addEventListener('notificationclick',e=>{e.notification.close();const job=(e.notification.data||{}).job||'';const url=APP+(job?'?job='+encodeURIComponent(job):'');
+  e.waitUntil(self.registration.showNotification(d.title||'Central Plumbing',{body:d.body||'',icon:'icon-192.png',badge:'icon-192.png',tag:d.tag||undefined,data:{job:d.jobId||'',tab:d.tab||''}}))});
+self.addEventListener('notificationclick',e=>{e.notification.close();const dt=e.notification.data||{},job=dt.job||'',tab=dt.tab||'';const url=APP+(job?'?job='+encodeURIComponent(job):tab?'?tab='+encodeURIComponent(tab):'');
   e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{
-    for(const c of cs){if(c.url.startsWith(APP)&&'focus' in c){if(job)c.postMessage({job});return c.focus()}}
+    for(const c of cs){if(c.url.startsWith(APP)&&'focus' in c){if(job)c.postMessage({job});else if(tab)c.postMessage({tab});return c.focus()}}
     return self.clients.openWindow(url)}))});
